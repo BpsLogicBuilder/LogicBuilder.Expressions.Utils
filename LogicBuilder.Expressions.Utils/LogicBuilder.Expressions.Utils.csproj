@@ -10,7 +10,7 @@
     <PackageReleaseNotes>Supporting .NET 10.0.</PackageReleaseNotes>
     <PackageTags>linq expressions</PackageTags>
     <Copyright>Copyright © BPS 2018</Copyright>
-    <RepositoryUrl>https://github.com/BpsLogicBuilder/LogicBuilder.DataComponents</RepositoryUrl>
+    <RepositoryUrl>https://github.com/BpsLogicBuilder/LogicBuilder.Expressions.Utils</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/BpsLogicBuilder/LogicBuilder</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>

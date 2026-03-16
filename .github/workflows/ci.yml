@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  DOTNET_VERSION: "10.0.x"
+  NODE_VERSION: "22.x"
+  PROJECT_NAME: "LogicBuilder.Expressions.Utils"
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run unit tests
+        run: dotnet test --no-build --verbosity normal --configuration Release /p:CollectCoverage=true /p:Threshold=50 /p:ThresholdType=line /p:ThresholdStat=Average /p:CoverletOutputFormat=opencover /p:CoverletOutput=./TestResults/ /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:ExcludeByAttribute="GeneratedCodeAttribute" /p:CoverletOutputFormat=cobertura
+
+  publish-packages:
+    name: Publish to GitHub Packages
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'BpsLogicBuilder'
+    permissions:
+      contents: read
+      packages: write
+    needs: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+          source-url: https://nuget.pkg.github.com/bpsLogicBuilder/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Publish to GitHub Packages
+        run: |
+          dotnet pack ${{ env.PROJECT_PATH }} --configuration Release -o ./nupkg --no-build
+          dotnet nuget push ${{ env.NUGET_PACKAGE_PATH }} --skip-duplicate --api-key ${{ env.GITHUB_TOKEN }}
+        env:
+          NUGET_PACKAGE_PATH: "${{ format('./nupkg/{0}.*.nupkg', env.PROJECT_NAME) }}"
+          PROJECT_PATH: "${{ format('./{0}/{0}.csproj', env.PROJECT_NAME) }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

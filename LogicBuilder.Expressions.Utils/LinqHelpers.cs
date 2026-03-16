@@ -43,6 +43,7 @@ namespace LogicBuilder.Expressions.Utils
             return Expression.Lambda(delegateType, parent, param);//Resulting lambda expression for the selector.
         }
 
+        [Obsolete("Original purpose no longer applicable.")]
         public static string GetFullName(this MemberExpression memberExpression)
         {
             switch (memberExpression.Expression.NodeType)
@@ -56,6 +57,7 @@ namespace LogicBuilder.Expressions.Utils
             }
         }
 
+        [Obsolete("Use GetTypedSelector, GetObjectSelector, or MakeSelector instead.")]
         public static MemberExpression GetMemberExpression<TSource>(this string propertyFullName, string parameterName = "a")
         {
             ParameterExpression param = Expression.Parameter(typeof(TSource), parameterName);
@@ -64,12 +66,15 @@ namespace LogicBuilder.Expressions.Utils
             return (MemberExpression)parent;
         }
 
+        [Obsolete("Original purpose no longer applicable.")]
         public static Expression<Func<TSource, TReturn>> ToSelector<TSource, TReturn>(Expression<Func<TSource, TReturn>> include)
             => include;
 
+        [Obsolete("Original purpose no longer applicable.")]
         public static Expression<Func<TSource, bool>> ToFilter<TSource>(Expression<Func<TSource, bool>> filter)
             => filter;
 
+        [Obsolete("Original purpose no longer applicable.")]
         public static Expression<TDelegate> ToExpression<TDelegate>(Expression<TDelegate> expression)
             => expression;
 
