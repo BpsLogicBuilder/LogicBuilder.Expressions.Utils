@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="LogicBuilder.Expressions.Utils.Tests/LogicBuilder.Expressions.Utils.Tests.csproj" />
+  <Project Path="LogicBuilder.Expressions.Utils/LogicBuilder.Expressions.Utils.csproj" />
+</Solution>
