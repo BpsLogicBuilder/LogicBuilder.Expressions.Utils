@@ -5,6 +5,7 @@ namespace LogicBuilder.Expressions.Utils
 {
     public static class StringExtensions
     {
+        [Obsolete("Original purpose no longer applicable.")]
         public static string ToPascalCase(this string s)
         {
             if (string.IsNullOrEmpty(s) || !char.IsLower(s[0]))
@@ -22,6 +23,7 @@ namespace LogicBuilder.Expressions.Utils
         /// </summary>
         /// <param name="s"></param>
         /// <returns></returns>
+        [Obsolete("Original purpose no longer applicable.")]
         public static string ToCamelCase(this string s)
         {
             const string PERIOD = ".";

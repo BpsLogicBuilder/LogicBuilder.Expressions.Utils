@@ -81,6 +81,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="group"></param>
         /// <returns></returns>
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static Expression<Func<IQueryable<T>, IQueryable<IGrouping<object, T>>>> BuildGroupByExpression<T>(this string group) where T : class
         {
             if (group == null)
@@ -100,6 +101,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <param name="groupByProperty"></param>
         /// <param name="parameterName"></param>
         /// <returns></returns>
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetGroupBy<TSource>(this Expression expression, string groupByProperty)
         {
             LambdaExpression selectorExpression = groupByProperty.GetObjectSelector<TSource>();
@@ -116,6 +118,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <param name="param"></param>
         /// <param name="methodFunc"></param>
         /// <returns></returns>
+        [Obsolete("Use System.Linq.Expressions.Expression.Lambda.")]
         public static Expression<Func<TSource, TDest>> BuildLambdaExpression<TSource, TDest>(this ParameterExpression param, Func<ParameterExpression, Expression> methodFunc)
             where TSource : class
             where TDest : class 
@@ -127,6 +130,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyFullNames"></param>
         /// <returns></returns>
+        [Obsolete("Use LinqHelpers.GetExpression with the MemberInitOperator instead.")]
         public static Expression<Func<IQueryable<T>, IQueryable<dynamic>>> BuildSelectNewExpression<T>(this ICollection<string> propertyFullNames) where T : class
         {
             if (propertyFullNames == null)
@@ -187,6 +191,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="TSource"></typeparam>
         /// <param name="expression"></param>
         /// <returns></returns>
+        [Obsolete("Use GetDistinct in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetDistinct(this Expression expression) => expression.GetMethodCall("Distinct");
 
         /// <summary>
@@ -194,6 +199,7 @@ namespace LogicBuilder.Expressions.Utils
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
+        [Obsolete("Use GetSingleCall in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetSingle(this Expression expression) => expression.GetMethodCall("Single");
 
         /// <summary>
@@ -201,6 +207,7 @@ namespace LogicBuilder.Expressions.Utils
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
+        [Obsolete("Use GetSingleOrDefaultCall in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetSingleOrDefault(this Expression expression) => expression.GetMethodCall("SingleOrDefault");
 
         /// <summary>
@@ -208,6 +215,7 @@ namespace LogicBuilder.Expressions.Utils
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
+        [Obsolete("Use GetFirstCall in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetFirst(this Expression expression) => expression.GetMethodCall("First");
 
         /// <summary>
@@ -215,6 +223,7 @@ namespace LogicBuilder.Expressions.Utils
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
+        [Obsolete("Use GetFirstCall in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetFirstOrDefault(this Expression expression) => expression.GetMethodCall("FirstOrDefault");
 
         private static MethodCallExpression GetMethodCall(this Expression expression, string methodName)
@@ -226,6 +235,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyFullNames"></param>
         /// <returns></returns>
+        [Obsolete("Original purpose no longer applicable.")]
         public static Expression<Func<IQueryable<T>, IQueryable<dynamic>>> BuildSelectNewExpression<T>(this IDictionary<string, string> propertyFullNames) where T : class
         {
             if (propertyFullNames == null)
@@ -236,6 +246,7 @@ namespace LogicBuilder.Expressions.Utils
             return Expression.Lambda<Func<IQueryable<T>, IQueryable<dynamic>>>(mce, param);
         }
 
+        [Obsolete("Original purpose no longer applicable.")]
         public static MethodCallExpression GetSelectNew<TSource>(this Expression expression, IDictionary<string, string> propertyFullNames, string parameterName = "a") where TSource : class
         {
             ParameterExpression selectorParameter = Expression.Parameter(typeof(TSource), parameterName);
@@ -247,7 +258,7 @@ namespace LogicBuilder.Expressions.Utils
                 GetMemberDetails<TSource>(propertyFullNames, selectorParameter)
             );
         }
-
+        
         private static MethodCallExpression GetSelectMethodExpression<TSource>(this Expression expression, List<MemberDetails> memberDetails, ParameterExpression param, Type newType)
             => expression.GetSelectMethodExpression(typeof(TSource), memberDetails, param, newType);
 
@@ -343,6 +354,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="propertyFullNames"></param>
         /// <returns></returns>
+        [Obsolete("Original purpose no longer applicable.")]
         public static Expression<Func<IQueryable<T>, IQueryable<Dictionary<string, object>>>> BuildSelectDictionaryExpression<T>(this ICollection<string> propertyFullNames) where T : class
         {
             if (propertyFullNames == null)
@@ -361,6 +373,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <param name="propertyFullNames"></param>
         /// <param name="parameterName"></param>
         /// <returns></returns>
+        [Obsolete("Original purpose no longer applicable.")]
         public static MethodCallExpression GetSelectDictionary<TSource>(this Expression expression, ICollection<string> propertyFullNames, string parameterName = "a")
         {
             List<LambdaExpression> selectors = propertyFullNames.Aggregate(new List<LambdaExpression>(), (mems, next) => {
@@ -404,6 +417,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="TSource"></typeparam>
         /// <param name="includes"></param>
         /// <returns></returns>
+        [Obsolete("Original purpose no longer applicable.")]
         public static IEnumerable<Expression<Func<TSource, object>>> BuildIncludes<TSource>(this IEnumerable<string> includes)
             where TSource : class
             => includes.Select(include => BuildSelectorExpression<TSource>(include)).ToList();
@@ -415,6 +429,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <param name="fullName"></param>
         /// <param name="parameterName"></param>
         /// <returns></returns>
+        [Obsolete("Use GetTypedSelector, GetObjectSelector, or MakeSelector instead.")]
         public static Expression<Func<TSource, object>> BuildSelectorExpression<TSource>(string fullName, string parameterName = "i")
             => (Expression<Func<TSource, object>>)BuildSelectorExpression(typeof(TSource), fullName, parameterName);
 
@@ -425,6 +440,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <param name="fullName"></param>
         /// <param name="parameterName"></param>
         /// <returns></returns>
+        [Obsolete("Use GetTypedSelector, GetObjectSelector, or MakeSelector instead.")]
         public static LambdaExpression BuildSelectorExpression(Type type, string fullName, string parameterName = "i")
         {
             ParameterExpression param = Expression.Parameter(type, parameterName);

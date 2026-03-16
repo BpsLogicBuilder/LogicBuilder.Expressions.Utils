@@ -1,0 +1,24 @@
+name: 'Description contains AB# with a valid work item id'
+on: # rebuild any PRs for main branch changes
+  pull_request:
+    types: [opened, reopened, edited, synchronize]
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  check-commit-message:
+    name: Check Commit Message  
+    runs-on: ubuntu-latest
+    steps:
+      - uses: gsactions/commit-message-checker@16fa2d5de096ae0d35626443bcd24f1e756cafee
+        with:
+          pattern: 'AB#\d+'
+          error: 'Commit messages must contain a valid Azure DevOps work item ID (e.g., AB#123).'
+          excludeDescription: 'true'
+          excludeTitle: 'true'
+          checkAllCommitMessages: 'true' 
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
+  

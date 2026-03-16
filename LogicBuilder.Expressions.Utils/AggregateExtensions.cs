@@ -15,6 +15,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <param name="property"></param>
         /// <param name="method"></param>
         /// <returns></returns>
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static LambdaExpression BuildAggregateExpression<T>(this string property, string method) where T : class
         {
             switch (method.ToLowerInvariant())
@@ -40,6 +41,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="field"></param>
         /// <returns></returns>
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static Expression<Func<IQueryable<T>, int>> BuildCountExpression<T>() where T : class
         {
             ParameterExpression param = Expression.Parameter(typeof(IQueryable<T>), "q");
@@ -61,6 +63,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="property"></param>
         /// <returns></returns>
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static LambdaExpression BuildMinExpression<T>(this string property) where T : class
         {
             if (property == null)
@@ -74,6 +77,7 @@ namespace LogicBuilder.Expressions.Utils
             return Expression.Lambda(delegateType, mce, param);
         }
 
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetMinMethodCall(this Expression expression, MemberInfo memberInfo, string propertyFullName)
             => Expression.Call
             (
@@ -90,6 +94,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="property"></param>
         /// <returns></returns>
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static LambdaExpression BuildMaxExpression<T>(this string property) where T : class
         {
             if (property == null)
@@ -103,6 +108,7 @@ namespace LogicBuilder.Expressions.Utils
             return Expression.Lambda(delegateType, mce, param);
         }
 
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetMaxMethodCall(this Expression expression, MemberInfo memberInfo, string propertyFullName)
             => Expression.Call
             (
@@ -119,6 +125,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="property"></param>
         /// <returns></returns>
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static LambdaExpression BuildAverageExpression<T>(this string property) where T : class
         {
             if (property == null)
@@ -131,6 +138,7 @@ namespace LogicBuilder.Expressions.Utils
             return Expression.Lambda(delegateType, mce, param);
         }
 
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetAverageMethodCall(this Expression expression, string propertyFullName)
             => Expression.Call
             (
@@ -147,6 +155,7 @@ namespace LogicBuilder.Expressions.Utils
         /// <typeparam name="T"></typeparam>
         /// <param name="property"></param>
         /// <returns></returns>
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static LambdaExpression BuildSumExpression<T>(this string property) where T : class
         {
             if (property == null)
@@ -159,6 +168,7 @@ namespace LogicBuilder.Expressions.Utils
             return Expression.Lambda(delegateType, mce, param);
         }
 
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static MethodCallExpression GetSumMethodCall(this Expression expression, string propertyFullName)
             => Expression.Call
             (
@@ -169,6 +179,7 @@ namespace LogicBuilder.Expressions.Utils
                 propertyFullName.GetTypedSelector(expression.GetUnderlyingElementType())
             );
 
+        [Obsolete("Use aggregate methods in LogicBuilder.Expressions.Utils.LinqHelpers.")]
         public static Expression GetAggregateMethodCall(this Expression expression, string aggregateMethod, string propertyFullName)
         {
             switch (aggregateMethod.ToLowerInvariant())
