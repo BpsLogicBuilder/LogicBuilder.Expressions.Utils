@@ -3,7 +3,7 @@
     <File Path=".github/workflows/check-for-ab-number.yml" />
     <File Path=".github/workflows/ci.yml" />
     <File Path=".github/workflows/release.yml" />
-    <File Path="Directory.Build.props" />
+    <File Path="CHANGELOG.md" />
   </Folder>
   <Project Path="LogicBuilder.Expressions.Utils.Tests/LogicBuilder.Expressions.Utils.Tests.csproj" />
   <Project Path="LogicBuilder.Expressions.Utils/LogicBuilder.Expressions.Utils.csproj" />
