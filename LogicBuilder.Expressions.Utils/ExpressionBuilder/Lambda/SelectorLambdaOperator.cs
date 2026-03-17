@@ -25,7 +25,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 
         public IExpressionPart Selector { get; }
         public Type SourceElementType { get; }
-        public Type BodyType { get; private set; }
+        public Type? BodyType { get; private set; }
         public string ParameterName { get; }
         public IDictionary<string, ParameterExpression> Parameters { get; }
 
