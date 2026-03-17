@@ -12,13 +12,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
         {
             var expression = new SelectExpandDefinition
             {
-                ExpandedItems = new List<SelectExpandItem>
-                {
-                    new SelectExpandItem
-                    {
-                        MemberName = "Name"
-                    }
-                }
+                ExpandedItems =
+                [
+                    new SelectExpandItem("Name")
+                ]
             }.GetExpansionSelectors<Department>();
         }
     }

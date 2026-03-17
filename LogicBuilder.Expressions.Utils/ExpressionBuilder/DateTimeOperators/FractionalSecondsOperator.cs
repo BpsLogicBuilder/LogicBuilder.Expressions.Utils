@@ -2,21 +2,16 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.DateTimeOperators
 {
-    public class FractionalSecondsOperator : IExpressionPart
+    public class FractionalSecondsOperator(IExpressionPart operand) : IExpressionPart
     {
-        public FractionalSecondsOperator(IExpressionPart operand)
-        {
-            Operand = operand;
-        }
-
-        public IExpressionPart Operand { get; private set; }
+        public IExpressionPart Operand { get; } = operand;
 
         public Expression Build() => Build(Operand.Build());
 
-        private Expression Build(Expression operandExpression) 
+        private static Expression Build(Expression operandExpression) 
             => GetFractionalSeconds(operandExpression.MakeMillisecondSelector());
 
-        private Expression GetFractionalSeconds(Expression milliseconds) 
+        private static Expression GetFractionalSeconds(Expression milliseconds) 
             => Expression.Divide
             (
                 Expression.Convert(milliseconds, typeof(decimal)),

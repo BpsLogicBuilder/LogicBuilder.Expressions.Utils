@@ -3,32 +3,26 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Logical
 {
-    public class HasOperator : IExpressionPart
+    public class HasOperator(IExpressionPart left, IExpressionPart right) : IExpressionPart
     {
-        public HasOperator(IExpressionPart left, IExpressionPart right)
-        {
-            Left = left;
-            Right = right;
-        }
-
-        public IExpressionPart Left { get; private set; }
-        public IExpressionPart Right { get; private set; }
+        public IExpressionPart Left { get; } = left;
+        public IExpressionPart Right { get; } = right;
 
         public Expression Build()
         {
-            var left = Left.Build();
+            var leftExpression = Left.Build();
             
-            return left.GetHasFlagCall
+            return leftExpression.GetHasFlagCall
             (
                 ConvertRightToEnumExpression
                 (
                     Right.Build(),
-                    left.Type.ToNullableUnderlyingType()
+                    leftExpression.Type.ToNullableUnderlyingType()
                 )
             );
         }
 
-        private Expression ConvertRightToEnumExpression(Expression right, Type leftType)
+        private static Expression ConvertRightToEnumExpression(Expression right, Type leftType)
         {
             if (!leftType.IsEnum)
                 throw new ArgumentException(nameof(leftType));

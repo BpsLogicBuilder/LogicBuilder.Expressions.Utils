@@ -2,17 +2,12 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Arithmetic
 {
-    public class RoundOperator : IExpressionPart
+    public class RoundOperator(IExpressionPart operand) : IExpressionPart
     {
-        public RoundOperator(IExpressionPart operand)
-        {
-            Operand = operand;
-        }
-
-        public IExpressionPart Operand { get; private set; }
+        public IExpressionPart Operand { get; } = operand;
 
         public Expression Build() => Build(Operand.Build());
 
-        private Expression Build(Expression operandExpression) => operandExpression.GetRoundCall();
+        private static Expression Build(Expression operandExpression) => operandExpression.GetRoundCall();
     }
 }

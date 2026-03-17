@@ -3,14 +3,14 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Conversions
 {
-    public class CollectionCastOperator(IExpressionPart operand, Type type) : IExpressionPart
+    public class CollectionOfTypeOperator(IExpressionPart operand, Type type) : IExpressionPart
     {
         public IExpressionPart Operand { get; } = operand;
         public Type Type { get; } = type;
 
         public Expression Build() => Build(Operand.Build());
 
-        private Expression Build(Expression operandExpression) 
-            => operandExpression.GetCastCall(Type);
+        private Expression Build(Expression operandExpression)
+            => operandExpression.GetOfTypeCall(Type);
     }
 }

@@ -2,17 +2,12 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Arithmetic
 {
-    public class CeilingOperator : IExpressionPart
+    public class CeilingOperator(IExpressionPart operand) : IExpressionPart
     {
-        public CeilingOperator(IExpressionPart operand)
-        {
-            Operand = operand;
-        }
-
-        public IExpressionPart Operand { get; private set; }
+        public IExpressionPart Operand { get; } = operand;
 
         public Expression Build() => Build(Operand.Build());
 
-        private Expression Build(Expression operandExpression) => operandExpression.GetCeilingCall();
+        private static Expression Build(Expression operandExpression) => operandExpression.GetCeilingCall();
     }
 }

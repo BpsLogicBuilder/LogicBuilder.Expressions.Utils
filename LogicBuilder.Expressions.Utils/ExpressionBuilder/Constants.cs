@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
 {
-    internal class Constants
+    internal static class Constants
 	{
-        public static IDictionary<FilterFunction, ExpressionType> BinaryOperatorExpressionType = new Dictionary<FilterFunction, ExpressionType>
+        public static readonly IDictionary<FilterFunction, ExpressionType> BinaryOperatorExpressionType = new Dictionary<FilterFunction, ExpressionType>
 		{
 			//Logical
 			[FilterFunction.eq] = ExpressionType.Equal,

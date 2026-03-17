@@ -40,20 +40,18 @@ namespace LogicBuilder.Expressions.Utils
 
         public static Type GetMemberType(this MemberInfo memberInfo)
         {
-            switch (memberInfo)
+            return memberInfo switch
             {
-                case MethodInfo mInfo:
-                    return mInfo.ReturnType;
-                case PropertyInfo pInfo:
-                    return pInfo.PropertyType;
-                case FieldInfo fInfo:
-                    return fInfo.FieldType;
-                case null:
-                    throw new ArgumentNullException(nameof(memberInfo));
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(memberInfo));
-            }
+                MethodInfo mInfo => mInfo.ReturnType,
+                PropertyInfo pInfo => pInfo.PropertyType,
+                FieldInfo fInfo => fInfo.FieldType,
+                null => throw new ArgumentNullException(nameof(memberInfo)),
+                _ => throw new ArgumentOutOfRangeException(nameof(memberInfo)),
+            };
         }
+
+        public static Type GetMemberType(this MemberExpression me)
+            => me.Member.GetMemberType();
 
         public static bool IsLiteralType(this Type type)
         {
@@ -65,17 +63,7 @@ namespace LogicBuilder.Expressions.Utils
                 || typeof(Enum).IsAssignableFrom(type);
         }
 
-        private static HashSet<Type> LiteralTypes => new HashSet<Type>(_literalTypes);
-
-        private static readonly HashSet<string> UneferencedLiteralTypes =
-        [
-            UnreferencedLiteralTypeNames.DATEONLY,
-            UnreferencedLiteralTypeNames.TIMEONLY,
-            UnreferencedLiteralTypeNames.DATE,
-            UnreferencedLiteralTypeNames.TIMEOFDAY
-        ];
-
-        private static Type[] _literalTypes => [
+        private static HashSet<Type> LiteralTypes => [
                 typeof(bool),
                 typeof(DateTime),
                 typeof(DateTimeOffset),
@@ -96,13 +84,18 @@ namespace LogicBuilder.Expressions.Utils
                 typeof(string)
             ];
 
-        public static Type GetMemberType(this MemberExpression me)
-            => me.Member.GetMemberType();
+        private static readonly HashSet<string> UneferencedLiteralTypes =
+        [
+            UnreferencedLiteralTypeNames.DATEONLY,
+            UnreferencedLiteralTypeNames.TIMEONLY,
+            UnreferencedLiteralTypeNames.DATE,
+            UnreferencedLiteralTypeNames.TIMEOFDAY
+        ];
 
         public static bool IsNullableType(this Type type)
             => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
 
-        public static bool TryParseEnum(this string toParse, Type enumType, out object result)
+        public static bool TryParseEnum(this string toParse, Type enumType, out object? result)
         {
             if (!typeof(Enum).IsAssignableFrom(enumType))
                 throw new ArgumentException(nameof(enumType));
@@ -116,13 +109,13 @@ namespace LogicBuilder.Expressions.Utils
                 return false;
             }
 
-            object[] args = new object[] { toParse, null };
+            object[] args = [toParse, null!];//out parameter must be null when passed to Invoke
             bool success = (bool)method.MakeGenericMethod(underlyingType).Invoke(null, args);
             result = success ? args[1] : GetResult();
 
             return success;
 
-            object GetResult()
+            object? GetResult()
                 => enumType.IsValueType && !enumType.IsNullableType() ? Activator.CreateInstance(underlyingType) : null;
 
             static MethodInfo GetMethod()
@@ -160,8 +153,8 @@ namespace LogicBuilder.Expressions.Utils
             if (tInfo.IsArray)
                 return tInfo.GetElementType();
 
-            Type[] genericArguments;
-            if (!tInfo.IsGenericType || (genericArguments = tInfo.GetGenericArguments()).Length != 1)
+            Type[] genericArguments = tInfo.GetGenericArguments();
+            if (!tInfo.IsGenericType || genericArguments.Length != 1)
                 throw new ArgumentException("type");
 
             return genericArguments[0];
@@ -192,26 +185,26 @@ namespace LogicBuilder.Expressions.Utils
             if (selects == null || !selects.Any())
                 return parentType.GetValueTypeMembers();
 
-            return selects.Select(select => parentType.GetMemberInfo(select)).ToArray();
+            return [.. selects.Select(parentType.GetMemberInfo)];
         }
 
         private static MemberInfo[] GetValueTypeMembers(this Type parentType)
         {
             if (parentType.IsList())
-                return new MemberInfo[] { };
+                return [];
 
-            return parentType.GetMemberInfos().Where
+            return [.. parentType.GetMemberInfos().Where
             (
                 info => (info.MemberType == MemberTypes.Field || info.MemberType == MemberTypes.Property)
                 && (info.GetMemberType().IsLiteralType() || info.GetMemberType().IsLiteralList())
-            ).ToArray();
+            )];
         }
 
         private static bool IsLiteralList(this Type type) 
             => type.IsList() && type.GetUnderlyingElementType().IsLiteralType();
 
         private static MemberInfo[] GetMemberInfos(this Type parentType) 
-            => parentType.GetMembers(instanceBindingFlags).Select
+            => [.. parentType.GetMembers(instanceBindingFlags).Select
             (
                 member =>
                 {
@@ -220,6 +213,6 @@ namespace LogicBuilder.Expressions.Utils
 
                     return member;
                 }
-            ).ToArray();
+            )];
     }
 }

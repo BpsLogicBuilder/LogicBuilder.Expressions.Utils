@@ -45,11 +45,8 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
             (
                 typeof(Func<,>).MakeGenericType
                 (
-                    new Type[]
-                    {
-                        this.Parameters[ParameterName].Type,
-                        BodyType
-                    }
+                    this.Parameters[ParameterName].Type,
+                    BodyType
                 ),
                 ConvertBody(selectorBody),
                 this.Parameters[ParameterName]

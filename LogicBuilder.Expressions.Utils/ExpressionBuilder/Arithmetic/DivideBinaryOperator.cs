@@ -1,11 +1,7 @@
 ﻿namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Arithmetic
 {
-    public class DivideBinaryOperator : BinaryOperator
+    public class DivideBinaryOperator(IExpressionPart left, IExpressionPart right) : BinaryOperator(left, right)
     {
-        public DivideBinaryOperator(IExpressionPart left, IExpressionPart right) : base(left, right)
-        {
-        }
-
         public override FilterFunction Operator => FilterFunction.div;
     }
 }

@@ -5886,13 +5886,83 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
         #region Casts
         [Fact]
-        public void NSCast_OnEnumerableEntityCollection_GeneratesExpression_WithOfTypeOnEnumerable()
+        public void OfType_OnEnumerableEntityCollection_GeneratesExpression_WithOfTypeOnEnumerable()
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
             AssertFilterStringIsCorrect(filter, "$it => $it.Category.EnumerableProducts.OfType().Any(p => (p.ProductName == \"ProductName\"))");
+
+            Expression<Func<T, bool>> CreateFilter<T>()
+                => GetFilter<T>
+                (
+                    new AnyOperator
+                    (
+                        parameters,
+                        new CollectionOfTypeOperator
+                        (
+                            new MemberSelectorOperator
+                            (
+                                "EnumerableProducts",
+                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                            ),
+                            typeof(DerivedProduct)
+                        ),
+                        new EqualsBinaryOperator
+                        (
+                             new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, "p")),
+                             new ConstantOperator("ProductName")
+                        ),
+                        "p"
+                    ),
+                    parameters
+                );
+        }
+
+        [Fact]
+        public void OfType_OnQueryableEntityCollection_GeneratesExpression_WithOfTypeOnQueryable()
+        {
+            //act
+            var filter = CreateFilter<Product>();
+
+            //assert
+            AssertFilterStringIsCorrect(filter, "$it => $it.Category.QueryableProducts.OfType().Any(p => (p.ProductName == \"ProductName\"))");
+
+            Expression<Func<T, bool>> CreateFilter<T>()
+                => GetFilter<T>
+                (
+                    new AnyOperator
+                    (
+                        parameters,
+                        new CollectionOfTypeOperator
+                        (
+                            new MemberSelectorOperator
+                            (
+                                "QueryableProducts",
+                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                            ),
+                            typeof(DerivedProduct)
+                        ),
+                        new EqualsBinaryOperator
+                        (
+                             new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, "p")),
+                             new ConstantOperator("ProductName")
+                        ),
+                        "p"
+                    ),
+                    parameters
+                );
+        }
+
+        [Fact]
+        public void NSCast_OnEnumerableEntityCollection_GeneratesExpression_WithOfTypeOnEnumerable()
+        {
+            //act
+            var filter = CreateFilter<Product>();
+
+            //assert
+            AssertFilterStringIsCorrect(filter, "$it => $it.Category.EnumerableProducts.Cast().Any(p => (p.ProductName == \"ProductName\"))");
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
@@ -5927,7 +5997,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, "$it => $it.Category.QueryableProducts.OfType().Any(p => (p.ProductName == \"ProductName\"))");
+            AssertFilterStringIsCorrect(filter, "$it => $it.Category.QueryableProducts.Cast().Any(p => (p.ProductName == \"ProductName\"))");
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>

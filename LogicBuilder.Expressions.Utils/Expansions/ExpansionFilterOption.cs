@@ -2,8 +2,8 @@
 
 namespace LogicBuilder.Expressions.Utils.Expansions
 {
-    public class ExpansionFilterOption
+    public class ExpansionFilterOption(FilterLambdaOperator filterLambdaOperator)
     {
-        public FilterLambdaOperator FilterLambdaOperator { get; set; }
+        public FilterLambdaOperator FilterLambdaOperator { get; set; } = filterLambdaOperator;
     }
 }

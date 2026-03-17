@@ -3,16 +3,10 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Cacnonical
 {
-    public class ConcatOperator : IExpressionPart
+    public class ConcatOperator(IExpressionPart left, IExpressionPart right) : IExpressionPart
     {
-        public ConcatOperator(IExpressionPart left, IExpressionPart right)
-        {
-            Left = left;
-            Right = right;
-        }
-
-        public IExpressionPart Left { get; private set; }
-        public IExpressionPart Right { get; private set; }
+        public IExpressionPart Left { get; private set; } = left;
+        public IExpressionPart Right { get; private set; } = right;
 
         public Expression Build() => Build(Left.Build());
 

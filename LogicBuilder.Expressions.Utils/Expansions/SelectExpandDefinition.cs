@@ -2,9 +2,9 @@
 
 namespace LogicBuilder.Expressions.Utils.Expansions
 {
-    public class SelectExpandDefinition
+    public class SelectExpandDefinition(List<string>? selects = null, List<SelectExpandItem>? expandedItems = null)
     {
-        public List<string> Selects { get; set; } = new List<string>();
-        public List<SelectExpandItem> ExpandedItems { get; set; } = new List<SelectExpandItem>();
+        public List<string> Selects { get; set; } = selects ?? [];
+        public List<SelectExpandItem> ExpandedItems { get; set; } = expandedItems ?? [];
     }
 }

@@ -21,7 +21,7 @@ namespace LogicBuilder.Expressions.Utils
             string[] parts = propertyFullName.Split('.');
             Expression parent = parts.Aggregate((Expression)param, (p, next) => Expression.MakeMemberAccess(p, p.Type.GetMemberInfo(next)));
 
-            Type[] typeArgs = new[] { parentType, parent.Type };//Generic arguments e.g. T1 and T2 MethodName<T1, T2>(method arguments)
+            Type[] typeArgs = [parentType, parent.Type];//Generic arguments e.g. T1 and T2 MethodName<T1, T2>(method arguments)
             Type delegateType = typeof(Func<,>).MakeGenericType(typeArgs);//Delegate type for the selector expression.  It takes a TSource and returns the sort property type
             return Expression.Lambda(delegateType, parent, param);//Resulting lambda expression for the selector.
         }
@@ -38,45 +38,10 @@ namespace LogicBuilder.Expressions.Utils
             if (parent.Type.GetTypeInfo().IsValueType)//Convert value type expressions to object expressions otherwise
                 parent = Expression.Convert(parent, typeof(object));//Expression.Lambda below will throw an exception for value types
 
-            Type[] typeArgs = new[] { parentType, typeof(object) };//Generic arguments e.g. T1 and T2 MethodName<T1, T2>(method arguments)
+            Type[] typeArgs = [parentType, typeof(object)];//Generic arguments e.g. T1 and T2 MethodName<T1, T2>(method arguments)
             Type delegateType = typeof(Func<,>).MakeGenericType(typeArgs);//Delegate type for the selector expression.  It takes a TSource and returns typeof(object) (the sort property type could string, any value type or a nullable of a value type)
             return Expression.Lambda(delegateType, parent, param);//Resulting lambda expression for the selector.
         }
-
-        [Obsolete("Original purpose no longer applicable.")]
-        public static string GetFullName(this MemberExpression memberExpression)
-        {
-            switch (memberExpression.Expression.NodeType)
-            {
-                case ExpressionType.Parameter:
-                    return memberExpression.Member.Name;
-                case ExpressionType.MemberAccess:
-                    return string.Concat(((MemberExpression)memberExpression.Expression).GetFullName(), ".", memberExpression.Member.Name);
-                default:
-                    throw new ArgumentException(string.Format(System.Globalization.CultureInfo.InvariantCulture, "Unexpected expression node type. {0}", memberExpression.Expression.NodeType));
-            }
-        }
-
-        [Obsolete("Use GetTypedSelector, GetObjectSelector, or MakeSelector instead.")]
-        public static MemberExpression GetMemberExpression<TSource>(this string propertyFullName, string parameterName = "a")
-        {
-            ParameterExpression param = Expression.Parameter(typeof(TSource), parameterName);
-            string[] parts = propertyFullName.Split('.');
-            Expression parent = parts.Aggregate((Expression)param, (p, next) => Expression.MakeMemberAccess(p, p.Type.GetMemberInfo(next)));
-            return (MemberExpression)parent;
-        }
-
-        [Obsolete("Original purpose no longer applicable.")]
-        public static Expression<Func<TSource, TReturn>> ToSelector<TSource, TReturn>(Expression<Func<TSource, TReturn>> include)
-            => include;
-
-        [Obsolete("Original purpose no longer applicable.")]
-        public static Expression<Func<TSource, bool>> ToFilter<TSource>(Expression<Func<TSource, bool>> filter)
-            => filter;
-
-        [Obsolete("Original purpose no longer applicable.")]
-        public static Expression<TDelegate> ToExpression<TDelegate>(Expression<TDelegate> expression)
-            => expression;
 
         public static Expression<Func<T, bool>> GetFilter<T>(this IExpressionPart filterPart, IDictionary<string, ParameterExpression> parameters, string parameterName)
             => (Expression<Func<T, bool>>)filterPart.GetFilter(typeof(T), parameters, parameterName);
@@ -148,7 +113,7 @@ namespace LogicBuilder.Expressions.Utils
 
         public static Expression BuildSelectorExpression(this Expression parent, string fullName, string parameterName = "p0")
         {
-            return GetExpression(fullName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries));
+            return GetExpression(fullName.Split(['.'], StringSplitOptions.RemoveEmptyEntries));
 
             Expression GetExpression(string[] parts)
             {
@@ -176,11 +141,11 @@ namespace LogicBuilder.Expressions.Utils
             (
                 typeof(Enumerable),
                 "Select",
-                new Type[] { parameter.Type, selectorBody.Type },
+                [parameter.Type, selectorBody.Type],
                 parent,
                 Expression.Lambda
                 (
-                    typeof(Func<,>).MakeGenericType(new[] { parameter.Type, selectorBody.Type }),
+                    typeof(Func<,>).MakeGenericType(parameter.Type, selectorBody.Type),
                     selectorBody,
                     parameter
                 )
@@ -192,15 +157,17 @@ namespace LogicBuilder.Expressions.Utils
             string lastChar = currentParameterName.Substring(currentParameterName.Length - 1);
             if (short.TryParse(lastChar, out short lastCharShort))
             {
+                lastCharShort++;
                 return string.Concat
                 (
                     currentParameterName.Substring(0, currentParameterName.Length - 1),
-                    (lastCharShort++).ToString(CultureInfo.CurrentCulture)
+                    lastCharShort.ToString(CultureInfo.CurrentCulture)
                 );
             }
             else
             {
-                return currentParameterName += "0";
+                currentParameterName += "0";
+                return currentParameterName;
             }
         }
 
@@ -357,8 +324,8 @@ namespace LogicBuilder.Expressions.Utils
             (
                 expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                 methodName,
-                new[] { expression.GetUnderlyingElementType() },
-                new Expression[] { expression }.Concat(args).ToArray()
+                [expression.GetUnderlyingElementType()],
+                [expression, .. args]
             );
 
         public static Expression GetAllCall(this Expression expression, params Expression[] args)
@@ -412,6 +379,54 @@ namespace LogicBuilder.Expressions.Utils
         public static Expression GetWhereCall(this Expression expression, params Expression[] args)
             => expression.GetMethodCall("Where", args);
 
+        /// <summary>
+        /// Creates an order by method call expression to be invoked on an expression e.g. (parameter, member, method call) of type IQueryable<T>.
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <param name="expression"></param>
+        /// <param name="sorts"></param>
+        /// <returns></returns>
+        public static Expression GetOrderBy<TSource>(this Expression expression, SortCollection sorts)
+            => expression.GetOrderBy(typeof(TSource), sorts);
+
+        /// <summary>
+        /// Creates an order by method call expression to be invoked on an expression e.g. (parameter, member, method call) of type IQueryable<T>.
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="sourceType"></param>
+        /// <param name="sorts"></param>
+        /// <returns></returns>
+        public static Expression GetOrderBy(this Expression expression, Type sourceType, SortCollection sorts)
+        {
+            Type reflectedType = expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable);
+
+            MethodCallExpression resultExp = sorts.SortDescriptions.Aggregate(null! /*mce is initialized with the first sort description*/, (MethodCallExpression mce, SortDescription description) =>
+            {
+                LambdaExpression selectorExpression = description.PropertyName.GetTypedSelector(sourceType);
+                MemberInfo orderByPropertyInfo = sourceType.GetMemberInfoFromFullName(description.PropertyName);
+                Type[] genericArgumentsForMethod = [sourceType, orderByPropertyInfo.GetMemberType()];
+
+                if (mce == null)
+                {//OrderBy and OrderByDescending espressions take two arguments each.  The parameter (object being extended by the helper method) and the lambda expression for the property selector
+                    mce = description.SortDirection == ListSortDirection.Ascending
+                        ? Expression.Call(reflectedType, "OrderBy", genericArgumentsForMethod, expression, selectorExpression)
+                        : Expression.Call(reflectedType, "OrderByDescending", genericArgumentsForMethod, expression, selectorExpression);
+                }
+                else
+                {//ThenBy and ThenByDescending espressions take two arguments each.  The resulting method call expression from OrderBy or OrderByDescending and the lambda expression for the property selector
+                    mce = description.SortDirection == ListSortDirection.Ascending
+                        ? Expression.Call(reflectedType, "ThenBy", genericArgumentsForMethod, mce, selectorExpression)
+                        : Expression.Call(reflectedType, "ThenByDescending", genericArgumentsForMethod, mce, selectorExpression);
+                }
+                return mce;
+            });
+
+            resultExp = Expression.Call(reflectedType, "Skip", [sourceType], resultExp, Expression.Constant(sorts.Skip));
+            resultExp = Expression.Call(reflectedType, "Take", [sourceType], resultExp, Expression.Constant(sorts.Take));
+
+            return resultExp;
+        }
+
         public static Expression GetOrderByCall(this Expression expression, LambdaExpression selector, ListSortDirection sortDirection)
             => expression.GetOrderByThenByCall
             (
@@ -434,11 +449,10 @@ namespace LogicBuilder.Expressions.Utils
                 (
                     expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                     methodName,
-                    new Type[]
-                    {
+                    [
                         sourceType,
                         selector.ReturnType
-                    },
+                    ],
                     expression,
                     selector
                 );
@@ -450,7 +464,7 @@ namespace LogicBuilder.Expressions.Utils
             (
                 expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                 "GroupBy",
-                new Type[] { expression.GetUnderlyingElementType(), selectorExpression.ReturnType },
+                [expression.GetUnderlyingElementType(), selectorExpression.ReturnType],
                 expression,
                 selectorExpression
             );
@@ -461,7 +475,7 @@ namespace LogicBuilder.Expressions.Utils
             (
                 expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                 "Select",
-                new Type[] { expression.GetUnderlyingElementType(), selectorExpression.ReturnType },
+                [expression.GetUnderlyingElementType(), selectorExpression.ReturnType],
                 expression,
                 selectorExpression
             );
@@ -471,11 +485,10 @@ namespace LogicBuilder.Expressions.Utils
             (
                 expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                 "SelectMany",
-                new Type[] 
-                {
+                [
                     expression.GetUnderlyingElementType(), 
                     selectorExpression.ReturnType.GetUnderlyingElementType() 
-                },
+                ],
                 expression,
                 selectorExpression
             );
@@ -485,7 +498,7 @@ namespace LogicBuilder.Expressions.Utils
             (
                 typeof(Enumerable),
                 "ToList",
-                new Type[] { expression.GetUnderlyingElementType() },
+                [expression.GetUnderlyingElementType()],
                 expression
             );
 
@@ -495,11 +508,11 @@ namespace LogicBuilder.Expressions.Utils
             (
                 typeof(Queryable),
                 "AsQueryable",
-                new Type[] { GetUnderlyingType(expression.Type) },
+                [GetUnderlyingType(expression.Type)],
                 expression
             );
 
-            Type GetUnderlyingType(Type expressionType)
+            static Type GetUnderlyingType(Type expressionType)
             {
                 if (!expressionType.IsGenericType)
                     throw new ArgumentException(nameof(expressionType));
@@ -522,11 +535,11 @@ namespace LogicBuilder.Expressions.Utils
             (
                 typeof(Enumerable),
                 "AsEnumerable",
-                new Type[] { GetUnderlyingType(expression.Type) },
+                [GetUnderlyingType(expression.Type)],
                 expression
             );
 
-            Type GetUnderlyingType(Type expressionType)
+            static Type GetUnderlyingType(Type expressionType)
             {
                 if (!expressionType.IsGenericType)
                     throw new ArgumentException(nameof(expressionType));
@@ -550,7 +563,16 @@ namespace LogicBuilder.Expressions.Utils
             (
                 expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                 "OfType",
-                new Type[] { elementType },
+                [elementType],
+                expression
+            );
+
+        public static Expression GetCastCall(this Expression expression, Type elementType)
+            => Expression.Call
+            (
+                expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
+                "Cast",
+                [elementType],
                 expression
             );
 
@@ -624,16 +646,16 @@ namespace LogicBuilder.Expressions.Utils
                 "Average",
                 args.Length == 0
                     ? null 
-                    : new Type[] { expression.GetUnderlyingElementType() },
-                new Expression[] { expression }.Concat(args).ToArray()
+                    : [expression.GetUnderlyingElementType()],
+                [expression, .. args]
             );
 
         public static Expression GetMaxCall(this Expression expression) => Expression.Call
             (
                 expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                 "Max",
-                new Type[] { expression.GetUnderlyingElementType() },
-                new Expression[] { expression }
+                [expression.GetUnderlyingElementType()],
+                expression
             );
 
         public static Expression GetMaxCall(this Expression expression, LambdaExpression selector) 
@@ -641,8 +663,8 @@ namespace LogicBuilder.Expressions.Utils
             (
                 expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                 "Max",
-                new Type[] { expression.GetUnderlyingElementType(), selector.ReturnType },
-                new Expression[] { expression, selector }
+                [expression.GetUnderlyingElementType(), selector.ReturnType],
+                expression, selector
             );
 
         public static Expression GetMinCall(this Expression expression) 
@@ -650,8 +672,8 @@ namespace LogicBuilder.Expressions.Utils
             (
                 expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                 "Min",
-                new Type[] { expression.GetUnderlyingElementType() },
-                new Expression[] { expression }
+                [expression.GetUnderlyingElementType()],
+                expression
             );
 
         public static Expression GetMinCall(this Expression expression, LambdaExpression selector) 
@@ -659,8 +681,8 @@ namespace LogicBuilder.Expressions.Utils
             (
                 expression.Type.IsIQueryable() ? typeof(Queryable) : typeof(Enumerable),
                 "Min",
-                new Type[] { expression.GetUnderlyingElementType(), selector.ReturnType },
-                new Expression[] { expression, selector }
+                [expression.GetUnderlyingElementType(), selector.ReturnType],
+                expression, selector
             );
 
         public static Expression GetSumCall(this Expression expression, params Expression[] args)
@@ -670,8 +692,8 @@ namespace LogicBuilder.Expressions.Utils
                 "Sum",
                 args.Length == 0
                     ? null
-                    : new Type[] { expression.GetUnderlyingElementType() },
-                new Expression[] { expression }.Concat(args).ToArray()
+                    : [expression.GetUnderlyingElementType()],
+                [expression, .. args]
             );
 
         public static Expression GetCeilingCall(this Expression operandExpression)
@@ -751,31 +773,31 @@ namespace LogicBuilder.Expressions.Utils
         public static bool ByteArraysNotEqual(byte[] left, byte[] right)
             => !ByteArraysEqual(left, right);
 
-        internal static readonly MethodInfo EnumHasFlagMethodInfo = typeof(Enum).GetMethod("HasFlag", new[] { typeof(Enum) });
-        internal static readonly MethodInfo GuidCompareMethodInfo = typeof(LinqHelpers).GetMethod("CompareGuids", new[] { typeof(Guid?), typeof(Guid?) });
-        internal static readonly MethodInfo StringCompareMethodInfo = typeof(string).GetMethod("Compare", new[] { typeof(string), typeof(string) });
-        internal static readonly MethodInfo StringContainsMethodInfo = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-        internal static readonly MethodInfo StringConcatMethodInfo = typeof(string).GetMethod("Concat", new[] { typeof(string), typeof(string) });
-        internal static readonly MethodInfo StringStartsWithMethodInfo = typeof(string).GetMethod("StartsWith", new[] { typeof(string) });
-        internal static readonly MethodInfo StringEndsWithMethodInfo = typeof(string).GetMethod("EndsWith", new[] { typeof(string) });
-        internal static readonly MethodInfo StringIndexOfMethodInfo = typeof(string).GetMethod("IndexOf", new[] { typeof(string) });
-        internal static readonly MethodInfo StringSubstringStartMethodInfo = typeof(string).GetMethod("Substring", new[] { typeof(int) });
-        internal static readonly MethodInfo StringSubstringStartFinishMethodInfo = typeof(string).GetMethod("Substring", new[] { typeof(int), typeof(int) });
-        internal static readonly MethodInfo StringToLowerMethodInfo = typeof(string).GetMethod("ToLower", new Type[] { });
-        internal static readonly MethodInfo StringToUpperMethodInfo = typeof(string).GetMethod("ToUpper", new Type[] { });
-        internal static readonly MethodInfo StringTrimMethodInfo = typeof(string).GetMethod("Trim", new Type[] { });
+        internal static readonly MethodInfo EnumHasFlagMethodInfo = typeof(Enum).GetMethod("HasFlag", [typeof(Enum)]);
+        internal static readonly MethodInfo GuidCompareMethodInfo = typeof(LinqHelpers).GetMethod("CompareGuids", [typeof(Guid?), typeof(Guid?)]);
+        internal static readonly MethodInfo StringCompareMethodInfo = typeof(string).GetMethod("Compare", [typeof(string), typeof(string)]);
+        internal static readonly MethodInfo StringContainsMethodInfo = typeof(string).GetMethod("Contains", [typeof(string)]);
+        internal static readonly MethodInfo StringConcatMethodInfo = typeof(string).GetMethod("Concat", [typeof(string), typeof(string)]);
+        internal static readonly MethodInfo StringStartsWithMethodInfo = typeof(string).GetMethod("StartsWith", [typeof(string)]);
+        internal static readonly MethodInfo StringEndsWithMethodInfo = typeof(string).GetMethod("EndsWith", [typeof(string)]);
+        internal static readonly MethodInfo StringIndexOfMethodInfo = typeof(string).GetMethod("IndexOf", [typeof(string)]);
+        internal static readonly MethodInfo StringSubstringStartMethodInfo = typeof(string).GetMethod("Substring", [typeof(int)]);
+        internal static readonly MethodInfo StringSubstringStartFinishMethodInfo = typeof(string).GetMethod("Substring", [typeof(int), typeof(int)]);
+        internal static readonly MethodInfo StringToLowerMethodInfo = typeof(string).GetMethod("ToLower", []);
+        internal static readonly MethodInfo StringToUpperMethodInfo = typeof(string).GetMethod("ToUpper", []);
+        internal static readonly MethodInfo StringTrimMethodInfo = typeof(string).GetMethod("Trim", []);
         internal static readonly MemberInfo DateTimeMaxMemberInfo = typeof(DateTimeOffset).GetField("MaxValue");
         internal static readonly MemberInfo DateTimeMinMemberInfo = typeof(DateTimeOffset).GetField("MinValue");
         internal static readonly MemberInfo DateTimeUtcNowMemberInfo = typeof(DateTimeOffset).GetProperty("UtcNow");
-        internal static readonly MethodInfo DecimalCeilingMethodInfo = typeof(Math).GetMethod("Ceiling", new Type[] { typeof(decimal) });
-        internal static readonly MethodInfo DoubleCeilingMethodInfo = typeof(Math).GetMethod("Ceiling", new Type[] { typeof(double) });
-        internal static readonly MethodInfo DecimalRoundMethodInfo = typeof(Math).GetMethod("Round", new Type[] { typeof(decimal) });
-        internal static readonly MethodInfo DoubleRoundMethodInfo = typeof(Math).GetMethod("Round", new Type[] { typeof(double) });
-        internal static readonly MethodInfo DecimalFloorMethodInfo = typeof(Math).GetMethod("Floor", new Type[] { typeof(decimal) });
-        internal static readonly MethodInfo DoubleFloorMethodInfo = typeof(Math).GetMethod("Floor", new Type[] { typeof(double) });
-        internal static readonly MethodInfo ToStringMethodInfo = typeof(object).GetMethod("ToString", new Type[] { });
-        internal static readonly MethodInfo ByteArraysEqualMethodInfo = typeof(LinqHelpers).GetMethod("ByteArraysEqual", new Type[] { typeof(byte[]), typeof(byte[]) });
-        internal static readonly MethodInfo ByteArraysNotEqualMethodInfo = typeof(LinqHelpers).GetMethod("ByteArraysNotEqual", new Type[] { typeof(byte[]), typeof(byte[]) });
-        internal static readonly ConstructorInfo StringConstructorWithCharArrayParameters = typeof(string).GetConstructor(new[] { typeof(char[]) });
+        internal static readonly MethodInfo DecimalCeilingMethodInfo = typeof(Math).GetMethod("Ceiling", [typeof(decimal)]);
+        internal static readonly MethodInfo DoubleCeilingMethodInfo = typeof(Math).GetMethod("Ceiling", [typeof(double)]);
+        internal static readonly MethodInfo DecimalRoundMethodInfo = typeof(Math).GetMethod("Round", [typeof(decimal)]);
+        internal static readonly MethodInfo DoubleRoundMethodInfo = typeof(Math).GetMethod("Round", [typeof(double)]);
+        internal static readonly MethodInfo DecimalFloorMethodInfo = typeof(Math).GetMethod("Floor", [typeof(decimal)]);
+        internal static readonly MethodInfo DoubleFloorMethodInfo = typeof(Math).GetMethod("Floor", [typeof(double)]);
+        internal static readonly MethodInfo ToStringMethodInfo = typeof(object).GetMethod("ToString", []);
+        internal static readonly MethodInfo ByteArraysEqualMethodInfo = typeof(LinqHelpers).GetMethod("ByteArraysEqual", [typeof(byte[]), typeof(byte[])]);
+        internal static readonly MethodInfo ByteArraysNotEqualMethodInfo = typeof(LinqHelpers).GetMethod("ByteArraysNotEqual", [typeof(byte[]), typeof(byte[])]);
+        internal static readonly ConstructorInfo StringConstructorWithCharArrayParameters = typeof(string).GetConstructor([typeof(char[])]);
     }
 }

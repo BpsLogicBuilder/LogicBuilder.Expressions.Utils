@@ -2,12 +2,8 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
 {
-    public class NotEqualsBinaryOperatorHandler : EqualityBinaryOperatorHandlerBase
+    public class NotEqualsBinaryOperatorHandler(IExpressionPart left, IExpressionPart right, FilterFunction @operator) : EqualityBinaryOperatorHandlerBase(left, right, @operator)
     {
-        public NotEqualsBinaryOperatorHandler(IExpressionPart left, IExpressionPart right, FilterFunction @operator) : base(left, right, @operator)
-        {
-        }
-
         protected override MethodInfo CompareMethodInfo => LinqHelpers.ByteArraysNotEqualMethodInfo;
     }
 }

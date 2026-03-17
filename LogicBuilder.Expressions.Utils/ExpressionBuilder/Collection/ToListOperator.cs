@@ -2,18 +2,13 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Collection
 {
-    public class ToListOperator : IExpressionPart
+    public class ToListOperator(IExpressionPart sourceOperand) : IExpressionPart
     {
-        public ToListOperator(IExpressionPart sourceOperand)
-        {
-            SourceOperand = sourceOperand;
-        }
-
-        public IExpressionPart SourceOperand { get; }
+        public IExpressionPart SourceOperand { get; } = sourceOperand;
 
         public Expression Build() => Build(SourceOperand.Build());
 
-        private Expression Build(Expression operandExpression)
+        private static Expression Build(Expression operandExpression)
             => operandExpression.GetToListCall();
     }
 }

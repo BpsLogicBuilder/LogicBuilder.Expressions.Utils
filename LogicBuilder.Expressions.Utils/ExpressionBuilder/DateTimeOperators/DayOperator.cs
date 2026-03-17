@@ -2,18 +2,13 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.DateTimeOperators
 {
-    public class DayOperator : IExpressionPart
+    public class DayOperator(IExpressionPart operand) : IExpressionPart
     {
-        public DayOperator(IExpressionPart operand)
-        {
-            Operand = operand;
-        }
-
-        public IExpressionPart Operand { get; private set; }
+        public IExpressionPart Operand { get; private set; } = operand;
 
         public Expression Build() => Build(Operand.Build());
 
-        private Expression Build(Expression operandExpression) 
+        private static Expression Build(Expression operandExpression) 
             => operandExpression.MakeDaySelector();
     }
 }

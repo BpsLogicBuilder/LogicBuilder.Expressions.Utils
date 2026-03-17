@@ -3,18 +3,13 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.DateTimeOperators
 {
-    public class TotalOffsetMinutesOperator : IExpressionPart
+    public class TotalOffsetMinutesOperator(IExpressionPart operand) : IExpressionPart
     {
-        public TotalOffsetMinutesOperator(IExpressionPart operand)
-        {
-            Operand = operand;
-        }
-
-        public IExpressionPart Operand { get; private set; }
+        public IExpressionPart Operand { get; private set; } = operand;
 
         public Expression Build() => Build(Operand.Build());
 
-        private Expression Build(Expression operandExpression)
+        private static Expression Build(Expression operandExpression)
         {
             operandExpression = operandExpression.MakeValueSelectorAccessIfNullable();
 

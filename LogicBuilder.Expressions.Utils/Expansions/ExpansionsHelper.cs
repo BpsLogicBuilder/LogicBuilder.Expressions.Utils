@@ -15,19 +15,19 @@ namespace LogicBuilder.Expressions.Utils.Expansions
             .Select(list => new List<Expansion>(list))
             .BuildIncludes<TSource>
             (
-                selectExpandDefinition?.Selects ?? new List<string>()
+                selectExpandDefinition?.Selects ?? []
             );
 
         public static List<List<ExpansionOptions>> GetExpansions(this SelectExpandDefinition selectExpandDefinition, Type sourceType)
         {
             if (selectExpandDefinition == null)
-                return new List<List<ExpansionOptions>>();
+                return [];
 
             return selectExpandDefinition.ExpandedItems.GetExpansions
             (
                 new HashSet<string>
                 (
-                    selectExpandDefinition.Selects ?? new List<string>(), 
+                    selectExpandDefinition.Selects ?? [], 
                     new SelectsEqualityComparer()
                 ), 
                 sourceType
@@ -37,7 +37,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
         private static List<List<ExpansionOptions>> GetExpansions(this IEnumerable<SelectExpandItem> selectExpandItems, HashSet<string> selects, Type sourceType)
         {
             if (selectExpandItems == null)
-                return new List<List<ExpansionOptions>>();
+                return [];
 
             return selectExpandItems.Aggregate(new List<List<ExpansionOptions>>(), (listOfExpansionLists, next) =>
             {
@@ -48,23 +48,23 @@ namespace LogicBuilder.Expressions.Utils.Expansions
                 Type memberType = currentParentType.GetMemberInfo(next.MemberName).GetMemberType();
                 Type elementType = memberType.GetCurrentType();
 
-                ExpansionOptions expansionOption = new ExpansionOptions
-                {
-                    MemberType = memberType,
-                    ParentType = currentParentType,
-                    MemberName = next.MemberName,
-                    FilterOption = GetFilter(),
-                    QueryOption = GetQuery(),
-                    Selects = next.Selects
-                };
+                ExpansionOptions expansionOption = new
+                (
+                    next.MemberName,
+                    memberType,
+                    currentParentType,
+                    next.Selects,
+                    GetQuery(next, memberType),
+                    GetFilter(next, memberType)
+                );
 
                 List<List<ExpansionOptions>> navigationItems = next.ExpandedItems == null
-                    ? new List<List<ExpansionOptions>>()
-                    : next.ExpandedItems.GetExpansions
+                    ? []
+                    : [.. next.ExpandedItems.GetExpansions
                     (
                         new HashSet<string>
                         (
-                            next.Selects ?? new List<string>(), 
+                            next.Selects ?? [], 
                             new SelectsEqualityComparer()
                         ), 
                         elementType
@@ -76,36 +76,30 @@ namespace LogicBuilder.Expressions.Utils.Expansions
                             expansions.Insert(0, expansionOption);
                             return expansions;
                         }
-                    ).ToList();
+                    )];
 
                 if (navigationItems.Any())
                     listOfExpansionLists.AddRange(navigationItems);
                 else
-                    listOfExpansionLists.Add(new List<ExpansionOptions> { expansionOption });
+                    listOfExpansionLists.Add([expansionOption]);
 
                 return listOfExpansionLists;
 
-                ExpansionFilterOption GetFilter()
-                    => HasFilter()
-                        ? new ExpansionFilterOption 
-                        { 
-                            FilterLambdaOperator = next.Filter.FilterLambdaOperator
-                        }
+                static ExpansionFilterOption? GetFilter(SelectExpandItem item, Type itemType)
+                    => HasFilter(item, itemType)
+                        ? new ExpansionFilterOption(item.Filter!.FilterLambdaOperator)//next.Filter not null if HasFilter
                         : null;
 
-                ExpansionQueryOption GetQuery()
-                    => HasQuery()
-                        ? new ExpansionQueryOption
-                        {
-                            SortCollection = next.QueryFunction.SortCollection
-                        }
+                static ExpansionQueryOption? GetQuery(SelectExpandItem item, Type itemType)
+                    => HasQuery(item, itemType)
+                        ? new ExpansionQueryOption(item.QueryFunction!.SortCollection)//next.QueryFunction not null if HasQuery
                         : null;
 
-                bool HasFilter()
-                    => memberType.IsList() && next?.Filter?.FilterLambdaOperator != null;
+                static bool HasFilter(SelectExpandItem item, Type itemType)
+                    => itemType.IsList() && item.Filter?.FilterLambdaOperator != null;
 
-                bool HasQuery()
-                    => memberType.IsList() && next?.QueryFunction?.SortCollection != null;
+                static bool HasQuery(SelectExpandItem item, Type itemType)
+                    => itemType.IsList() && item?.QueryFunction?.SortCollection != null;
             });
         }
 
@@ -120,7 +114,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
         public static ICollection<Expression<Func<TSource, object>>> BuildIncludes<TSource>(this IEnumerable<List<Expansion>> includes, List<string> selects)
             where TSource : class
         {
-            return GetAllExpansions(new List<LambdaExpression>());
+            return GetAllExpansions([]);
 
             List<Expression<Func<TSource, object>>> GetAllExpansions(List<LambdaExpression> valueMemberSelectors)
             {
@@ -129,10 +123,13 @@ namespace LogicBuilder.Expressions.Utils.Expansions
 
                 valueMemberSelectors.AddSelectors(selects, param, param);
 
-                return includes
-                    .Select(include => BuildSelectorExpression<TSource>(include, valueMemberSelectors, parameterName))
-                    .Concat(valueMemberSelectors.Select(selector => (Expression<Func<TSource, object>>)selector))
-                    .ToList();
+                return
+                [
+                    .. includes
+                                        .Select(include => BuildSelectorExpression<TSource>(include, valueMemberSelectors, parameterName))
+,
+                    .. valueMemberSelectors.Select(selector => (Expression<Func<TSource, object>>)selector),
+                ];
             }
         }
 
@@ -142,7 +139,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
 
             return (Expression<Func<TSource, object>>)Expression.Lambda
             (
-                typeof(Func<,>).MakeGenericType(new[] { param.Type, typeof(object) }),
+                typeof(Func<,>).MakeGenericType(param.Type, typeof(object)),
                 BuildSelectorExpression(param, fullName, valueMemberSelectors, parameterName),
                 param
             );
@@ -155,7 +152,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
 
             //Arguments to create a nested expression when the parent expansion is a collection
             //See AddChildSeelctors() below
-            List<LambdaExpression> childValueMemberSelectors = new List<LambdaExpression>();
+            List<LambdaExpression> childValueMemberSelectors = [];
 
             for (int i = 0; i < parts.Count; i++)
             {
@@ -208,12 +205,12 @@ namespace LogicBuilder.Expressions.Utils.Expansions
                 {
                     valueMemberSelectors.Add(Expression.Lambda
                     (
-                        typeof(Func<,>).MakeGenericType(new[] { sourceExpression.Type, typeof(object) }),
+                        typeof(Func<,>).MakeGenericType(sourceExpression.Type, typeof(object)),
                         Expression.Call
                         (
                             typeof(Enumerable),
                             "Select",
-                            new Type[] { parent.GetUnderlyingElementType(), typeof(object) },
+                            [parent.GetUnderlyingElementType(), typeof(object)],
                             parent,
                             selector
                         ),
@@ -243,7 +240,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
                     (
                         selector => Expression.Lambda
                         (
-                            typeof(Func<,>).MakeGenericType(new[] { param.Type, typeof(object) }),
+                            typeof(Func<,>).MakeGenericType(param.Type, typeof(object)),
                             selector,
                             param
                         )
@@ -256,16 +253,16 @@ namespace LogicBuilder.Expressions.Utils.Expansions
         private static Expression GetSelectExpression(IEnumerable<Expansion> expansions, Expression parent, List<LambdaExpression> valueMemberSelectors, string parameterName)
         {
             ParameterExpression parameter = Expression.Parameter(parent.GetUnderlyingElementType(), parameterName.ChildParameterName());
-            Expression selectorBody = BuildSelectorExpression(parameter, expansions.ToList(), valueMemberSelectors, parameter.Name);
+            Expression selectorBody = BuildSelectorExpression(parameter, [.. expansions], valueMemberSelectors, parameter.Name);
             return Expression.Call
             (
                 typeof(Enumerable),
                 "Select",
-                new Type[] { parameter.Type, selectorBody.Type },
+                [parameter.Type, selectorBody.Type],
                 parent,
                 Expression.Lambda
                 (
-                    typeof(Func<,>).MakeGenericType(new[] { parameter.Type, selectorBody.Type }),
+                    typeof(Func<,>).MakeGenericType(parameter.Type, selectorBody.Type),
                     selectorBody,
                     parameter
                 )

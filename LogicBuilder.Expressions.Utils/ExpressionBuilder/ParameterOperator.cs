@@ -3,16 +3,10 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
 {
-    public class ParameterOperator : IExpressionPart
+    public class ParameterOperator(IDictionary<string, ParameterExpression> parameters, string parameterName) : IExpressionPart
     {
-        public ParameterOperator(IDictionary<string, ParameterExpression> parameters, string parameterName)
-        {
-            ParameterName = parameterName;
-            Parameters = parameters;
-        }
-
-        public IDictionary<string, ParameterExpression> Parameters { get; }
-        public string ParameterName { get; }
+        public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        public string ParameterName { get; } = parameterName;
 
         public Expression Build() => Parameters[ParameterName];
     }

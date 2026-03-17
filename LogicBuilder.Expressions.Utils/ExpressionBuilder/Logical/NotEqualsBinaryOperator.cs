@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Logical
+﻿namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Logical
 {
     public class NotEqualsBinaryOperator : BinaryOperator
     {
