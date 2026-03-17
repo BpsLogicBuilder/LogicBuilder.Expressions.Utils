@@ -3,12 +3,8 @@ using System.Reflection;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
 {
-    public abstract class EqualityBinaryOperatorHandlerBase : BinaryOperatorHandler
+    public abstract class EqualityBinaryOperatorHandlerBase(IExpressionPart left, IExpressionPart right, FilterFunction @operator) : BinaryOperatorHandler(left, right, @operator)
     {
-        public EqualityBinaryOperatorHandlerBase(IExpressionPart left, IExpressionPart right, FilterFunction @operator) : base(left, right, @operator)
-        {
-        }
-
         protected abstract MethodInfo CompareMethodInfo { get; }
 
         protected override Expression Build(Expression left, Expression right)

@@ -6,7 +6,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
     public abstract class FilterMethodOperatorBase
     {
-        public FilterMethodOperatorBase(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart filterBody, string filterParameterName)
+        protected FilterMethodOperatorBase(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart filterBody, string filterParameterName)
         {
             SourceOperand = sourceOperand;
             FilterBody = filterBody;
@@ -14,15 +14,15 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
             FilterParameterName = filterParameterName;
         }
 
-        public FilterMethodOperatorBase(IExpressionPart sourceOperand)
+        protected FilterMethodOperatorBase(IExpressionPart sourceOperand)
         {
             SourceOperand = sourceOperand;
         }
 
         public IExpressionPart SourceOperand { get; }
-        public IExpressionPart FilterBody { get; }
-        public IDictionary<string, ParameterExpression> Parameters { get; }
-        public string FilterParameterName { get; }
+        public IExpressionPart? FilterBody { get; }
+        public IDictionary<string, ParameterExpression>? Parameters { get; }
+        public string? FilterParameterName { get; }
 
         public Expression Build() => Build(SourceOperand.Build());
 
@@ -30,22 +30,24 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 
         protected Expression[] GetParameters(Expression operandExpression)
         {
-            if (FilterBody == null)
-                return new Expression[0];
+            if (FilterBody == null 
+                || FilterParameterName == null 
+                || Parameters == null)
+                return [];
 
-            return new Expression[]
-            {
+            return
+            [
                 GetFilterLambdaOperator(operandExpression.GetUnderlyingElementType()).Build()
-            };
+            ];
         }
 
         protected FilterLambdaOperator GetFilterLambdaOperator(Type elementType) 
-            => new FilterLambdaOperator
+            => new
             (
-                Parameters,
-                FilterBody,
+                Parameters!,// Parameters is not null if GetFilterLambdaOperator is called.
+                FilterBody!,// FilterBody is not null if GetFilterLambdaOperator is called.
                 elementType,
-                FilterParameterName
+                FilterParameterName!// FilterParameterName is not null if GetFilterLambdaOperator is called.
             );
     }
 }

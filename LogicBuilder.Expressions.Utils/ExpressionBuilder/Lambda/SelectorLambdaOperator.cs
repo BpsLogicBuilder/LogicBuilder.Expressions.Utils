@@ -25,7 +25,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 
         public IExpressionPart Selector { get; }
         public Type SourceElementType { get; }
-        public Type BodyType { get; private set; }
+        public Type? BodyType { get; private set; }
         public string ParameterName { get; }
         public IDictionary<string, ParameterExpression> Parameters { get; }
 
@@ -45,11 +45,8 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
             (
                 typeof(Func<,>).MakeGenericType
                 (
-                    new Type[]
-                    {
-                        this.Parameters[ParameterName].Type,
-                        BodyType
-                    }
+                    this.Parameters[ParameterName].Type,
+                    BodyType
                 ),
                 ConvertBody(selectorBody),
                 this.Parameters[ParameterName]

@@ -4,22 +4,18 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
-    public class SelectManyOperator : SelectorMethodOperatorBase, IExpressionPart
+    public class SelectManyOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, string selectorParameterName) : SelectorMethodOperatorBase(parameters, sourceOperand, selectorBody, selectorParameterName), IExpressionPart
     {
-        public SelectManyOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, string selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
-        {
-        }
-
         protected override Expression Build(Expression operandExpression)
             => operandExpression.GetSelectManyCall(GetSelector(operandExpression));
 
-        protected override IExpressionPart GetLambdaOperator(Type sourceElementType)
-            => new IEnumerableSelectorLambdaOperator
+        protected override IExpressionPart GetLambdaOperator(Type elementType)
+            => new EnumerableSelectorLambdaOperator
             (
-                Parameters,
-                SelectorBody,
-                sourceElementType,
-                SelectorParameterName
+                Parameters!,// Parameters in not null if GetLambdaOperator is caled
+                SelectorBody!,// SelectorBody is not null if GetLambdaOperator is caled
+                elementType,
+                SelectorParameterName!// SelectorParameterName is not null if GetLambdaOperator is caled
             );
     }
 }

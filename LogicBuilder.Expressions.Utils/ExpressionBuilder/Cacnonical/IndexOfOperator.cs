@@ -3,16 +3,10 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Cacnonical
 {
-    public class IndexOfOperator : IExpressionPart
+    public class IndexOfOperator(IExpressionPart sourceOperand, IExpressionPart itemToFind) : IExpressionPart
     {
-        public IndexOfOperator(IExpressionPart sourceOperand, IExpressionPart itemToFind)
-        {
-            SourceOperand = sourceOperand;
-            ItemToFind = itemToFind;
-        }
-
-        public IExpressionPart SourceOperand { get; private set; }
-        public IExpressionPart ItemToFind { get; private set; }
+        public IExpressionPart SourceOperand { get; } = sourceOperand;
+        public IExpressionPart ItemToFind { get; } = itemToFind;
 
         public Expression Build() => Build(SourceOperand.Build());
 
@@ -21,7 +15,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Cacnonical
             if (leftExpression.Type == typeof(string))
                 return leftExpression.GetStringIndexOfCall(ItemToFind.Build());
             else
-                throw new ArgumentException(nameof(SourceOperand));
+                throw new ArgumentException(nameof(leftExpression));
         }
     }
 }

@@ -3,30 +3,19 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Operand
 {
-    public class ConstantOperator : IExpressionPart
+    public class ConstantOperator(object constantValue, Type? type = null) : IExpressionPart
     {
-        public ConstantOperator(object constantValue, Type type)
-        {
-            Type = type;
-            ConstantValue = constantValue;
-        }
-
-        public ConstantOperator(object constantValue)
-        {
-            ConstantValue = constantValue;
-        }
-
-        public Type Type { get;  }
-        public object ConstantValue { get; }
+        public Type? Type { get; } = type;
+        public object ConstantValue { get; } = constantValue;
 
         public Expression Build() => GetConstantExpression(Type ?? ConstantValue?.GetType());
 
-        private Expression GetConstantExpression(Type constantType)
+        private Expression GetConstantExpression(Type? constantType)
         {
             if (constantType == null)
                 return Expression.Constant(ConvertConstantValue());
 
-            if (constantType.IsLiteralType() == false)
+            if (!constantType.IsLiteralType())
                 return Expression.Constant(ConvertConstantValue(), constantType);
 
             return CreateExpression(typeof(ConstantContainer<>).MakeGenericType(constantType));
@@ -39,7 +28,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Operand
                         Activator.CreateInstance(containerType, ConvertConstantValue()),
                         containerType
                     ),
-                    nameof(ConstantContainer<object>.TypedProperty)
+                    nameof(ConstantContainer<>.TypedProperty)
                 );
         }
 

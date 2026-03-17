@@ -2,25 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
-    public class MemberInitOperator : IExpressionPart
+    public class MemberInitOperator(IDictionary<string, IExpressionPart> memberBindings, Type? newType = null) : IExpressionPart
     {
-        public MemberInitOperator(IDictionary<string, IExpressionPart> memberBindings, Type newType)
-        {
-            this.MemberBindings = memberBindings;
-            NewType = newType;
-        }
-
-        public MemberInitOperator(IDictionary<string, IExpressionPart> memberBindings)
-        {
-            this.MemberBindings = memberBindings;
-        }
-
-        public IDictionary<string, IExpressionPart> MemberBindings { get; }
-        public Type NewType { get; private set; }
+        public IDictionary<string, IExpressionPart> MemberBindings { get; } = memberBindings;
+        public Type? NewType { get; private set; } = newType;
 
         public Expression Build() 
             => Build

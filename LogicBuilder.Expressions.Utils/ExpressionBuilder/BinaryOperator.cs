@@ -4,7 +4,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
 {
     abstract public class BinaryOperator : IExpressionPart
     {
-        public BinaryOperator(IExpressionPart left, IExpressionPart right)
+        protected BinaryOperator(IExpressionPart left, IExpressionPart right)
         {
             Left = left;
             Right = right;

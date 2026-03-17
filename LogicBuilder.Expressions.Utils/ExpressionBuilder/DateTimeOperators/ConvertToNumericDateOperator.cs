@@ -3,18 +3,13 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.DateTimeOperators
 {
-    public class ConvertToNumericDateOperator : IExpressionPart
+    public class ConvertToNumericDateOperator(IExpressionPart sourceOperand) : IExpressionPart
     {
-        public ConvertToNumericDateOperator(IExpressionPart sourceOperand)
-        {
-            SourceOperand = sourceOperand;
-        }
-
-        public IExpressionPart SourceOperand { get; }
+        public IExpressionPart SourceOperand { get; } = sourceOperand;
 
         public Expression Build() => Build(SourceOperand.Build());
 
-        private Expression Build(Expression operandExpression)
+        private static Expression Build(Expression operandExpression)
         {
             operandExpression = operandExpression.MakeValueSelectorAccessIfNullable();
 

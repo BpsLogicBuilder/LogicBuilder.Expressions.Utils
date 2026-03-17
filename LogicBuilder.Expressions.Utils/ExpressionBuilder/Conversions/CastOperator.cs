@@ -2,16 +2,10 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Conversions
 {
-    public class CastOperator : IExpressionPart
+    public class CastOperator(IExpressionPart operand, System.Type type) : IExpressionPart
     {
-        public CastOperator(IExpressionPart operand, System.Type type)
-        {
-            Operand = operand;
-            Type = type;
-        }
-
-        public IExpressionPart Operand { get; private set; }
-        public System.Type Type { get; private set; }
+        public IExpressionPart Operand { get; } = operand;
+        public System.Type Type { get; } = type;
 
         public Expression Build() => Build(Operand.Build());
 

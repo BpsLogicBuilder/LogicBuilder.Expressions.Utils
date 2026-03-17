@@ -4,14 +4,9 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
-    public class OrderByOperator : SelectorMethodOperatorBase, IExpressionPart
+    public class OrderByOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, ListSortDirection sortDirection, string selectorParameterName) : SelectorMethodOperatorBase(parameters, sourceOperand, selectorBody, selectorParameterName), IExpressionPart
     {
-        public OrderByOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, ListSortDirection sortDirection, string selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
-        {
-            SortDirection = sortDirection;
-        }
-
-        public ListSortDirection SortDirection { get; }
+        public ListSortDirection SortDirection { get; } = sortDirection;
 
         protected override Expression Build(Expression operandExpression)
             => operandExpression.GetOrderByCall(GetSelector(operandExpression), SortDirection);

@@ -2,16 +2,10 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Collection
 {
-    public class SkipOperator : IExpressionPart
+    public class SkipOperator(IExpressionPart sourceOperand, int count) : IExpressionPart
     {
-        public SkipOperator(IExpressionPart sourceOperand, int count)
-        {
-            SourceOperand = sourceOperand;
-            Count = count;
-        }
-
-        public IExpressionPart SourceOperand { get; }
-        public int Count { get; }
+        public IExpressionPart SourceOperand { get; } = sourceOperand;
+        public int Count { get; } = count;
 
         public Expression Build() => Build(SourceOperand.Build());
 

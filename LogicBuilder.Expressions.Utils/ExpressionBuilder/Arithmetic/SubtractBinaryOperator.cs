@@ -1,11 +1,7 @@
 ﻿namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Arithmetic
 {
-    public class SubtractBinaryOperator : BinaryOperator
+    public class SubtractBinaryOperator(IExpressionPart left, IExpressionPart right) : BinaryOperator(left, right)
     {
-        public SubtractBinaryOperator(IExpressionPart left, IExpressionPart right) : base(left, right)
-        {
-        }
-
         public override FilterFunction Operator => FilterFunction.sub;
     }
 }

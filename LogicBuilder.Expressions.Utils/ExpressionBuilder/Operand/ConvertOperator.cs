@@ -3,16 +3,10 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Operand
 {
-    public class ConvertOperator : IExpressionPart
+    public class ConvertOperator(IExpressionPart sourceOperand, Type type) : IExpressionPart
     {
-        public ConvertOperator(IExpressionPart sourceOperand, Type type)
-        {
-            Type = type;
-            SourceOperand = sourceOperand;
-        }
-
-        public Type Type { get; }
-        public IExpressionPart SourceOperand { get; }
+        public Type Type { get; } = type;
+        public IExpressionPart SourceOperand { get; } = sourceOperand;
 
         public Expression Build()
         {

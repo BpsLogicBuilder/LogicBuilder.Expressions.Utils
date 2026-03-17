@@ -3,12 +3,8 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
 {
-    public class GreaterThanLessThanBinaryOperatorHandler : BinaryOperatorHandler
+    public class GreaterThanLessThanBinaryOperatorHandler(IExpressionPart left, IExpressionPart right, FilterFunction @operator) : BinaryOperatorHandler(left, right, @operator)
     {
-        public GreaterThanLessThanBinaryOperatorHandler(IExpressionPart left, IExpressionPart right, FilterFunction @operator) : base(left, right, @operator)
-        {
-        }
-
         protected override Expression Build(Expression left, Expression right)
         {
             if (left.Type == typeof(string) || right.Type == typeof(string))

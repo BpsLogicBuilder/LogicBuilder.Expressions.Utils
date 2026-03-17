@@ -1,11 +1,7 @@
 ﻿namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Arithmetic
 {
-    public class MultiplyBinaryOperator : BinaryOperator
+    public class MultiplyBinaryOperator(IExpressionPart left, IExpressionPart right) : BinaryOperator(left, right)
     {
-        public MultiplyBinaryOperator(IExpressionPart left, IExpressionPart right) : base(left, right)
-        {
-        }
-
         public override FilterFunction Operator => FilterFunction.mul;
     }
 }

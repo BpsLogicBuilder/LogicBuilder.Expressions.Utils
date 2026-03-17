@@ -3,16 +3,10 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Collection
 {
-    public class UnionOperator : IExpressionPart
+    public class UnionOperator(IExpressionPart left, IExpressionPart right) : IExpressionPart
     {
-        public UnionOperator(IExpressionPart left, IExpressionPart right)
-        {
-            Left = left;
-            Right = right;
-        }
-
-        public IExpressionPart Left { get; private set; }
-        public IExpressionPart Right { get; private set; }
+        public IExpressionPart Left { get; } = left;
+        public IExpressionPart Right { get; } = right;
 
         public Expression Build() => Build(Left.Build());
 
@@ -21,7 +15,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Collection
             if (leftExpression.Type.IsList())
                 return leftExpression.GetUnionCall(Right.Build());
             else
-                throw new ArgumentException(nameof(Left));
+                throw new ArgumentException(nameof(leftExpression));
         }
     }
 }

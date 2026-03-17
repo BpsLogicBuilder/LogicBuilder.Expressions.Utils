@@ -6,7 +6,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
     public abstract class SelectorMethodOperatorBase
     {
-        public SelectorMethodOperatorBase(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, string selectorParameterName)
+        protected SelectorMethodOperatorBase(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, string selectorParameterName)
         {
             SourceOperand = sourceOperand;
             SelectorBody = selectorBody;
@@ -14,15 +14,15 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
             Parameters = parameters;
         }
 
-        public SelectorMethodOperatorBase(IExpressionPart sourceOperand)
+        protected SelectorMethodOperatorBase(IExpressionPart sourceOperand)
         {
             SourceOperand = sourceOperand;
         }
 
         public IExpressionPart SourceOperand { get; }
-        public IExpressionPart SelectorBody { get; }
-        public string SelectorParameterName { get; }
-        public IDictionary<string, ParameterExpression> Parameters { get; }
+        public IExpressionPart? SelectorBody { get; }
+        public string? SelectorParameterName { get; }
+        public IDictionary<string, ParameterExpression>? Parameters { get; }
 
         public Expression Build() => Build(SourceOperand.Build());
 
@@ -30,13 +30,15 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 
         protected Expression[] GetParameters(Expression operandExpression)
         {
-            if (SelectorBody == null)
-                return new Expression[0];
+            if (SelectorBody == null 
+                || Parameters == null 
+                || SelectorParameterName == null)
+                return [];
 
-            return new Expression[]
-            {
-                GetLambdaOperator(operandExpression.GetUnderlyingElementType()).Build()
-            };
+            return
+            [
+                GetSelector(operandExpression)
+            ];
         }
 
         protected LambdaExpression GetSelector(Expression operandExpression)
@@ -45,10 +47,10 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
         protected virtual IExpressionPart GetLambdaOperator(Type elementType)
             => new SelectorLambdaOperator
             (
-                Parameters,
-                SelectorBody,
+                Parameters!, // Parameters in not null if GetLambdaOperator is caled
+                SelectorBody!,// SelectorBody is not null if GetLambdaOperator is caled
                 elementType,
-                SelectorParameterName
+                SelectorParameterName!// SelectorParameterName is not null if GetLambdaOperator is caled
             );
     }
 }

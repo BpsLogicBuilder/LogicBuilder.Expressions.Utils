@@ -2,14 +2,9 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Logical
 {
-    public class NotOperator : IExpressionPart
+    public class NotOperator(IExpressionPart operand) : IExpressionPart
     {
-        public NotOperator(IExpressionPart operand)
-        {
-            this.Operand = operand;
-        }
-
-        public IExpressionPart Operand { get; private set; }
+        public IExpressionPart Operand { get; private set; } = operand;
 
         public Expression Build() 
             => Expression.Not(this.Operand.Build());

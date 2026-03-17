@@ -2,16 +2,10 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Logical
 {
-    public class InOperator : IExpressionPart
+    public class InOperator(IExpressionPart itemToFind, IExpressionPart listToSearch) : IExpressionPart
     {
-        public InOperator(IExpressionPart itemToFind, IExpressionPart listToSearch)
-        {
-            ItemToFind = itemToFind;
-            ListToSearch = listToSearch;
-        }
-
-        public IExpressionPart ItemToFind { get; private set; }
-        public IExpressionPart ListToSearch { get; private set; }
+        public IExpressionPart ItemToFind { get; private set; } = itemToFind;
+        public IExpressionPart ListToSearch { get; private set; } = listToSearch;
 
         public Expression Build()
             => ListToSearch.Build().GetContainsCall(ItemToFind.Build());

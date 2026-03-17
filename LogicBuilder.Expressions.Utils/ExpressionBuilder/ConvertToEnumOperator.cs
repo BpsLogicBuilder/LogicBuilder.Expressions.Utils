@@ -3,16 +3,10 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
 {
-    public class ConvertToEnumOperator : IExpressionPart
+    public class ConvertToEnumOperator(object constantValue, Type type) : IExpressionPart
     {
-        public ConvertToEnumOperator(object constantValue, Type type)
-        {
-            Type = type;
-            ConstantValue = constantValue;
-        }
-
-        public Type Type { get; }
-        public object ConstantValue { get; }
+        public Type Type { get; } = type;
+        public object ConstantValue { get; } = constantValue;
 
         public Expression Build() => DoBuild();
 
@@ -21,7 +15,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
             if (ConstantValue == null)
                 return Expression.Constant(null);
 
-            return ConstantValue.ToString().TryParseEnum(Type, out object enumValue) 
+            return ConstantValue.ToString().TryParseEnum(Type, out object? enumValue) 
                 ? Expression.Constant(enumValue, Type) 
                 : Expression.Constant(null);
         }

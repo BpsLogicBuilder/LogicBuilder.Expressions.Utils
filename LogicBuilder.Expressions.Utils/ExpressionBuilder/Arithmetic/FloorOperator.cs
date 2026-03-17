@@ -2,17 +2,12 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Arithmetic
 {
-    public class FloorOperator : IExpressionPart
+    public class FloorOperator(IExpressionPart operand) : IExpressionPart
     {
-        public FloorOperator(IExpressionPart operand)
-        {
-            Operand = operand;
-        }
-
-        public IExpressionPart Operand { get; private set; }
+        public IExpressionPart Operand { get; } = operand;
 
         public Expression Build() => Build(Operand.Build());
 
-        private Expression Build(Expression operandExpression) => operandExpression.GetFloorCall();
+        private static Expression Build(Expression operandExpression) => operandExpression.GetFloorCall();
     }
 }

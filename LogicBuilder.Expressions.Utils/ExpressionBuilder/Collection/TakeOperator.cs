@@ -2,16 +2,10 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Collection
 {
-    public class TakeOperator : IExpressionPart
+    public class TakeOperator(IExpressionPart sourceOperand, int count) : IExpressionPart
     {
-        public TakeOperator(IExpressionPart sourceOperand, int count)
-        {
-            SourceOperand = sourceOperand;
-            Count = count;
-        }
-
-        public IExpressionPart SourceOperand { get; }
-        public int Count { get; }
+        public IExpressionPart SourceOperand { get; } = sourceOperand;
+        public int Count { get; } = count;
 
         public Expression Build() => Build(SourceOperand.Build());
 

@@ -2,16 +2,10 @@
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Operand
 {
-    public class MemberSelectorOperator : IExpressionPart
+    public class MemberSelectorOperator(string memberFullName, IExpressionPart sourceOperand) : IExpressionPart
     {
-        public MemberSelectorOperator(string memberFullName, IExpressionPart sourceOperand)
-        {
-            MemberFullName = memberFullName;
-            SourceOperand = sourceOperand;
-        }
-
-        public string MemberFullName { get; set; }
-        public IExpressionPart SourceOperand { get; set; }
+        public string MemberFullName { get; set; } = memberFullName;
+        public IExpressionPart SourceOperand { get; set; } = sourceOperand;
 
         public Expression Build() 
             => SourceOperand.Build().BuildSelectorExpression(MemberFullName);

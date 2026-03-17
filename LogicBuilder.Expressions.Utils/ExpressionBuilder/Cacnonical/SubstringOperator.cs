@@ -4,16 +4,10 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Cacnonical
 {
-    public class SubstringOperator : IExpressionPart
+    public class SubstringOperator(IExpressionPart sourceOperand, params IExpressionPart[] indexes) : IExpressionPart
     {
-        public SubstringOperator(IExpressionPart sourceOperand, params IExpressionPart[] indexes)
-        {
-            SourceOperand = sourceOperand;
-            Indexes = indexes;
-        }
-
-        public IExpressionPart SourceOperand { get; private set; }
-        public IExpressionPart[] Indexes { get; private set; }
+        public IExpressionPart SourceOperand { get; } = sourceOperand;
+        public IExpressionPart[] Indexes { get; } = indexes;
 
         public Expression Build() => Build(SourceOperand.Build());
 
@@ -22,7 +16,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Cacnonical
             if (leftExpression.Type == typeof(string))
                 return leftExpression.GetSubStringCall
                 (
-                    Indexes.Select(arg => arg.Build()).ToArray()
+                    [.. Indexes.Select(arg => arg.Build())]
                 );
             else
                 throw new ArgumentException(nameof(Indexes));
