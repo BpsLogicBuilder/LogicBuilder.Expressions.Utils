@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
-namespace Contoso.Data.Entities
+namespace LogicBuilder.Expressions.Utils.Tests.Data
 {
     [Table("Course")]
     public class Course : BaseDataClass

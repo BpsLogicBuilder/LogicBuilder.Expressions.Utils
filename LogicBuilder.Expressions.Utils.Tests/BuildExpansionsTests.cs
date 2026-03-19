@@ -1,6 +1,5 @@
-﻿using Contoso.Data.Entities;
-using LogicBuilder.Expressions.Utils.Expansions;
-using System.Collections.Generic;
+﻿using LogicBuilder.Expressions.Utils.Expansions;
+using LogicBuilder.Expressions.Utils.Tests.Data;
 using Xunit;
 
 namespace LogicBuilder.Expressions.Utils.Tests
@@ -10,6 +9,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [Fact]
         public void ShouldNotThrowifExpandedMemberIsLiteral()
         {
+            //Arrange Act
             var expression = new SelectExpandDefinition
             {
                 ExpandedItems =
@@ -17,6 +17,9 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     new SelectExpandItem("Name")
                 ]
             }.GetExpansionSelectors<Department>();
+
+            //Assert
+            Assert.NotNull(expression);
         }
     }
 }

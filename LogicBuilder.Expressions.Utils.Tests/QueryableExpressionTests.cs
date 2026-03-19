@@ -1,4 +1,3 @@
-using Contoso.Data.Entities;
 using LogicBuilder.Expressions.Utils.ExpressionBuilder;
 using LogicBuilder.Expressions.Utils.ExpressionBuilder.Cacnonical;
 using LogicBuilder.Expressions.Utils.ExpressionBuilder.Collection;
@@ -22,53 +21,53 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         private static readonly string parameterName = "$it";
-        private IDictionary<string, ParameterExpression> parameters;
+        private readonly IDictionary<string, ParameterExpression> parameters;
 
         [Fact]
         public void BuildWhere_OrderBy_ThenBy_Skip_Take_Average()
         {
             //arrange
-            var parameters = GetParameters();
+            var parametersDictionary = GetParameters();
 
             //act
             //{q => q.Where(s => ((s.ID > 1) AndAlso (Compare(s.FirstName, s.LastName) > 0))).OrderBy(v => v.LastName).ThenByDescending(v => v.FirstName).Skip(2).Take(3).Average(j => j.ID)}
             Expression<Func<IQueryable<Student>, double>> expression = new AverageOperator
             (
-                parameters,
+                parametersDictionary,
                 new TakeOperator
                 (
                     new SkipOperator
                     (
                         new ThenByOperator
                         (
-                            parameters,
+                            parametersDictionary,
                             new OrderByOperator
                             (
-                                parameters,
+                                parametersDictionary,
                                 new WhereOperator
                                 (//q.Where(s => ((s.ID > 1) AndAlso (Compare(s.FirstName, s.LastName) > 0)))
-                                    parameters,
-                                    new ParameterOperator(parameters, "q"),//q. the source operand
+                                    parametersDictionary,
+                                    new ParameterOperator(parametersDictionary, "q"),//q. the source operand
                                     new AndBinaryOperator//((s.ID > 1) AndAlso (Compare(s.FirstName, s.LastName) > 0)
                                     (
                                         new GreaterThanBinaryOperator
                                         (
-                                            new MemberSelectorOperator("Id", new ParameterOperator(parameters, "s")),
+                                            new MemberSelectorOperator("Id", new ParameterOperator(parametersDictionary, "s")),
                                             new ConstantOperator(1, typeof(int))
                                         ),
                                         new GreaterThanBinaryOperator
                                         (
-                                            new MemberSelectorOperator("FirstName", new ParameterOperator(parameters, "s")),
-                                            new MemberSelectorOperator("LastName", new ParameterOperator(parameters, "s"))
+                                            new MemberSelectorOperator("FirstName", new ParameterOperator(parametersDictionary, "s")),
+                                            new MemberSelectorOperator("LastName", new ParameterOperator(parametersDictionary, "s"))
                                         )
                                     ),
                                     "s"//s => (created in Where operator.  The parameter type is based on the source operand underlying type in this case Student.)
                                 ),
-                                new MemberSelectorOperator("LastName", new ParameterOperator(parameters, "v")),
+                                new MemberSelectorOperator("LastName", new ParameterOperator(parametersDictionary, "v")),
                                 Strutures.ListSortDirection.Ascending,
                                 "v"
                             ),
-                            new MemberSelectorOperator("FirstName", new ParameterOperator(parameters, "v")),
+                            new MemberSelectorOperator("FirstName", new ParameterOperator(parametersDictionary, "v")),
                             Strutures.ListSortDirection.Descending,
                             "v"
                         ),
@@ -76,10 +75,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     ),
                     3
                 ),
-                new MemberSelectorOperator("Id", new ParameterOperator(parameters, "j")),
+                new MemberSelectorOperator("Id", new ParameterOperator(parametersDictionary, "j")),
                 "j"
             )
-            .GetExpression<IQueryable<Student>, double>(parameters, "q");
+            .GetExpression<IQueryable<Student>, double>(parametersDictionary, "q");
 
             //assert
             AssertFilterStringIsCorrect(expression, "q => q.Where(s => ((s.ID > 1) AndAlso (s.FirstName.Compare(s.LastName) > 0))).OrderBy(v => v.LastName).ThenByDescending(v => v.FirstName).Skip(2).Take(3).Average(j => j.ID)");
@@ -89,39 +88,23 @@ namespace LogicBuilder.Expressions.Utils.Tests
         public void BuildGroupBy_OrderBy_ThenBy_Skip_Take_Average()
         {
             //arrange
-            var parameters = GetParameters();
-
-            Expression<Func<IQueryable<Department>, IQueryable<object>>> expression1 =
-                q => q.GroupBy(a => 1)
-                    .OrderBy(b => b.Key)
-                    .Select
-                    (
-                        c => new 
-                        { 
-                            Sum_budget = q.Where
-                            (
-                                d => ((d.DepartmentID == q.Count()) 
-                                    && (d.DepartmentID == c.Key))
-                            )
-                            .ToList()
-                        }
-                    );
+            var parametersDictionary = GetParameters();
 
             //act
             Expression<Func<IQueryable<Department>, IQueryable<object>>> expression = new SelectOperator
             (
-                parameters,
+                parametersDictionary,
                 new OrderByOperator
                 (
-                    parameters,
+                    parametersDictionary,
                     new GroupByOperator
                     (
-                        parameters,
-                        new ParameterOperator(parameters, "q"),
+                        parametersDictionary,
+                        new ParameterOperator(parametersDictionary, "q"),
                         new ConstantOperator(1, typeof(int)),
                         "a"
                     ),
-                    new MemberSelectorOperator("Key", new ParameterOperator(parameters, "b")),
+                    new MemberSelectorOperator("Key", new ParameterOperator(parametersDictionary, "b")),
                     Strutures.ListSortDirection.Ascending,
                     "b"
                 ),
@@ -133,19 +116,19 @@ namespace LogicBuilder.Expressions.Utils.Tests
                         (
                             new WhereOperator
                             (
-                                parameters,
-                                new ParameterOperator(parameters, "q"),
+                                parametersDictionary,
+                                new ParameterOperator(parametersDictionary, "q"),
                                 new AndBinaryOperator
                                 (
                                     new EqualsBinaryOperator
                                     (
-                                        new MemberSelectorOperator("DepartmentID", new ParameterOperator(parameters, "d")),
-                                        new CountOperator(new ParameterOperator(parameters, "q"))
+                                        new MemberSelectorOperator("DepartmentID", new ParameterOperator(parametersDictionary, "d")),
+                                        new CountOperator(new ParameterOperator(parametersDictionary, "q"))
                                     ),
                                     new EqualsBinaryOperator
                                     (
-                                        new MemberSelectorOperator("DepartmentID", new ParameterOperator(parameters, "d")),
-                                        new MemberSelectorOperator("Key", new ParameterOperator(parameters, "c"))
+                                        new MemberSelectorOperator("DepartmentID", new ParameterOperator(parametersDictionary, "d")),
+                                        new MemberSelectorOperator("Key", new ParameterOperator(parametersDictionary, "c"))
                                     )
                                 ),
                                 "d"
@@ -155,9 +138,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 ),
                 "c"
             )
-            .GetExpression<IQueryable<Department>, IQueryable<object>>(parameters, "q");
+            .GetExpression<IQueryable<Department>, IQueryable<object>>(parametersDictionary, "q");
 
             //assert
+            AssertFilterStringIsCorrect(expression, "q => Convert(q.GroupBy(a => 1).OrderBy(b => b.Key).Select(c => new AnonymousType() {Sum_budget = q.Where(d => ((d.DepartmentID == q.Count()) AndAlso (d.DepartmentID == c.Key))).ToList(), }))");
             Assert.NotNull(expression);
         }
 
@@ -165,45 +149,28 @@ namespace LogicBuilder.Expressions.Utils.Tests
         public void BuildGroupBy_AsQueryable_OrderBy_Select_FirstOrDefault()
         {
             //arrange
-            var parameters = GetParameters();
-
-            Expression<Func<IQueryable<Department>, object>> expression1 =
-                q => q.GroupBy(item => 1)
-                .AsQueryable()
-                .OrderBy(group => group.Key)
-                .Select
-                (
-                    sel => new
-                    {
-                        Min_administratorName = q.Where(d => (1 == sel.Key)).Min(item => string.Concat(string.Concat(item.Administrator.LastName, " "), item.Administrator.FirstName)),
-                        Count_name = q.Where(d => (1 == sel.Key)).Count(),
-                        Sum_budget = q.Where(d => (1 == sel.Key)).Sum(item => item.Budget),
-                        Min_budget = q.Where(d => (1 == sel.Key)).Min(item => item.Budget),
-                        Min_startDate = q.Where(d => (1 == sel.Key)).Min(item => item.StartDate)
-                    }
-                )
-                .FirstOrDefault();
+            var parametersDictionary = GetParameters();
 
             //act
             Expression<Func<IQueryable<Department>, object>> expression = new FirstOrDefaultOperator
             (
                 new SelectOperator
                 (
-                    parameters,
+                    parametersDictionary,
                     new OrderByOperator
                     (
-                        parameters,
+                        parametersDictionary,
                         new AsQueryableOperator
                         (
                             new GroupByOperator
                             (
-                                parameters,
-                                new ParameterOperator(parameters, "q"),
+                                parametersDictionary,
+                                new ParameterOperator(parametersDictionary, "q"),
                                 new ConstantOperator(1, typeof(int)),
                                 "item"
                             )
                         ),
-                        new MemberSelectorOperator("Key", new ParameterOperator(parameters, "group")),
+                        new MemberSelectorOperator("Key", new ParameterOperator(parametersDictionary, "group")),
                         Strutures.ListSortDirection.Ascending,
                         "group"
                     ),
@@ -213,15 +180,15 @@ namespace LogicBuilder.Expressions.Utils.Tests
                         {
                             ["Min_administratorName"] = new MinOperator
                             (
-                                parameters,
+                                parametersDictionary,
                                 new WhereOperator
                                 (
-                                    parameters,
-                                    new ParameterOperator(parameters, "q"),
+                                    parametersDictionary,
+                                    new ParameterOperator(parametersDictionary, "q"),
                                     new EqualsBinaryOperator
                                     (
                                         new ConstantOperator(1, typeof(int)),
-                                        new MemberSelectorOperator("Key", new ParameterOperator(parameters, "sel"))
+                                        new MemberSelectorOperator("Key", new ParameterOperator(parametersDictionary, "sel"))
                                     ),
                                     "d"
                                 ),
@@ -229,10 +196,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
                                 (
                                     new ConcatOperator
                                     (
-                                        new MemberSelectorOperator("Administrator.LastName", new ParameterOperator(parameters, "item")), 
+                                        new MemberSelectorOperator("Administrator.LastName", new ParameterOperator(parametersDictionary, "item")), 
                                         new ConstantOperator(" ", typeof(string))
                                     ),
-                                    new MemberSelectorOperator("Administrator.FirstName", new ParameterOperator(parameters, "item"))
+                                    new MemberSelectorOperator("Administrator.FirstName", new ParameterOperator(parametersDictionary, "item"))
                                 ),
                                 "item"
                             ),
@@ -240,75 +207,75 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             (
                                 new WhereOperator
                                 (
-                                    parameters,
-                                    new ParameterOperator(parameters, "q"),
+                                    parametersDictionary,
+                                    new ParameterOperator(parametersDictionary, "q"),
                                     new EqualsBinaryOperator
                                     (
                                         new ConstantOperator(1, typeof(int)),
-                                        new MemberSelectorOperator("Key", new ParameterOperator(parameters, "sel"))
+                                        new MemberSelectorOperator("Key", new ParameterOperator(parametersDictionary, "sel"))
                                     ),
                                     "d"
                                 )
                             ),
                             ["Sum_budget"] = new SumOperator
                             (
-                                parameters,
+                                parametersDictionary,
                                 new WhereOperator
                                 (
-                                    parameters,
-                                    new ParameterOperator(parameters, "q"),
+                                    parametersDictionary,
+                                    new ParameterOperator(parametersDictionary, "q"),
                                     new EqualsBinaryOperator
                                     (
                                         new ConstantOperator(1, typeof(int)),
-                                        new MemberSelectorOperator("Key", new ParameterOperator(parameters, "sel"))
+                                        new MemberSelectorOperator("Key", new ParameterOperator(parametersDictionary, "sel"))
                                     ),
                                     "d"
                                 ),
-                                new MemberSelectorOperator("Budget", new ParameterOperator(parameters, "item")),
+                                new MemberSelectorOperator("Budget", new ParameterOperator(parametersDictionary, "item")),
                                 "item"
                             ),
                             ["Min_budget"] = new MinOperator
                             (
-                                parameters,
+                                parametersDictionary,
                                 new WhereOperator
                                 (
-                                    parameters,
-                                    new ParameterOperator(parameters, "q"),
+                                    parametersDictionary,
+                                    new ParameterOperator(parametersDictionary, "q"),
                                     new EqualsBinaryOperator
                                     (
                                         new ConstantOperator(1, typeof(int)),
-                                        new MemberSelectorOperator("Key", new ParameterOperator(parameters, "sel"))
+                                        new MemberSelectorOperator("Key", new ParameterOperator(parametersDictionary, "sel"))
                                     ),
                                     "d"
                                 ),
-                                new MemberSelectorOperator("Budget", new ParameterOperator(parameters, "item")),
+                                new MemberSelectorOperator("Budget", new ParameterOperator(parametersDictionary, "item")),
                                 "item"
                             ),
                             ["Min_startDate"] = new MinOperator
                             (
-                                parameters,
+                                parametersDictionary,
                                 new WhereOperator
                                 (
-                                    parameters,
-                                    new ParameterOperator(parameters, "q"),
+                                    parametersDictionary,
+                                    new ParameterOperator(parametersDictionary, "q"),
                                     new EqualsBinaryOperator
                                     (
                                         new ConstantOperator(1, typeof(int)),
-                                        new MemberSelectorOperator("Key", new ParameterOperator(parameters, "sel"))
+                                        new MemberSelectorOperator("Key", new ParameterOperator(parametersDictionary, "sel"))
                                     ),
                                     "d"
                                 ),
-                                new MemberSelectorOperator("StartDate", new ParameterOperator(parameters, "item")),
+                                new MemberSelectorOperator("StartDate", new ParameterOperator(parametersDictionary, "item")),
                                 "item"
                             )
                         }
                     ),
                     "sel"
                 )
-            ).GetExpression<IQueryable<Department>, object>(parameters, "q");
+            ).GetExpression<IQueryable<Department>, object>(parametersDictionary, "q");
 
             //assert
-            Assert.NotNull(expression);
+            AssertFilterStringIsCorrect(expression, "q => Convert(q.GroupBy(item => 1).AsQueryable().OrderBy(group => group.Key).Select(sel => new AnonymousType() {Min_administratorName = q.Where(d => (1 == sel.Key)).Min(item => item.Administrator.LastName.Concat(\" \").Concat(item.Administrator.FirstName)), Count_name = q.Where(d => (1 == sel.Key)).Count(), Sum_budget = q.Where(d => (1 == sel.Key)).Sum(item => item.Budget), Min_budget = q.Where(d => (1 == sel.Key)).Min(item => item.Budget), Min_startDate = q.Where(d => (1 == sel.Key)).Min(item => item.StartDate), }).FirstOrDefault())");
         }
 
         [Fact]
@@ -407,7 +374,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         {
             //act
             var expression = CreateExpression<IEnumerable<Category>, IQueryable<Category>>();
-            var result = RunExpression(expression, new List<Category> { new Category() });
+            var result = RunExpression(expression, [new()]);
 
             //assert
             AssertFilterStringIsCorrect(expression, "$it => $it.AsQueryable()");
@@ -1477,10 +1444,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     ),
                     parameters,
                     parameterName
-                ); ;
+                );
         }
 
-        private void AssertFilterStringIsCorrect(Expression expression, string expected)
+        private static void AssertFilterStringIsCorrect(Expression expression, string expected)
         {
             AssertStringIsCorrect(ExpressionStringBuilder.ToString(expression));
 
@@ -1492,93 +1459,80 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        private static IDictionary<string, ParameterExpression> GetParameters()
-            => new Dictionary<string, ParameterExpression>();
+        private static Dictionary<string, ParameterExpression> GetParameters()
+            => [];
 
-        static object[] GetArguments(IDictionary<string, ParameterExpression> parameters, Func<IDictionary<string, ParameterExpression>, object[]> getList)
-            => getList(parameters);
+        private static Expression<Func<T, TResult>> GetExpression<T, TResult>(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parametersDictionary, string defaultParameterName = "$it")
+            => filterBody.GetExpression<T, TResult>(parametersDictionary, defaultParameterName);
 
-        static object[] GetArguments(Func<IDictionary<string, ParameterExpression>, object[]> getList)
-            => GetArguments(GetParameters(), getList);
-
-        private Expression<Func<T, bool>> GetFilter<T>(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters, string parameterName = "$it")
-            => filterBody.GetFilter<T>(parameters, parameterName);
-
-        private Expression<Func<T, TResult>> GetExpression<T, TResult>(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters, string parameterName = "$it")
-            => filterBody.GetExpression<T, TResult>(parameters, parameterName);
-
-        private TResult RunExpression<T, TResult>(Expression<Func<T, TResult>> filter, T instance)
+        private static TResult RunExpression<T, TResult>(Expression<Func<T, TResult>> filter, T instance)
             => filter.Compile().Invoke(instance);
 
-        private IQueryable<Category> GetCategories()
+        private static IQueryable<Category> GetCategories()
          => new Category[]
             {
-                new Category
-                {
+                new() {
                     CategoryID = 1,
                     CategoryName = "CategoryOne",
-                    Products = new Product[]
-                    {
+                    Products =
+                    [
                         new Product
                         {
                             ProductID = 1,
                             ProductName = "ProductOne",
-                            AlternateAddresses = new Address[]
-                            {
+                            AlternateAddresses =
+                            [
                                 new Address { AddressID = 1, City = "CityOne" },
                                 new Address { AddressID = 2, City = "CityTwo"  },
-                            }
+                            ]
                         },
                         new Product
                         {
                             ProductID = 2,
                             ProductName = "ProductTwo",
-                            AlternateAddresses = new Address[]
-                            {
+                            AlternateAddresses =
+                            [
                                 new Address { AddressID = 3, City = "CityThree" },
                                 new Address { AddressID = 4, City = "CityFour"  },
-                            }
+                            ]
                         }
-                    }
+                    ]
                 },
-                new Category
-                {
+                new() {
                     CategoryID = 2,
                     CategoryName = "CategoryTwo",
-                    Products =  new Product[]
-                    {
+                    Products =
+                    [
                         new Product
                         {
-                            AlternateAddresses = new Address[0]
+                            AlternateAddresses = []
                         }
-                    }
+                    ]
                 }
             }.AsQueryable();
 
-        private IQueryable<Product> GetProducts()
+        private static IQueryable<Product> GetProducts()
          => new Product[]
          {
-             new Product
-             {
+             new() {
                  ProductID = 1,
                  ProductName = "ProductOne",
                  SupplierID = 3,
-                 AlternateAddresses = new Address[]
-                 {
+                 AlternateAddresses =
+                 [
                      new Address { AddressID = 1, City = "CityOne", State = "OH" },
                      new Address { AddressID = 2, City = "CityTwo", State = "MI"   },
-                 }
+                 ]
              },
-             new Product
-             {
+             new() {
                  ProductID = 2,
                  ProductName = "ProductTwo",
                  SupplierID = 3,
-                 AlternateAddresses = new Address[]
-                 {
+                 AlternateAddresses =
+                 [
                      new Address { AddressID = 3, City = "CityThree", State = "OH"  },
                      new Address { AddressID = 4, City = "CityFour", State = "MI"   },
-                 }
+                 ]
              }
          }.AsQueryable();
     }

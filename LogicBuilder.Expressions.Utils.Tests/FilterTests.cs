@@ -262,146 +262,180 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public static List<object[]> DateTimeOffsetInequalities_Data
+        public class DateTimeOffsetInequalitiesTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateTimeOffsetInequalitiesTheoryData> DateTimeOffsetInequalities_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetInequalitiesTheoryData
                         (
-                            new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => ($it.DateTimeOffsetProp == $it.DateTimeOffsetProp)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new NotEqualsBinaryOperator
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => ($it.DateTimeOffsetProp == $it.DateTimeOffsetProp)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetInequalitiesTheoryData
                         (
-                            new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => ($it.DateTimeOffsetProp != $it.DateTimeOffsetProp)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
+                            new NotEqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => ($it.DateTimeOffsetProp != $it.DateTimeOffsetProp)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetInequalitiesTheoryData
                         (
-                            new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => ($it.DateTimeOffsetProp >= $it.DateTimeOffsetProp)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanOrEqualsBinaryOperator
+                            new GreaterThanOrEqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => ($it.DateTimeOffsetProp >= $it.DateTimeOffsetProp)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetInequalitiesTheoryData
                         (
-                            new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => ($it.DateTimeOffsetProp <= $it.DateTimeOffsetProp)",
-                        parameters
-                    }
-                };
+                            new LessThanOrEqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("DateTimeOffsetProp", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => ($it.DateTimeOffsetProp <= $it.DateTimeOffsetProp)",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateTimeOffsetInequalities_Data))]
-        public void DateTimeOffsetInequalities(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateTimeOffsetInequalities_Data), MemberType = typeof(FilterTests))]
+        public void DateTimeOffsetInequalities(DateTimeOffsetInequalitiesTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<DataTypes>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expectedExpression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
             {
                 return GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
             }
         }
 
-        public static List<object[]> DateInEqualities_Data
+        public class DateInEqualitiesTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateInEqualitiesTheoryData> DateInEqualities_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateInEqualitiesTheoryData
                         (
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => ($it.DateTimeProp == $it.DateTimeProp)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new NotEqualsBinaryOperator
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => ($it.DateTimeProp == $it.DateTimeProp)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateInEqualitiesTheoryData
                         (
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => ($it.DateTimeProp != $it.DateTimeProp)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
+                            new NotEqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => ($it.DateTimeProp != $it.DateTimeProp)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateInEqualitiesTheoryData
                         (
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => ($it.DateTimeProp >= $it.DateTimeProp)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanOrEqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => ($it.DateTimeProp <= $it.DateTimeProp)",
-                        parameters
-                    }
-                };
+                            new GreaterThanOrEqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => ($it.DateTimeProp >= $it.DateTimeProp)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateInEqualitiesTheoryData
+                        ( 
+                            new LessThanOrEqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => ($it.DateTimeProp <= $it.DateTimeProp)",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateInEqualities_Data))]
-        public void DateInEqualities(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateInEqualities_Data), MemberType = typeof(FilterTests))]
+        public void DateInEqualities(DateInEqualitiesTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<DataTypes>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expectedExpression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
             {
                 return GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
             }
         }
@@ -760,384 +794,463 @@ namespace LogicBuilder.Expressions.Utils.Tests
         #endregion Arithmetic Operators
 
         #region NULL  handling
-        public static List<object[]> NullHandling_Data
+        public class NullHandlingTheoryData(IExpressionPart filterBody, object unitsInStock, object unitsOnOrder, bool expectedResult, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public object UnitsInStock { get; } = unitsInStock;
+            public object UnitsOnOrder { get; } = unitsOnOrder;
+            public bool ExpectedResult { get; } = expectedResult;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<NullHandlingTheoryData> NullHandling_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
                         (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        true,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new NotEqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        false,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanBinaryOperator
-                        (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        false,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        false,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanBinaryOperator
-                        (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        false,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanOrEqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        false,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new AddBinaryOperator
+                            new EqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
                                 new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
                             ),
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        true,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            null,
+                            null,
+                            true,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
                         (
-                            new SubtractBinaryOperator
+                            new NotEqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
                                 new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
                             ),
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        true,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            null,
+                            null,
+                            false,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
                         (
-                            new MultiplyBinaryOperator
+                            new GreaterThanBinaryOperator
                             (
                                 new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
                                 new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
                             ),
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        true,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            null,
+                            null,
+                            false,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
                         (
-                            new DivideBinaryOperator
+                            new GreaterThanOrEqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
                                 new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
                             ),
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        true,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            null,
+                            null,
+                            false,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
                         (
-                            new ModuloBinaryOperator
+                            new LessThanBinaryOperator
                             (
                                 new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
                                 new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
                             ),
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
-                        ),
-                        null,
-                        null,
-                        true,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            null,
+                            null,
+                            false,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
                         (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
-                        ),
-                        1,
-                        null,
-                        false,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            new LessThanOrEqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
+                            ),
+                            null,
+                            null,
+                            false,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
                         (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
-                        ),
-                        1,
-                        1,
-                        true,
-                        parameters
-                    }
-                };
+                            new EqualsBinaryOperator
+                            (
+                                new AddBinaryOperator
+                                (
+                                    new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                    new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
+                            ),
+                            null,
+                            null,
+                            true,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new SubtractBinaryOperator
+                                (
+                                    new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                    new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
+                            ),
+                            null,
+                            null,
+                            true,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new MultiplyBinaryOperator
+                                (
+                                    new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                    new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
+                            ),
+                            null,
+                            null,
+                            true,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new DivideBinaryOperator
+                                (
+                                    new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                    new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
+                            ),
+                            null,
+                            null,
+                            true,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new ModuloBinaryOperator
+                                (
+                                    new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                    new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName))
+                            ),
+                            null,
+                            null,
+                            true,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
+                            ),
+                            1,
+                            null,
+                            false,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandlingTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                new MemberSelectorOperator("UnitsOnOrder", new ParameterOperator(parameters, parameterName))
+                            ),
+                            1,
+                            1,
+                            true,
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(NullHandling_Data))]
-        public void NullHandling(IExpressionPart filterBody, object unitsInStock, object unitsOnOrder, bool expected, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(NullHandling_Data), MemberType = typeof(FilterTests))]
+        public void NullHandling(NullHandlingTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
-            bool result = RunFilter(filter, new Product { UnitsInStock = ToNullable<short>(unitsInStock), UnitsOnOrder = ToNullable<short>(unitsOnOrder) });
-
+            bool result = RunFilter(filter, new Product { UnitsInStock = ToNullable<short>(theoryData.UnitsInStock), UnitsOnOrder = ToNullable<short>(theoryData.UnitsOnOrder) });
             //assert
-            Assert.Equal(expected, result);
+            Assert.Equal(theoryData.ExpectedResult, result);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> NullHandling_LiteralNull_Data
+        public class NullHandling_LiteralNullTheoryData(IExpressionPart filterBody, object unitsInStock, bool expectedResult, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public object UnitsInStock { get; } = unitsInStock;
+            public bool ExpectedResult { get; } = expectedResult;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<NullHandling_LiteralNullTheoryData> NullHandling_LiteralNull_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new NullHandling_LiteralNullTheoryData
                         (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new ConstantOperator(null)
-                        ),
-                        null,
-                        true,
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new NotEqualsBinaryOperator
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                new ConstantOperator(null)
+                            ),
+                            null,
+                            true,
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new NullHandling_LiteralNullTheoryData
                         (
-                            new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
-                            new ConstantOperator(null)
-                        ),
-                        null,
-                        false,
-                        parameters
-                    }
-                };
+                            new NotEqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("UnitsInStock", new ParameterOperator(parameters, parameterName)),
+                                new ConstantOperator(null)
+                            ),
+                            null,
+                            false,
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(NullHandling_LiteralNull_Data))]
-        public void NullHandling_LiteralNull(IExpressionPart filterBody, object unitsInStock, bool expected, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(NullHandling_LiteralNull_Data), MemberType = typeof(FilterTests))]
+        public void NullHandling_LiteralNull(NullHandling_LiteralNullTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
-            bool result = RunFilter(filter, new Product { UnitsInStock = ToNullable<short>(unitsInStock) });
+            bool result = RunFilter(filter, new Product { UnitsInStock = ToNullable<short>(theoryData.UnitsInStock) });
 
             //assert
-            Assert.Equal(expected, result);
+            Assert.Equal(theoryData.ExpectedResult, result);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
         #endregion NULL  handling
 
-        public static List<object[]> ComparisonsInvolvingCastsAndNullableValues_Data
+        public class ComparisonsInvolvingCastsAndNullableValuesTheoryData(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<ComparisonsInvolvingCastsAndNullableValuesTheoryData> ComparisonsInvolvingCastsAndNullableValues_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new GreaterThanBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new ComparisonsInvolvingCastsAndNullableValuesTheoryData
                         (
-                            new IndexOfOperator
+                            new GreaterThanBinaryOperator
                             (
-                                new ConstantOperator("hello"),
-                                new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                new IndexOfOperator
+                                (
+                                    new ConstantOperator("hello"),
+                                    new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertOperator
+                                (
+                                    new MemberSelectorOperator("UIntProp", new ParameterOperator(parameters, parameterName)),
+                                    typeof(int?)
+                                )
                             ),
-                            new ConvertOperator
-                            (
-                                new MemberSelectorOperator("UIntProp", new ParameterOperator(parameters, parameterName)),
-                                typeof(int?)
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new ComparisonsInvolvingCastsAndNullableValuesTheoryData
                         (
-                            new IndexOfOperator
+                            new GreaterThanBinaryOperator
                             (
-                                new ConstantOperator("hello"),
-                                new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                new IndexOfOperator
+                                (
+                                    new ConstantOperator("hello"),
+                                    new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertOperator
+                                (
+                                    new MemberSelectorOperator("ULongProp", new ParameterOperator(parameters, parameterName)),
+                                    typeof(int?)
+                                )
                             ),
-                            new ConvertOperator
-                            (
-                                new MemberSelectorOperator("ULongProp", new ParameterOperator(parameters, parameterName)),
-                                typeof(int?)
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new ComparisonsInvolvingCastsAndNullableValuesTheoryData
                         (
-                            new IndexOfOperator
+                            new GreaterThanBinaryOperator
                             (
-                                new ConstantOperator("hello"),
-                                new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                new IndexOfOperator
+                                (
+                                    new ConstantOperator("hello"),
+                                    new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertOperator
+                                (
+                                    new MemberSelectorOperator("UShortProp", new ParameterOperator(parameters, parameterName)),
+                                    typeof(int?)
+                                )
                             ),
-                            new ConvertOperator
-                            (
-                                new MemberSelectorOperator("UShortProp", new ParameterOperator(parameters, parameterName)),
-                                typeof(int?)
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new ComparisonsInvolvingCastsAndNullableValuesTheoryData
                         (
-                            new IndexOfOperator
+                            new GreaterThanBinaryOperator
                             (
-                                new ConstantOperator("hello"),
-                                new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                new IndexOfOperator
+                                (
+                                    new ConstantOperator("hello"),
+                                    new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertOperator
+                                (
+                                    new MemberSelectorOperator("NullableUShortProp", new ParameterOperator(parameters, parameterName)),
+                                    typeof(int?)
+                                )
                             ),
-                            new ConvertOperator
-                            (
-                                new MemberSelectorOperator("NullableUShortProp", new ParameterOperator(parameters, parameterName)),
-                                typeof(int?)
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new ComparisonsInvolvingCastsAndNullableValuesTheoryData
                         (
-                            new IndexOfOperator
+                            new GreaterThanBinaryOperator
                             (
-                                new ConstantOperator("hello"),
-                                new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                new IndexOfOperator
+                                (
+                                    new ConstantOperator("hello"),
+                                    new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertOperator
+                                (
+                                    new MemberSelectorOperator("NullableUIntProp", new ParameterOperator(parameters, parameterName)),
+                                    typeof(int?)
+                                )
                             ),
-                            new ConvertOperator
-                            (
-                                new MemberSelectorOperator("NullableUIntProp", new ParameterOperator(parameters, parameterName)),
-                                typeof(int?)
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new ComparisonsInvolvingCastsAndNullableValuesTheoryData
                         (
-                            new IndexOfOperator
+                            new GreaterThanBinaryOperator
                             (
-                                new ConstantOperator("hello"),
-                                new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                new IndexOfOperator
+                                (
+                                    new ConstantOperator("hello"),
+                                    new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertOperator
+                                (
+                                    new MemberSelectorOperator("NullableULongProp", new ParameterOperator(parameters, parameterName)),
+                                    typeof(int?)
+                                )
                             ),
-                            new ConvertOperator
-                            (
-                                new MemberSelectorOperator("NullableULongProp", new ParameterOperator(parameters, parameterName)),
-                                typeof(int?)
-                            )
-                        ),
-                        parameters
-                    }
-                };
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(ComparisonsInvolvingCastsAndNullableValues_Data))]
-        public void ComparisonsInvolvingCastsAndNullableValues(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(ComparisonsInvolvingCastsAndNullableValues_Data), MemberType = typeof(FilterTests))]
+        public void ComparisonsInvolvingCastsAndNullableValues(ComparisonsInvolvingCastsAndNullableValuesTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<DataTypes>();
@@ -1148,8 +1261,8 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
@@ -1291,11 +1404,11 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 {
                     Category = new Category
                     {
-                        EnumerableProducts = new Product[]
-                        {
+                        EnumerableProducts =
+                        [
                             new Product { ProductName = "Snacks" },
                             new Product { ProductName = "NonSnacks" }
-                        }
+                        ]
                     }
                 }
             );
@@ -1307,10 +1420,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 {
                     Category = new Category
                     {
-                        EnumerableProducts = new Product[]
-                        {
+                        EnumerableProducts =
+                        [
                             new Product { ProductName = "NonSnacks" }
-                        }
+                        ]
                     }
                 }
             );
@@ -1357,8 +1470,8 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     {
                         QueryableProducts = new Product[]
                         {
-                            new Product { ProductName = "Snacks" },
-                            new Product { ProductName = "NonSnacks" }
+                            new() { ProductName = "Snacks" },
+                            new() { ProductName = "NonSnacks" }
                         }.AsQueryable()
                     }
                 }
@@ -1373,7 +1486,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     {
                         QueryableProducts = new Product[]
                         {
-                            new Product { ProductName = "NonSnacks" }
+                            new() { ProductName = "NonSnacks" }
                         }.AsQueryable()
                     }
                 }
@@ -1406,308 +1519,351 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public static List<object[]> AnyInOnNavigation_Data
+        public class AnyInOnNavigationTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<AnyInOnNavigationTheoryData> AnyInOnNavigation_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new AnyOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new AnyInOnNavigationTheoryData
                         (
-                            parameters,
-                            new MemberSelectorOperator
+                            new AnyOperator
                             (
-                                "QueryableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new InOperator
-                            (
-                                new MemberSelectorOperator("ProductID", new ParameterOperator(parameters, "P")),
-                                new CollectionConstantOperator
+                                parameters,
+                                new MemberSelectorOperator
                                 (
-                                    new List<object>{ 1 },
-                                    typeof(int)
-                                )
+                                    "QueryableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new InOperator
+                                (
+                                    new MemberSelectorOperator("ProductID", new ParameterOperator(parameters, "P")),
+                                    new CollectionConstantOperator
+                                    (
+                                        [1],
+                                        typeof(int)
+                                    )
+                                ),
+                                "P"
                             ),
-                            "P"
-                        ),
-                        "$it => $it.Category.QueryableProducts.Any(P => System.Collections.Generic.List`1[System.Int32].Contains(P.ProductID))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new AnyOperator
+                            "$it => $it.Category.QueryableProducts.Any(P => System.Collections.Generic.List`1[System.Int32].Contains(P.ProductID))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AnyInOnNavigationTheoryData
                         (
-                            parameters,
-                            new MemberSelectorOperator
+                            new AnyOperator
                             (
-                                "EnumerableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new InOperator
-                            (
-                                new MemberSelectorOperator("ProductID", new ParameterOperator(parameters, "P")),
-                                new CollectionConstantOperator
+                                parameters,
+                                new MemberSelectorOperator
                                 (
-                                    new List<object>{ 1 },
-                                    typeof(int)
-                                )
+                                    "EnumerableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new InOperator
+                                (
+                                    new MemberSelectorOperator("ProductID", new ParameterOperator(parameters, "P")),
+                                    new CollectionConstantOperator
+                                    (
+                                        [1],
+                                        typeof(int)
+                                    )
+                                ),
+                                "P"
                             ),
-                            "P"
-                        ),
-                        "$it => $it.Category.EnumerableProducts.Any(P => System.Collections.Generic.List`1[System.Int32].Contains(P.ProductID))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new AnyOperator
+                            "$it => $it.Category.EnumerableProducts.Any(P => System.Collections.Generic.List`1[System.Int32].Contains(P.ProductID))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AnyInOnNavigationTheoryData
                         (
-                            parameters,
-                            new MemberSelectorOperator
+                            new AnyOperator
                             (
-                                "QueryableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new InOperator
-                            (
-                                new MemberSelectorOperator("GuidProperty", new ParameterOperator(parameters, "P")),
-                                new CollectionConstantOperator
+                                parameters,
+                                new MemberSelectorOperator
                                 (
-                                    new List<object>{ new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7") },
-                                    typeof(Guid)
-                                )
+                                    "QueryableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new InOperator
+                                (
+                                    new MemberSelectorOperator("GuidProperty", new ParameterOperator(parameters, "P")),
+                                    new CollectionConstantOperator
+                                    (
+                                        [new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7")],
+                                        typeof(Guid)
+                                    )
+                                ),
+                                "P"
                             ),
-                            "P"
-                        ),
-                        "$it => $it.Category.QueryableProducts.Any(P => System.Collections.Generic.List`1[System.Guid].Contains(P.GuidProperty))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new AnyOperator
+                            "$it => $it.Category.QueryableProducts.Any(P => System.Collections.Generic.List`1[System.Guid].Contains(P.GuidProperty))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AnyInOnNavigationTheoryData
                         (
-                            parameters,
-                            new MemberSelectorOperator
+                            new AnyOperator
                             (
-                                "EnumerableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new InOperator
-                            (
-                                new MemberSelectorOperator("GuidProperty", new ParameterOperator(parameters, "P")),
-                                new CollectionConstantOperator
+                                parameters,
+                                new MemberSelectorOperator
                                 (
-                                    new List<object>{ new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7") },
-                                    typeof(Guid)
-                                )
+                                    "EnumerableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new InOperator
+                                (
+                                    new MemberSelectorOperator("GuidProperty", new ParameterOperator(parameters, "P")),
+                                    new CollectionConstantOperator
+                                    (
+                                        [new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7")],
+                                        typeof(Guid)
+                                    )
+                                ),
+                                "P"
                             ),
-                            "P"
-                        ),
-                       "$it => $it.Category.EnumerableProducts.Any(P => System.Collections.Generic.List`1[System.Guid].Contains(P.GuidProperty))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new AnyOperator
+                           "$it => $it.Category.EnumerableProducts.Any(P => System.Collections.Generic.List`1[System.Guid].Contains(P.GuidProperty))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AnyInOnNavigationTheoryData
                         (
-                            parameters,
-                            new MemberSelectorOperator
+                            new AnyOperator
                             (
-                                "QueryableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new InOperator
-                            (
-                                new MemberSelectorOperator("NullableGuidProperty", new ParameterOperator(parameters, "P")),
-                                new CollectionConstantOperator
+                                parameters,
+                                new MemberSelectorOperator
                                 (
-                                    new List<object>{ new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7") },
-                                    typeof(Guid?)
-                                )
+                                    "QueryableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new InOperator
+                                (
+                                    new MemberSelectorOperator("NullableGuidProperty", new ParameterOperator(parameters, "P")),
+                                    new CollectionConstantOperator
+                                    (
+                                        [new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7")],
+                                        typeof(Guid?)
+                                    )
+                                ),
+                                "P"
                             ),
-                            "P"
-                        ),
-                        "$it => $it.Category.QueryableProducts.Any(P => System.Collections.Generic.List`1[System.Nullable`1[System.Guid]].Contains(P.NullableGuidProperty))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new AnyOperator
+                            "$it => $it.Category.QueryableProducts.Any(P => System.Collections.Generic.List`1[System.Nullable`1[System.Guid]].Contains(P.NullableGuidProperty))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AnyInOnNavigationTheoryData
                         (
-                            parameters,
-                            new MemberSelectorOperator
+                            new AnyOperator
                             (
-                                "EnumerableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new InOperator
-                            (
-                                new MemberSelectorOperator("NullableGuidProperty", new ParameterOperator(parameters, "P")),
-                                new CollectionConstantOperator
+                                parameters,
+                                new MemberSelectorOperator
                                 (
-                                    new List<object>{ new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7") },
-                                    typeof(Guid?)
-                                )
+                                    "EnumerableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new InOperator
+                                (
+                                    new MemberSelectorOperator("NullableGuidProperty", new ParameterOperator(parameters, "P")),
+                                    new CollectionConstantOperator
+                                    (
+                                        [new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7")],
+                                        typeof(Guid?)
+                                    )
+                                ),
+                                "P"
                             ),
-                            "P"
-                        ),
-                       "$it => $it.Category.EnumerableProducts.Any(P => System.Collections.Generic.List`1[System.Nullable`1[System.Guid]].Contains(P.NullableGuidProperty))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new AnyOperator
+                           "$it => $it.Category.EnumerableProducts.Any(P => System.Collections.Generic.List`1[System.Nullable`1[System.Guid]].Contains(P.NullableGuidProperty))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AnyInOnNavigationTheoryData
                         (
-                            parameters,
-                            new MemberSelectorOperator
+                            new AnyOperator
                             (
-                                "QueryableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new InOperator
-                            (
-                                new MemberSelectorOperator("Discontinued", new ParameterOperator(parameters, "P")),
-                                new CollectionConstantOperator
+                                parameters,
+                                new MemberSelectorOperator
                                 (
-                                    new List<object>{ false, null },
-                                    typeof(bool?)
-                                )
+                                    "QueryableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new InOperator
+                                (
+                                    new MemberSelectorOperator("Discontinued", new ParameterOperator(parameters, "P")),
+                                    new CollectionConstantOperator
+                                    (
+                                        [false, null],
+                                        typeof(bool?)
+                                    )
+                                ),
+                                "P"
                             ),
-                            "P"
-                        ),
-                        "$it => $it.Category.QueryableProducts.Any(P => System.Collections.Generic.List`1[System.Nullable`1[System.Boolean]].Contains(P.Discontinued))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new AnyOperator
+                            "$it => $it.Category.QueryableProducts.Any(P => System.Collections.Generic.List`1[System.Nullable`1[System.Boolean]].Contains(P.Discontinued))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AnyInOnNavigationTheoryData
                         (
-                            parameters,
-                            new MemberSelectorOperator
+                            new AnyOperator
                             (
-                                "EnumerableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new InOperator
-                            (
-                                new MemberSelectorOperator("Discontinued", new ParameterOperator(parameters, "P")),
-                                new CollectionConstantOperator
+                                parameters,
+                                new MemberSelectorOperator
                                 (
-                                    new List<object>{ false, null },
-                                    typeof(bool?)
-                                )
+                                    "EnumerableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new InOperator
+                                (
+                                    new MemberSelectorOperator("Discontinued", new ParameterOperator(parameters, "P")),
+                                    new CollectionConstantOperator
+                                    (
+                                        [false, null],
+                                        typeof(bool?)
+                                    )
+                                ),
+                                "P"
                             ),
-                            "P"
-                        ),
-                       "$it => $it.Category.EnumerableProducts.Any(P => System.Collections.Generic.List`1[System.Nullable`1[System.Boolean]].Contains(P.Discontinued))",
-                        parameters
-                    }
-                };
+                           "$it => $it.Category.EnumerableProducts.Any(P => System.Collections.Generic.List`1[System.Nullable`1[System.Boolean]].Contains(P.Discontinued))",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(AnyInOnNavigation_Data))]
-        public void AnyInOnNavigation(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(AnyInOnNavigation_Data), MemberType = typeof(FilterTests))]
+        public void AnyInOnNavigation(AnyInOnNavigationTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> AnyOnNavigation_Contradiction_Data
+        public class AnyOnNavigation_ContradictionTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<AnyOnNavigation_ContradictionTheoryData> AnyOnNavigation_Contradiction_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new AnyOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new AnyOnNavigation_ContradictionTheoryData
                         (
-                            parameters,
-                            new MemberSelectorOperator
+                            new AnyOperator
                             (
-                                "QueryableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new ConstantOperator(false),
-                            "P"
-                        ),
-                       "$it => $it.Category.QueryableProducts.Any(P => False)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new AnyOperator
-                        (
-                            parameters,
-                            new MemberSelectorOperator
-                            (
-                                "QueryableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new AndBinaryOperator
-                            (
-                                new ConstantOperator(false),
-                                new EqualsBinaryOperator
+                                parameters,
+                                new MemberSelectorOperator
                                 (
-                                    new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, "P")),
-                                    new ConstantOperator("Snacks")
+                                    "QueryableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(false),
+                                "P"
+                            ),
+                           "$it => $it.Category.QueryableProducts.Any(P => False)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AnyOnNavigation_ContradictionTheoryData
+                        (
+                            new AnyOperator
+                            (
+                                parameters,
+                                new MemberSelectorOperator
+                                (
+                                    "QueryableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new AndBinaryOperator
+                                (
+                                    new ConstantOperator(false),
+                                    new EqualsBinaryOperator
+                                    (
+                                        new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, "P")),
+                                        new ConstantOperator("Snacks")
+                                    )
+                                ),
+                                "P"
+                            ),
+                           "$it => $it.Category.QueryableProducts.Any(P => (False AndAlso (P.ProductName == \"Snacks\")))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AnyOnNavigation_ContradictionTheoryData
+                        (
+                            new AnyOperator
+                            (
+                                new MemberSelectorOperator
+                                (
+                                    "QueryableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
                                 )
                             ),
-                            "P"
-                        ),
-                       "$it => $it.Category.QueryableProducts.Any(P => (False AndAlso (P.ProductName == \"Snacks\")))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new AnyOperator
-                        (
-                            new MemberSelectorOperator
-                            (
-                                "QueryableProducts",
-                                new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                       "$it => $it.Category.QueryableProducts.Any()",
-                        parameters
-                    }
-                };
+                           "$it => $it.Category.QueryableProducts.Any()",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(AnyOnNavigation_Contradiction_Data))]
-        public void AnyOnNavigation_Contradiction(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(AnyOnNavigation_Contradiction_Data), MemberType = typeof(FilterTests))]
+        public void AnyOnNavigation_Contradiction(AnyOnNavigation_ContradictionTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
@@ -1723,10 +1879,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 {
                     Category = new Category
                     {
-                        EnumerableProducts = new Product[]
-                        {
+                        EnumerableProducts =
+                        [
                             new Product { ProductName = "Snacks" }
-                        }
+                        ]
                     }
                 }
             );
@@ -1771,10 +1927,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 {
                     Category = new Category
                     {
-                        EnumerableProducts = new Product[]
-                        {
+                        EnumerableProducts =
+                        [
                             new Product { ProductName = "Snacks" }
-                        }
+                        ]
                     }
                 }
             );
@@ -2104,13 +2260,13 @@ namespace LogicBuilder.Expressions.Utils.Tests
             bool result1 = RunFilter
             (
                 filter,
-                new Product { AlternateIDs = new[] { 1, 2, 42 } }
+                new Product { AlternateIDs = [1, 2, 42] }
             );
 
             bool result2 = RunFilter
             (
                 filter,
-                new Product { AlternateIDs = new[] { 1, 2 } }
+                new Product { AlternateIDs = [1, 2] }
             );
 
             //assert
@@ -2172,7 +2328,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             bool result = RunFilter
             (
                 filter,
-                new Product { AlternateAddresses = new[] { new Address { City = "Redmond" } } }
+                new Product { AlternateAddresses = [new Address { City = "Redmond" }] }
             );
 
             //assert
@@ -2932,7 +3088,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         {
             //act
             var filter = CreateFilter<Product>();
-            bool result = RunFilter(filter, new Product { DiscontinuedDate = new DateTime(2000, 10, 8) });
+            bool result = RunFilter(filter, new Product { DiscontinuedDate = new DateTime(2000, 10, 8, 0, 0, 0, DateTimeKind.Unspecified) });
 
             //assert
             AssertFilterStringIsCorrect(filter, "$it => ($it.DiscontinuedDate.Value.Day == 8)");
@@ -3098,1623 +3254,1948 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public static List<object[]> DateTimeOffsetFunctions_Data
+        public class DateTimeOffsetFunctionsTheoryData(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateTimeOffsetFunctionsTheoryData> DateTimeOffsetFunctions_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetFunctionsTheoryData
                         (
-                            new YearOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                new YearOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ($it.DiscontinuedOffset.Year == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.DiscontinuedOffset.Year == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetFunctionsTheoryData
                         (
-                            new MonthOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                new MonthOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ($it.DiscontinuedOffset.Month == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.DiscontinuedOffset.Month == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetFunctionsTheoryData
                         (
-                            new DayOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                new DayOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ($it.DiscontinuedOffset.Day == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.DiscontinuedOffset.Day == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetFunctionsTheoryData
                         (
-                            new HourOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                new HourOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ($it.DiscontinuedOffset.Hour == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.DiscontinuedOffset.Hour == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetFunctionsTheoryData
                         (
-                            new MinuteOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                new MinuteOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ($it.DiscontinuedOffset.Minute == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.DiscontinuedOffset.Minute == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetFunctionsTheoryData
                         (
-                            new SecondOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                new SecondOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedOffset", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ($it.DiscontinuedOffset.Second == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.DiscontinuedOffset.Second == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeOffsetFunctionsTheoryData
                         (
-                            new NowDateTimeOperator(),
-                            new ConstantOperator(new DateTimeOffset(new DateTime(2016, 11, 8), new TimeSpan(0)))
-                        ),
-                       "$it => (DateTimeOffset.UtcNow == 11/08/2016 00:00:00 +00:00)",
-                        parameters
-                    },
-                };
+                            new EqualsBinaryOperator
+                            (
+                                new NowDateTimeOperator(),
+                                new ConstantOperator(new DateTimeOffset(new DateTime(2016, 11, 8, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0)))
+                            ),
+                           "$it => (DateTimeOffset.UtcNow == 11/08/2016 00:00:00 +00:00)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateTimeOffsetFunctions_Data))]
-        public void DateTimeOffsetFunctions(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateTimeOffsetFunctions_Data), MemberType = typeof(FilterTests))]
+        public void DateTimeOffsetFunctions(DateTimeOffsetFunctionsTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DateTimeFunctions_Data
+        public class DateTimeFunctionsTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateTimeFunctionsTheoryData> DateTimeFunctions_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateTimeFunctionsTheoryData
                         (
-                            new YearOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                new YearOperator
+                                (
+                                    new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ({0}.Year == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ({0}.Year == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeFunctionsTheoryData
                         (
-                            new MonthOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                new MonthOperator
+                                (
+                                    new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ({0}.Month == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ({0}.Month == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeFunctionsTheoryData
                         (
-                            new DayOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                new DayOperator
+                                (
+                                    new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ({0}.Day == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ({0}.Day == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeFunctionsTheoryData
                         (
-                            new HourOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                new HourOperator
+                                (
+                                    new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ({0}.Hour == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ({0}.Hour == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeFunctionsTheoryData
                         (
-                            new MinuteOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                new MinuteOperator
+                                (
+                                    new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ({0}.Minute == 100)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ({0}.Minute == 100)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeFunctionsTheoryData
                         (
-                            new SecondOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                new SecondOperator
+                                (
+                                    new MemberSelectorOperator("Birthday", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(100)
                             ),
-                            new ConstantOperator(100)
-                        ),
-                       "$it => ({0}.Second == 100)",
-                        parameters
-                    },
-                };
+                           "$it => ({0}.Second == 100)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateTimeFunctions_Data))]
-        public void DateTimeFunctions(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateTimeFunctions_Data), MemberType = typeof(FilterTests))]
+        public void DateTimeFunctions(DateTimeFunctionsTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, String.Format(expression, "$it.Birthday"));
+            AssertFilterStringIsCorrect(filter, String.Format(theoryData.ExpectedExpression, "$it.Birthday"));
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DateFunctions_Nullable_Data
+        public class DateFunctions_NullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateFunctions_NullableTheoryData> DateFunctions_Nullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateFunctions_NullableTheoryData
                         (
-                            new YearOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableDateProperty", new ParameterOperator(parameters, parameterName))
+                                new YearOperator
+                                (
+                                    new MemberSelectorOperator("NullableDateProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(2015)
                             ),
-                            new ConstantOperator(2015)
-                        ),
-                       "$it => ($it.NullableDateProperty.Value.Year == 2015)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.NullableDateProperty.Value.Year == 2015)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunctions_NullableTheoryData
                         (
-                            new MonthOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableDateProperty", new ParameterOperator(parameters, parameterName))
+                                new MonthOperator
+                                (
+                                    new MemberSelectorOperator("NullableDateProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(12)
                             ),
-                            new ConstantOperator(12)
-                        ),
-                       "$it => ($it.NullableDateProperty.Value.Month == 12)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.NullableDateProperty.Value.Month == 12)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunctions_NullableTheoryData
                         (
-                            new DayOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableDateProperty", new ParameterOperator(parameters, parameterName))
+                                new DayOperator
+                                (
+                                    new MemberSelectorOperator("NullableDateProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(23)
                             ),
-                            new ConstantOperator(23)
-                        ),
-                       "$it => ($it.NullableDateProperty.Value.Day == 23)",
-                        parameters
-                    },
-                };
+                           "$it => ($it.NullableDateProperty.Value.Day == 23)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateFunctions_Nullable_Data))]
-        public void DateFunctions_Nullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateFunctions_Nullable_Data), MemberType = typeof(FilterTests))]
+        public void DateFunctions_Nullable(DateFunctions_NullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DateOnlyFunctions_Nullable_Data
+        public class DateOnlyFunctions_NullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateOnlyFunctions_NullableTheoryData> DateOnlyFunctions_Nullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunctions_NullableTheoryData
                         (
-                            new YearOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableDateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new YearOperator
+                                (
+                                    new MemberSelectorOperator("NullableDateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(2015)
                             ),
-                            new ConstantOperator(2015)
-                        ),
-                       "$it => ($it.NullableDateOnlyProperty.Value.Year == 2015)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.NullableDateOnlyProperty.Value.Year == 2015)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunctions_NullableTheoryData
                         (
-                            new MonthOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableDateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new MonthOperator
+                                (
+                                    new MemberSelectorOperator("NullableDateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(12)
                             ),
-                            new ConstantOperator(12)
-                        ),
-                       "$it => ($it.NullableDateOnlyProperty.Value.Month == 12)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.NullableDateOnlyProperty.Value.Month == 12)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunctions_NullableTheoryData
                         (
-                            new DayOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableDateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new DayOperator
+                                (
+                                    new MemberSelectorOperator("NullableDateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(23)
                             ),
-                            new ConstantOperator(23)
-                        ),
-                       "$it => ($it.NullableDateOnlyProperty.Value.Day == 23)",
-                        parameters
-                    },
-                };
+                           "$it => ($it.NullableDateOnlyProperty.Value.Day == 23)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateOnlyFunctions_Nullable_Data))]
-        public void DateOnlyFunctions_Nullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateOnlyFunctions_Nullable_Data), MemberType = typeof(FilterTests))]
+        public void DateOnlyFunctions_Nullable(DateOnlyFunctions_NullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DateFunctions_NonNullable_Data
+        public class DateFunctions_NonNullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateFunctions_NonNullableTheoryData> DateFunctions_NonNullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateFunctions_NonNullableTheoryData
                         (
-                            new YearOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DateProperty", new ParameterOperator(parameters, parameterName))
+                                new YearOperator
+                                (
+                                    new MemberSelectorOperator("DateProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(2015)
                             ),
-                            new ConstantOperator(2015)
-                        ),
-                        "$it => ($it.DateProperty.Year == 2015)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            "$it => ($it.DateProperty.Year == 2015)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunctions_NonNullableTheoryData
                         (
-                            new MonthOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DateProperty", new ParameterOperator(parameters, parameterName))
+                                new MonthOperator
+                                (
+                                    new MemberSelectorOperator("DateProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(12)
                             ),
-                            new ConstantOperator(12)
-                        ),
-                       "$it => ($it.DateProperty.Month == 12)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.DateProperty.Month == 12)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunctions_NonNullableTheoryData
                         (
-                            new DayOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DateProperty", new ParameterOperator(parameters, parameterName))
+                                new DayOperator
+                                (
+                                    new MemberSelectorOperator("DateProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(23)
                             ),
-                            new ConstantOperator(23)
-                        ),
-                       "$it => ($it.DateProperty.Day == 23)",
-                        parameters
-                    },
-                };
+                           "$it => ($it.DateProperty.Day == 23)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateFunctions_NonNullable_Data))]
-        public void DateFunctions_NonNullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateFunctions_NonNullable_Data), MemberType = typeof(FilterTests))]
+        public void DateFunctions_NonNullable(DateFunctions_NonNullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DateOnlyFunctions_NonNullable_Data
+        public class DateOnlyFunctions_NonNullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateOnlyFunctions_NonNullableTheoryData> DateOnlyFunctions_NonNullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunctions_NonNullableTheoryData
                         (
-                            new YearOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new YearOperator
+                                (
+                                    new MemberSelectorOperator("DateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(2015)
                             ),
-                            new ConstantOperator(2015)
-                        ),
-                        "$it => ($it.DateOnlyProperty.Year == 2015)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            "$it => ($it.DateOnlyProperty.Year == 2015)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunctions_NonNullableTheoryData
                         (
-                            new MonthOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new MonthOperator
+                                (
+                                    new MemberSelectorOperator("DateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(12)
                             ),
-                            new ConstantOperator(12)
-                        ),
-                       "$it => ($it.DateOnlyProperty.Month == 12)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.DateOnlyProperty.Month == 12)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunctions_NonNullableTheoryData
                         (
-                            new DayOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new DayOperator
+                                (
+                                    new MemberSelectorOperator("DateOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(23)
                             ),
-                            new ConstantOperator(23)
-                        ),
-                       "$it => ($it.DateOnlyProperty.Day == 23)",
-                        parameters
-                    },
-                };
+                           "$it => ($it.DateOnlyProperty.Day == 23)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateOnlyFunctions_NonNullable_Data))]
-        public void DateOnlyFunctions_NonNullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateOnlyFunctions_NonNullable_Data), MemberType = typeof(FilterTests))]
+        public void DateOnlyFunctions_NonNullable(DateOnlyFunctions_NonNullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> TimeOfDayFunctions_Nullable_Data
+        public class TimeOfDayFunctions_NullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<TimeOfDayFunctions_NullableTheoryData> TimeOfDayFunctions_Nullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new TimeOfDayFunctions_NullableTheoryData
                         (
-                            new HourOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableTimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                new HourOperator
+                                (
+                                    new MemberSelectorOperator("NullableTimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(10)
                             ),
-                            new ConstantOperator(10)
-                        ),
-                        "$it => ($it.NullableTimeOfDayProperty.Value.Hours == 10)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            "$it => ($it.NullableTimeOfDayProperty.Value.Hours == 10)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOfDayFunctions_NullableTheoryData
                         (
-                            new MinuteOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableTimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                new MinuteOperator
+                                (
+                                    new MemberSelectorOperator("NullableTimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(20)
                             ),
-                            new ConstantOperator(20)
-                        ),
-                       "$it => ($it.NullableTimeOfDayProperty.Value.Minutes == 20)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.NullableTimeOfDayProperty.Value.Minutes == 20)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOfDayFunctions_NullableTheoryData
                         (
-                            new SecondOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableTimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                new SecondOperator
+                                (
+                                    new MemberSelectorOperator("NullableTimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(30)
                             ),
-                            new ConstantOperator(30)
-                        ),
-                       "$it => ($it.NullableTimeOfDayProperty.Value.Seconds == 30)",
-                        parameters
-                    },
-                };
+                           "$it => ($it.NullableTimeOfDayProperty.Value.Seconds == 30)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(TimeOfDayFunctions_Nullable_Data))]
-        public void TimeOfDayFunctions_Nullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(TimeOfDayFunctions_Nullable_Data), MemberType = typeof(FilterTests))]
+        public void TimeOfDayFunctions_Nullable(TimeOfDayFunctions_NullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> TimeOnlyFunctions_Nullable_Data
+        public class TimeOnlyFunctions_NullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<TimeOnlyFunctions_NullableTheoryData> TimeOnlyFunctions_Nullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunctions_NullableTheoryData
                         (
-                            new HourOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableTimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new HourOperator
+                                (
+                                    new MemberSelectorOperator("NullableTimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(10)
                             ),
-                            new ConstantOperator(10)
-                        ),
-                        "$it => ($it.NullableTimeOnlyProperty.Value.Hour == 10)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            "$it => ($it.NullableTimeOnlyProperty.Value.Hour == 10)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunctions_NullableTheoryData
                         (
-                            new MinuteOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableTimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new MinuteOperator
+                                (
+                                    new MemberSelectorOperator("NullableTimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(20)
                             ),
-                            new ConstantOperator(20)
-                        ),
-                       "$it => ($it.NullableTimeOnlyProperty.Value.Minute == 20)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.NullableTimeOnlyProperty.Value.Minute == 20)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunctions_NullableTheoryData
                         (
-                            new SecondOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableTimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new SecondOperator
+                                (
+                                    new MemberSelectorOperator("NullableTimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(30)
                             ),
-                            new ConstantOperator(30)
-                        ),
-                       "$it => ($it.NullableTimeOnlyProperty.Value.Second == 30)",
-                        parameters
-                    },
-                };
+                           "$it => ($it.NullableTimeOnlyProperty.Value.Second == 30)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(TimeOnlyFunctions_Nullable_Data))]
-        public void TimeOnlyFunctions_Nullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(TimeOnlyFunctions_Nullable_Data), MemberType = typeof(FilterTests))]
+        public void TimeOnlyFunctions_Nullable(TimeOnlyFunctions_NullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> TimeOfDayFunctions_NonNullable_Data
+        public class TimeOfDayFunctions_NonNullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<TimeOfDayFunctions_NonNullableTheoryData> TimeOfDayFunctions_NonNullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new TimeOfDayFunctions_NonNullableTheoryData
                         (
-                            new HourOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("TimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                new HourOperator
+                                (
+                                    new MemberSelectorOperator("TimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(10)
                             ),
-                            new ConstantOperator(10)
-                        ),
-                        "$it => ($it.TimeOfDayProperty.Hours == 10)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            "$it => ($it.TimeOfDayProperty.Hours == 10)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOfDayFunctions_NonNullableTheoryData
                         (
-                            new MinuteOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("TimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                new MinuteOperator
+                                (
+                                    new MemberSelectorOperator("TimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(20)
                             ),
-                            new ConstantOperator(20)
-                        ),
-                       "$it => ($it.TimeOfDayProperty.Minutes == 20)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.TimeOfDayProperty.Minutes == 20)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOfDayFunctions_NonNullableTheoryData
                         (
-                            new SecondOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("TimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                new SecondOperator
+                                (
+                                    new MemberSelectorOperator("TimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(30)
                             ),
-                            new ConstantOperator(30)
-                        ),
-                       "$it => ($it.TimeOfDayProperty.Seconds == 30)",
-                        parameters
-                    },
-                };
+                           "$it => ($it.TimeOfDayProperty.Seconds == 30)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(TimeOfDayFunctions_NonNullable_Data))]
-        public void TimeOfDayFunctions_NonNullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(TimeOfDayFunctions_NonNullable_Data), MemberType = typeof(FilterTests))]
+        public void TimeOfDayFunctions_NonNullable(TimeOfDayFunctions_NonNullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> TimeOnlyFunctions_NonNullable_Data
+        public class TimeOnlyFunctions_NonNullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<TimeOnlyFunctions_NonNullableTheoryData> TimeOnlyFunctions_NonNullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunctions_NonNullableTheoryData
                         (
-                            new HourOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("TimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new HourOperator
+                                (
+                                    new MemberSelectorOperator("TimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(10)
                             ),
-                            new ConstantOperator(10)
-                        ),
-                        "$it => ($it.TimeOnlyProperty.Hour == 10)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            "$it => ($it.TimeOnlyProperty.Hour == 10)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunctions_NonNullableTheoryData
                         (
-                            new MinuteOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("TimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new MinuteOperator
+                                (
+                                    new MemberSelectorOperator("TimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(20)
                             ),
-                            new ConstantOperator(20)
-                        ),
-                       "$it => ($it.TimeOnlyProperty.Minute == 20)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                           "$it => ($it.TimeOnlyProperty.Minute == 20)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunctions_NonNullableTheoryData
                         (
-                            new SecondOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("TimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new SecondOperator
+                                (
+                                    new MemberSelectorOperator("TimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(30)
                             ),
-                            new ConstantOperator(30)
-                        ),
-                       "$it => ($it.TimeOnlyProperty.Second == 30)",
-                        parameters
-                    },
-                };
+                           "$it => ($it.TimeOnlyProperty.Second == 30)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(TimeOnlyFunctions_NonNullable_Data))]
-        public void TimeOnlyFunctions_NonNullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(TimeOnlyFunctions_NonNullable_Data), MemberType = typeof(FilterTests))]
+        public void TimeOnlyFunctions_NonNullable(TimeOnlyFunctions_NonNullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> FractionalsecondsFunction_Nullable_Data
+        public class FractionalsecondsFunction_NullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<FractionalsecondsFunction_NullableTheoryData> FractionalsecondsFunction_Nullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new FractionalsecondsFunction_NullableTheoryData
                         (
-                            new FractionalSecondsOperator
+                            new EqualsBinaryOperator
                             (
+                                new FractionalSecondsOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(0.2m)
+                            ),
+                           "$it => ((Convert($it.DiscontinuedDate.Value.Millisecond) / 1000) == 0.2)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new FractionalsecondsFunction_NullableTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new FractionalSecondsOperator
+                                (
+                                    new MemberSelectorOperator("NullableTimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(0.2m)
+                            ),
+                           "$it => ((Convert($it.NullableTimeOfDayProperty.Value.Milliseconds) / 1000) == 0.2)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new FractionalsecondsFunction_NullableTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new FractionalSecondsOperator
+                                (
+                                    new MemberSelectorOperator("NullableTimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(0.2m)
+                            ),
+                           "$it => ((Convert($it.NullableTimeOnlyProperty.Value.Millisecond) / 1000) == 0.2)",
+                            parameters
+                        )
+                    ),
+                ];
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(FractionalsecondsFunction_Nullable_Data), MemberType = typeof(FilterTests))]
+        public void FractionalsecondsFunction_Nullable(FractionalsecondsFunction_NullableTheoryData theoryData)
+        {
+            //act
+            var filter = CreateFilter<Product>();
+
+            //assert
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
+
+            Expression<Func<T, bool>> CreateFilter<T>()
+                => GetFilter<T>
+                (
+                    theoryData.FilterBody,
+                    theoryData.Parameters
+                );
+        }
+
+        public class FractionalsecondsFunction_NonNullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<FractionalsecondsFunction_NonNullableTheoryData> FractionalsecondsFunction_NonNullable_Data
+        {
+            get
+            {
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new FractionalsecondsFunction_NonNullableTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new FractionalSecondsOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(0.2m)
+                            ),
+                           "$it => ((Convert($it.NonNullableDiscontinuedDate.Millisecond) / 1000) == 0.2)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new FractionalsecondsFunction_NonNullableTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new FractionalSecondsOperator
+                                (
+                                    new MemberSelectorOperator("TimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(0.2m)
+                            ),
+                           "$it => ((Convert($it.TimeOfDayProperty.Milliseconds) / 1000) == 0.2)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new FractionalsecondsFunction_NonNullableTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new FractionalSecondsOperator
+                                (
+                                    new MemberSelectorOperator("TimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(0.2m)
+                            ),
+                           "$it => ((Convert($it.TimeOnlyProperty.Millisecond) / 1000) == 0.2)",
+                            parameters
+                        )
+                    ),
+                ];
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(FractionalsecondsFunction_NonNullable_Data), MemberType = typeof(FilterTests))]
+        public void FractionalsecondsFunction_NonNullable(FractionalsecondsFunction_NonNullableTheoryData theoryData)
+        {
+            //act
+            var filter = CreateFilter<Product>();
+
+            //assert
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
+
+            Expression<Func<T, bool>> CreateFilter<T>()
+                => GetFilter<T>
+                (
+                    theoryData.FilterBody,
+                    theoryData.Parameters 
+                );
+        }
+
+        public class DateFunction_NullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateFunction_NullableTheoryData> DateFunction_Nullable_Data
+        {
+            get
+            {
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateFunction_NullableTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new Date(2015, 2, 26))
+                                )
+                            ),
+                            "$it => (((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day) == (((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunction_NullableTheoryData
+                        (
+                            new LessThanBinaryOperator
+                            (
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new Date(2016, 2, 26))
+                                )
+                            ),
+                            "$it => (((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day) < (((2016-02-26.Year * 10000) + (2016-02-26.Month * 100)) + 2016-02-26.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunction_NullableTheoryData
+                        (
+                            new GreaterThanOrEqualsBinaryOperator
+                            (
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new Date(2015, 2, 26))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                )
+                            ),
+                            "$it => ((((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day) >= ((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunction_NullableTheoryData
+                        (
+                            new NotEqualsBinaryOperator
+                            (
+                                new ConstantOperator(null),
                                 new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
                             ),
-                            new ConstantOperator(0.2m)
-                        ),
-                       "$it => ((Convert($it.DiscontinuedDate.Value.Millisecond) / 1000) == 0.2)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            "$it => (null != $it.DiscontinuedDate)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunction_NullableTheoryData
                         (
-                            new FractionalSecondsOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NullableTimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName)),
+                                new ConstantOperator(null)
                             ),
-                            new ConstantOperator(0.2m)
-                        ),
-                       "$it => ((Convert($it.NullableTimeOfDayProperty.Value.Milliseconds) / 1000) == 0.2)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new FractionalSecondsOperator
-                            (
-                                new MemberSelectorOperator("NullableTimeOnlyProperty", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new ConstantOperator(0.2m)
-                        ),
-                       "$it => ((Convert($it.NullableTimeOnlyProperty.Value.Millisecond) / 1000) == 0.2)",
-                        parameters
-                    },
-                };
+                            "$it => ($it.DiscontinuedDate == null)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(FractionalsecondsFunction_Nullable_Data))]
-        public void FractionalsecondsFunction_Nullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateFunction_Nullable_Data), MemberType = typeof(FilterTests))]
+        public void DateFunction_Nullable(DateFunction_NullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> FractionalsecondsFunction_NonNullable_Data
+        public class DateOnlyFunction_NullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateOnlyFunction_NullableTheoryData> DateOnlyFunction_Nullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunction_NullableTheoryData
                         (
-                            new FractionalSecondsOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new DateOnly(2015, 2, 26))
+                                )
                             ),
-                            new ConstantOperator(0.2m)
-                        ),
-                       "$it => ((Convert($it.NonNullableDiscontinuedDate.Millisecond) / 1000) == 0.2)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            "$it => (((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day) == (((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunction_NullableTheoryData
                         (
-                            new FractionalSecondsOperator
+                            new LessThanBinaryOperator
                             (
-                                new MemberSelectorOperator("TimeOfDayProperty", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new DateOnly(2016, 2, 26))
+                                )
                             ),
-                            new ConstantOperator(0.2m)
-                        ),
-                       "$it => ((Convert($it.TimeOfDayProperty.Milliseconds) / 1000) == 0.2)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            "$it => (((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day) < (((2016-02-26.Year * 10000) + (2016-02-26.Month * 100)) + 2016-02-26.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunction_NullableTheoryData
                         (
-                            new FractionalSecondsOperator
+                            new GreaterThanOrEqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("TimeOnlyProperty", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new DateOnly(2015, 2, 26))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new ConstantOperator(0.2m)
-                        ),
-                       "$it => ((Convert($it.TimeOnlyProperty.Millisecond) / 1000) == 0.2)",
-                        parameters
-                    },
-                };
+                            "$it => ((((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day) >= ((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunction_NullableTheoryData
+                        (
+                            new NotEqualsBinaryOperator
+                            (
+                                new ConstantOperator(null),
+                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => (null != $it.DiscontinuedDate)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunction_NullableTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName)),
+                                new ConstantOperator(null)
+                            ),
+                            "$it => ($it.DiscontinuedDate == null)",
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(FractionalsecondsFunction_NonNullable_Data))]
-        public void FractionalsecondsFunction_NonNullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateOnlyFunction_Nullable_Data), MemberType = typeof(FilterTests))]
+        public void DateOnlyFunction_Nullable(DateOnlyFunction_NullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DateFunction_Nullable_Data
+        public class DateFunction_NonNullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateFunction_NonNullableTheoryData> DateFunction_NonNullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new Date(2015, 2, 26))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new ConstantOperator(new Date(2015, 2, 26))
-                            )
-                        ),
-                        "$it => (((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day) == (((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanBinaryOperator
+                            "$it => (((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day) == (((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new LessThanBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new Date(2016, 2, 26))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new ConstantOperator(new Date(2016, 2, 26))
-                            )
-                        ),
-                        "$it => (((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day) < (((2016-02-26.Year * 10000) + (2016-02-26.Month * 100)) + 2016-02-26.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
+                            "$it => (((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day) < (((2016-02-26.Year * 10000) + (2016-02-26.Month * 100)) + 2016-02-26.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new GreaterThanOrEqualsBinaryOperator
                             (
-                                new ConstantOperator(new Date(2015, 2, 26))
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new Date(2015, 2, 26))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        "$it => ((((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day) >= ((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new NotEqualsBinaryOperator
-                        (
-                            new ConstantOperator(null),
-                            new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => (null != $it.DiscontinuedDate)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName)),
-                            new ConstantOperator(null)
-                        ),
-                        "$it => ($it.DiscontinuedDate == null)",
-                        parameters
-                    },
-                };
+                            "$it => ((((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day) >= ((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day))",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateFunction_Nullable_Data))]
-        public void DateFunction_Nullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateFunction_NonNullable_Data), MemberType = typeof(FilterTests))]
+        public void DateFunction_NonNullable(DateFunction_NonNullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DateOnlyFunction_Nullable_Data
+        public class DateOnlyFunction_NonNullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateOnlyFunction_NonNullableTheoryData> DateOnlyFunction_NonNullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new DateOnly(2015, 2, 26))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new ConstantOperator(new DateOnly(2015, 2, 26))
-                            )
-                        ),
-                        "$it => (((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day) == (((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanBinaryOperator
+                            "$it => (((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day) == (((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new LessThanBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new DateOnly(2016, 2, 26))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new ConstantOperator(new DateOnly(2016, 2, 26))
-                            )
-                        ),
-                        "$it => (((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day) < (((2016-02-26.Year * 10000) + (2016-02-26.Month * 100)) + 2016-02-26.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
+                            "$it => (((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day) < (((2016-02-26.Year * 10000) + (2016-02-26.Month * 100)) + 2016-02-26.Day))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateOnlyFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new GreaterThanOrEqualsBinaryOperator
                             (
-                                new ConstantOperator(new DateOnly(2015, 2, 26))
+                                new ConvertToNumericDateOperator
+                                (
+                                    new ConstantOperator(new DateOnly(2015, 2, 26))
+                                ),
+                                new ConvertToNumericDateOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        "$it => ((((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day) >= ((($it.DiscontinuedDate.Value.Year * 10000) + ($it.DiscontinuedDate.Value.Month * 100)) + $it.DiscontinuedDate.Value.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new NotEqualsBinaryOperator
-                        (
-                            new ConstantOperator(null),
-                            new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => (null != $it.DiscontinuedDate)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName)),
-                            new ConstantOperator(null)
-                        ),
-                        "$it => ($it.DiscontinuedDate == null)",
-                        parameters
-                    },
-                };
+                            "$it => ((((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day) >= ((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day))",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateOnlyFunction_Nullable_Data))]
-        public void DateOnlyFunction_Nullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateOnlyFunction_NonNullable_Data), MemberType = typeof(FilterTests))]
+        public void DateOnlyFunction_NonNullable(DateOnlyFunction_NonNullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DateFunction_NonNullable_Data
+        public class TimeFunction_NullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<TimeFunction_NullableTheoryData> TimeFunction_Nullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new TimeFunction_NullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new ConstantOperator(new Date(2015, 2, 26))
-                            )
-                        ),
-                        "$it => (((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day) == (((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanBinaryOperator
+                            "$it => (((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))) == ((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeFunction_NullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new GreaterThanOrEqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new ConstantOperator(new Date(2016, 2, 26))
-                            )
-                        ),
-                        "$it => (((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day) < (((2016-02-26.Year * 10000) + (2016-02-26.Month * 100)) + 2016-02-26.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
+                            "$it => (((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))) >= ((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeFunction_NullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new LessThanOrEqualsBinaryOperator
                             (
-                                new ConstantOperator(new Date(2015, 2, 26))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
+                            "$it => (((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))) <= ((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeFunction_NullableTheoryData
+                        (
+                            new NotEqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        "$it => ((((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day) >= ((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day))",
-                        parameters
-                    }
-                };
+                                new ConstantOperator(null),
+                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => (null != $it.DiscontinuedDate)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeFunction_NullableTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName)),
+                                new ConstantOperator(null)
+                            ),
+                            "$it => ($it.DiscontinuedDate == null)",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateFunction_NonNullable_Data))]
-        public void DateFunction_NonNullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(TimeFunction_Nullable_Data), MemberType = typeof(FilterTests))]
+        public void TimeFunction_Nullable(TimeFunction_NullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DateOnlyFunction_NonNullable_Data
+        public class TimeOnlyFunction_NullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<TimeOnlyFunction_NullableTheoryData> TimeOnlyFunction_Nullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunction_NullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOnly(1, 2, 3, 4))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new ConstantOperator(new DateOnly(2015, 2, 26))
-                            )
-                        ),
-                        "$it => (((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day) == (((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanBinaryOperator
+                            "$it => (((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))) == ((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunction_NullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new GreaterThanOrEqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOnly(1, 2, 3, 4))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
-                            (
-                                new ConstantOperator(new DateOnly(2016, 2, 26))
-                            )
-                        ),
-                        "$it => (((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day) < (((2016-02-26.Year * 10000) + (2016-02-26.Month * 100)) + 2016-02-26.Day))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
+                            "$it => (((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))) >= ((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunction_NullableTheoryData
                         (
-                            new ConvertToNumericDateOperator
+                            new LessThanOrEqualsBinaryOperator
                             (
-                                new ConstantOperator(new DateOnly(2015, 2, 26))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOnly(1, 2, 3, 4))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new ConvertToNumericDateOperator
+                            "$it => (((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))) <= ((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunction_NullableTheoryData
+                        (
+                            new NotEqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        "$it => ((((2015-02-26.Year * 10000) + (2015-02-26.Month * 100)) + 2015-02-26.Day) >= ((($it.NonNullableDiscontinuedDate.Year * 10000) + ($it.NonNullableDiscontinuedDate.Month * 100)) + $it.NonNullableDiscontinuedDate.Day))",
-                        parameters
-                    }
-                };
+                                new ConstantOperator(null),
+                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                            ),
+                            "$it => (null != $it.DiscontinuedDate)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunction_NullableTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName)),
+                                new ConstantOperator(null)
+                            ),
+                            "$it => ($it.DiscontinuedDate == null)",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateOnlyFunction_NonNullable_Data))]
-        public void DateOnlyFunction_NonNullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(TimeOnlyFunction_Nullable_Data), MemberType = typeof(FilterTests))]
+        public void TimeOnlyFunction_Nullable(TimeOnlyFunction_NullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> TimeFunction_Nullable_Data
+        public class TimeFunction_NonNullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<TimeFunction_NonNullableTheoryData> TimeFunction_NonNullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new TimeFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericTimeOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
+                                )
                             ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
-                            )
-                        ),
-                        "$it => (((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))) == ((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
+                            "$it => (((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))) == ((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericTimeOperator
+                            new GreaterThanOrEqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
+                                )
                             ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
-                            )
-                        ),
-                        "$it => (((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))) >= ((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanOrEqualsBinaryOperator
+                            "$it => (((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))) >= ((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericTimeOperator
+                            new LessThanOrEqualsBinaryOperator
                             (
-                                new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        "$it => (((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))) <= ((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new NotEqualsBinaryOperator
-                        (
-                            new ConstantOperator(null),
-                            new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => (null != $it.DiscontinuedDate)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName)),
-                            new ConstantOperator(null)
-                        ),
-                        "$it => ($it.DiscontinuedDate == null)",
-                        parameters
-                    }
-                };
+                            "$it => (((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))) <= ((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))))",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(TimeFunction_Nullable_Data))]
-        public void TimeFunction_Nullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(TimeFunction_NonNullable_Data), MemberType = typeof(FilterTests))]
+        public void TimeFunction_NonNullable(TimeFunction_NonNullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> TimeOnlyFunction_Nullable_Data
+        public class TimeOnlyFunction_NonNullableTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<TimeOnlyFunction_NonNullableTheoryData> TimeOnlyFunction_NonNullable_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericTimeOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOnly(1, 2, 3, 4))
+                                )
                             ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOnly(1, 2, 3, 4))
-                            )
-                        ),
-                        "$it => (((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))) == ((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
+                            "$it => (((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))) == ((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericTimeOperator
+                            new GreaterThanOrEqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOnly(1, 2, 3, 4))
+                                )
                             ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOnly(1, 2, 3, 4))
-                            )
-                        ),
-                        "$it => (((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))) >= ((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanOrEqualsBinaryOperator
+                            "$it => (((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))) >= ((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))))",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new TimeOnlyFunction_NonNullableTheoryData
                         (
-                            new ConvertToNumericTimeOperator
+                            new LessThanOrEqualsBinaryOperator
                             (
-                                new ConstantOperator(new TimeOnly(1, 2, 3, 4))
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new ConstantOperator(new TimeOnly(1, 2, 3, 4))
+                                ),
+                                new ConvertToNumericTimeOperator
+                                (
+                                    new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        "$it => (((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))) <= ((Convert($it.DiscontinuedDate.Value.Hour) * 36000000000) + ((Convert($it.DiscontinuedDate.Value.Minute) * 600000000) + ((Convert($it.DiscontinuedDate.Value.Second) * 10000000) + Convert($it.DiscontinuedDate.Value.Millisecond)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new NotEqualsBinaryOperator
-                        (
-                            new ConstantOperator(null),
-                            new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                        ),
-                        "$it => (null != $it.DiscontinuedDate)",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator("DiscontinuedDate", new ParameterOperator(parameters, parameterName)),
-                            new ConstantOperator(null)
-                        ),
-                        "$it => ($it.DiscontinuedDate == null)",
-                        parameters
-                    }
-                };
+                            "$it => (((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))) <= ((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))))",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(TimeOnlyFunction_Nullable_Data))]
-        public void TimeOnlyFunction_Nullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(TimeOnlyFunction_NonNullable_Data), MemberType = typeof(FilterTests))]
+        public void TimeOnlyFunction_NonNullable(TimeOnlyFunction_NonNullableTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
-                );
-        }
-
-        public static List<object[]> TimeFunction_NonNullable_Data
-        {
-            get
-            {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new ConvertToNumericTimeOperator
-                            (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
-                            )
-                        ),
-                        "$it => (((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))) == ((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
-                        (
-                            new ConvertToNumericTimeOperator
-                            (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
-                            )
-                        ),
-                        "$it => (((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))) >= ((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanOrEqualsBinaryOperator
-                        (
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOfDay(1, 2, 3, 4))
-                            ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        "$it => (((Convert(01:02:03.0040000.Hours) * 36000000000) + ((Convert(01:02:03.0040000.Minutes) * 600000000) + ((Convert(01:02:03.0040000.Seconds) * 10000000) + Convert(01:02:03.0040000.Milliseconds)))) <= ((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))))",
-                        parameters
-                    }
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(TimeFunction_NonNullable_Data))]
-        public void TimeFunction_NonNullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
-        {
-            //act
-            var filter = CreateFilter<Product>();
-
-            //assert
-            AssertFilterStringIsCorrect(filter, expression);
-
-            Expression<Func<T, bool>> CreateFilter<T>()
-                => GetFilter<T>
-                (
-                    filterBody,
-                    parameters
-                );
-        }
-
-        public static List<object[]> TimeOnlyFunction_NonNullable_Data
-        {
-            get
-            {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new ConvertToNumericTimeOperator
-                            (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOnly(1, 2, 3, 4))
-                            )
-                        ),
-                        "$it => (((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))) == ((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new GreaterThanOrEqualsBinaryOperator
-                        (
-                            new ConvertToNumericTimeOperator
-                            (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOnly(1, 2, 3, 4))
-                            )
-                        ),
-                        "$it => (((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))) >= ((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))))",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanOrEqualsBinaryOperator
-                        (
-                            new ConvertToNumericTimeOperator
-                            (
-                                new ConstantOperator(new TimeOnly(1, 2, 3, 4))
-                            ),
-                            new ConvertToNumericTimeOperator
-                            (
-                                new MemberSelectorOperator("NonNullableDiscontinuedDate", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        "$it => (((Convert(01:02:03.0040000.Hour) * 36000000000) + ((Convert(01:02:03.0040000.Minute) * 600000000) + ((Convert(01:02:03.0040000.Second) * 10000000) + Convert(01:02:03.0040000.Millisecond)))) <= ((Convert($it.NonNullableDiscontinuedDate.Hour) * 36000000000) + ((Convert($it.NonNullableDiscontinuedDate.Minute) * 600000000) + ((Convert($it.NonNullableDiscontinuedDate.Second) * 10000000) + Convert($it.NonNullableDiscontinuedDate.Millisecond)))))",
-                        parameters
-                    }
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(TimeOnlyFunction_NonNullable_Data))]
-        public void TimeOnlyFunction_NonNullable(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
-        {
-            //act
-            var filter = CreateFilter<Product>();
-
-            //assert
-            AssertFilterStringIsCorrect(filter, expression);
-
-            Expression<Func<T, bool>> CreateFilter<T>()
-                => GetFilter<T>
-                (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
         #endregion Date Functions
@@ -4802,23 +5283,30 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public static IEnumerable<object[]> MathRoundDecimal_DataSet
-            => new List<object[]>
-                {
-                    new object[] { 5.9m, true },
-                    new object[] { 5.4m, false }
-                };
+        public class MathRoundDecimalTheoryData(decimal unitPrice, bool expectedResult)
+        {
+            public decimal UnitPrice { get; } = unitPrice;
+            public bool ExpectedResult { get; } = expectedResult;
+        }
 
-        [Theory, MemberData(nameof(MathRoundDecimal_DataSet))]
-        public void MathRoundDecimal(decimal? unitPrice, bool expected)
+        public static TheoryData<MathRoundDecimalTheoryData> MathRoundDecimal_DataSet
+            =>
+                [
+                    new MathRoundDecimalTheoryData(5.9m, true),
+                    new MathRoundDecimalTheoryData(5.4m, false)
+                ];
+
+        [Theory]
+        [MemberData(nameof(MathRoundDecimal_DataSet), MemberType = typeof(FilterTests))]
+        public void MathRoundDecimal(MathRoundDecimalTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
-            bool result = RunFilter(filter, new Product { UnitPrice = ToNullable<decimal>(unitPrice) });
+            bool result = RunFilter(filter, new Product { UnitPrice = ToNullable<decimal>(theoryData.UnitPrice) });
 
             //assert
             AssertFilterStringIsCorrect(filter, string.Format(CultureInfo.InvariantCulture, "$it => ($it.UnitPrice.Value.Round() > {0:0.00})", 5.0));
-            Assert.Equal(expected, result);
+            Assert.Equal(theoryData.ExpectedResult, result);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
@@ -4966,24 +5454,30 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public static IEnumerable<object[]> MathFloorDecimal_DataSet
-            => new List<object[]>
-                {
-                    new object[] { 5.4m, true },
-                    new object[] { 4.4m, false }
-                };
+        public class MathFloorDecimalheoryData(decimal unitPrice, bool expectedResult)
+        {
+            public decimal UnitPrice { get; } = unitPrice;
+            public bool ExpectedResult { get; } = expectedResult;
+        }
 
-        [Theory, MemberData(nameof(MathFloorDecimal_DataSet))]
-        public void MathFloorDecimal(decimal? unitPrice, bool expected)
+        public static TheoryData<MathFloorDecimalheoryData> MathFloorDecimal_DataSet
+            =>
+                [
+                    new MathFloorDecimalheoryData(5.4m, true),
+                    new MathFloorDecimalheoryData(4.4m, false)
+                ];
+
+        [Theory]
+        [MemberData(nameof(MathFloorDecimal_DataSet), MemberType = typeof(FilterTests))]
+        public void MathFloorDecimal(MathFloorDecimalheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
-            bool result = RunFilter(filter, new Product { UnitPrice = ToNullable<decimal>(unitPrice) });
+            bool result = RunFilter(filter, new Product { UnitPrice = ToNullable<decimal>(theoryData.UnitPrice) });
 
             //assert
             AssertFilterStringIsCorrect(filter, "$it => ($it.UnitPrice.Value.Floor() == 5)");
-            Assert.Equal(expected, result);
-
+            Assert.Equal(theoryData.ExpectedResult, result);
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
@@ -5130,24 +5624,30 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public static IEnumerable<object[]> MathCeilingDecimal_DataSet
-            => new List<object[]>
-                {
-                    new object[] { 4.1m, true },
-                    new object[] { 5.9m, false }
-                };
+        public class MathCeilingDecimalTheoryData(decimal unitPrice, bool expectedResult)
+        {
+            public decimal UnitPrice { get; } = unitPrice;
+            public bool ExpectedResult { get; } = expectedResult;
+        }
 
-        [Theory, MemberData(nameof(MathCeilingDecimal_DataSet))]
-        public void MathCeilingDecimal(object unitPrice, bool expected)
+        public static TheoryData<MathCeilingDecimalTheoryData> MathCeilingDecimal_DataSet
+            =>
+                [
+                    new MathCeilingDecimalTheoryData(4.1m, true),
+                    new MathCeilingDecimalTheoryData(5.9m, false)
+                ];
+
+        [Theory]
+        [MemberData(nameof(MathCeilingDecimal_DataSet), MemberType = typeof(FilterTests))]
+        public void MathCeilingDecimal(MathCeilingDecimalTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
-            bool result = RunFilter(filter, new Product { UnitPrice = ToNullable<decimal>(unitPrice) });
+            bool result = RunFilter(filter, new Product { UnitPrice = ToNullable<decimal>(theoryData.UnitPrice) });
 
             //assert
             AssertFilterStringIsCorrect(filter, "$it => ($it.UnitPrice.Value.Ceiling() == 5)");
-            Assert.Equal(expected, result);
-
+            Assert.Equal(theoryData.ExpectedResult, result);
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
@@ -5269,156 +5769,187 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public static List<object[]> MathFunctions_VariousTypes_Data
+        public class MathFunctions_VariousTypesTheoryData(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<MathFunctions_VariousTypesTheoryData> MathFunctions_VariousTypes_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new MathFunctions_VariousTypesTheoryData
                         (
-                            new FloorOperator
+                            new EqualsBinaryOperator
                             (
-                                new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
+                                new FloorOperator
+                                (
+                                    new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
+                                ),
+                                new FloorOperator
+                                (
+                                    new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
+                                )
                             ),
-                            new FloorOperator
-                            (
-                                new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new MathFunctions_VariousTypesTheoryData
                         (
-                            new RoundOperator
+                            new EqualsBinaryOperator
                             (
-                                new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
+                                new RoundOperator
+                                (
+                                    new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
+                                ),
+                                new RoundOperator
+                                (
+                                    new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
+                                )
                             ),
-                            new RoundOperator
-                            (
-                                new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new MathFunctions_VariousTypesTheoryData
                         (
-                            new CeilingOperator
+                            new EqualsBinaryOperator
                             (
-                                new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
+                                new CeilingOperator
+                                (
+                                    new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
+                                ),
+                                new CeilingOperator
+                                (
+                                    new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
+                                )
                             ),
-                            new CeilingOperator
-                            (
-                                new ConvertOperator(new MemberSelectorOperator("FloatProp", new ParameterOperator(parameters, parameterName)), typeof(double))
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new MathFunctions_VariousTypesTheoryData
                         (
-                            new FloorOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
+                                new FloorOperator
+                                (
+                                    new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new FloorOperator
+                                (
+                                    new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new FloorOperator
-                            (
-                                new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new MathFunctions_VariousTypesTheoryData
                         (
-                            new RoundOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
+                                new RoundOperator
+                                (
+                                    new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new RoundOperator
+                                (
+                                    new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new RoundOperator
-                            (
-                                new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new MathFunctions_VariousTypesTheoryData
                         (
-                            new CeilingOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
+                                new CeilingOperator
+                                (
+                                    new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new CeilingOperator
+                                (
+                                    new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new CeilingOperator
-                            (
-                                new MemberSelectorOperator("DoubleProp", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        parameters
-                    },
-                     new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new MathFunctions_VariousTypesTheoryData
                         (
-                            new FloorOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
+                                new FloorOperator
+                                (
+                                    new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new FloorOperator
+                                (
+                                    new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new FloorOperator
-                            (
-                                new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new MathFunctions_VariousTypesTheoryData
                         (
-                            new RoundOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
+                                new RoundOperator
+                                (
+                                    new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new RoundOperator
+                                (
+                                    new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new RoundOperator
-                            (
-                                new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new MathFunctions_VariousTypesTheoryData
                         (
-                            new CeilingOperator
+                            new EqualsBinaryOperator
                             (
-                                new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
+                                new CeilingOperator
+                                (
+                                    new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new CeilingOperator
+                                (
+                                    new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
+                                )
                             ),
-                            new CeilingOperator
-                            (
-                                new MemberSelectorOperator("DecimalProp", new ParameterOperator(parameters, parameterName))
-                            )
-                        ),
-                        parameters
-                    },
-                };
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(MathFunctions_VariousTypes_Data))]
-        public void MathFunctions_VariousTypes(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(MathFunctions_VariousTypes_Data), MemberType = typeof(FilterTests))]
+        public void MathFunctions_VariousTypes(MathFunctions_VariousTypesTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<DataTypes>();
@@ -5430,8 +5961,8 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
         #endregion Math Functions
@@ -5578,56 +6109,67 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public static List<object[]> DateTimeExpression_Data
+        public class DateTimeExpressionTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DateTimeExpressionTheoryData> DateTimeExpression_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new DateTimeExpressionTheoryData
                         (
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
-                            new ConstantOperator(new DateTimeOffset(new DateTime(2000, 12, 12, 12, 0, 0), TimeSpan.Zero))
-                        ),
-                       "$it => ($it.DateTimeProp == {0})",
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new LessThanBinaryOperator
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
+                                new ConstantOperator(new DateTimeOffset(new DateTime(2000, 12, 12, 12, 0, 0, DateTimeKind.Unspecified), TimeSpan.Zero))
+                            ),
+                           "$it => ($it.DateTimeProp == {0})",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new DateTimeExpressionTheoryData
                         (
-                            new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
-                            new ConstantOperator(new DateTimeOffset(new DateTime(2000, 12, 12, 12, 0, 0), TimeSpan.Zero))
-                        ),
-                       "$it => ($it.DateTimeProp < {0})",
-                        parameters
-                    }
-                };
+                            new LessThanBinaryOperator
+                            (
+                                new MemberSelectorOperator("DateTimeProp", new ParameterOperator(parameters, parameterName)),
+                                new ConstantOperator(new DateTimeOffset(new DateTime(2000, 12, 12, 12, 0, 0, DateTimeKind.Unspecified), TimeSpan.Zero))
+                            ),
+                           "$it => ($it.DateTimeProp < {0})",
+                            parameters
+                        )
+                    )
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DateTimeExpression_Data))]
-        public void DateTimeExpression(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DateTimeExpression_Data), MemberType = typeof(FilterTests))]
+        public void DateTimeExpression(DateTimeExpressionTheoryData theoryData)
         {
             //arrange
-            var dateTime = new DateTimeOffset(new DateTime(2000, 12, 12, 12, 0, 0), TimeSpan.Zero);
+            var dateTime = new DateTimeOffset(new DateTime(2000, 12, 12, 12, 0, 0, DateTimeKind.Unspecified), TimeSpan.Zero);
 
             //act
             var filter = CreateFilter<DataTypes>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, string.Format(CultureInfo.InvariantCulture, expectedExpression, dateTime));
+            AssertFilterStringIsCorrect(filter, string.Format(CultureInfo.InvariantCulture, theoryData.ExpectedExpression, dateTime));
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
@@ -5687,11 +6229,11 @@ namespace LogicBuilder.Expressions.Utils.Tests
             //act
             var filter = CreateFilter<DataTypes>();
             var constant = (ConstantExpression)((MethodCallExpression)filter.Body).Arguments[0];
-            var values = (IList<SimpleEnum>)constant.Value;
+            var values = (IList<Position>)constant.Value;
 
             //assert
-            AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[LogicBuilder.Expressions.Utils.Tests.Data.SimpleEnum].Contains($it.SimpleEnumProp)");
-            Assert.Equal(new[] { SimpleEnum.First, SimpleEnum.Second }, values);
+            AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[LogicBuilder.Expressions.Utils.Tests.Data.Position].Contains($it.SimpleEnumProp)");
+            Assert.Equal([Position.First, Position.Second], values);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
@@ -5699,7 +6241,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     new InOperator
                     (
                         new MemberSelectorOperator("SimpleEnumProp", new ParameterOperator(parameters, parameterName)),
-                        new CollectionConstantOperator(new List<object> { SimpleEnum.First, SimpleEnum.Second }, typeof(SimpleEnum))
+                        new CollectionConstantOperator(new List<object> { Position.First, Position.Second }, typeof(Position))
                     ),
                     parameters
                 );
@@ -5711,11 +6253,11 @@ namespace LogicBuilder.Expressions.Utils.Tests
             //act
             var filter = CreateFilter<DataTypes>();
             var constant = (ConstantExpression)((MethodCallExpression)filter.Body).Arguments[0];
-            var values = (IList<SimpleEnum?>)constant.Value;
+            var values = (IList<Position?>)constant.Value;
 
             //assert
-            AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[System.Nullable`1[LogicBuilder.Expressions.Utils.Tests.Data.SimpleEnum]].Contains($it.NullableSimpleEnumProp)");
-            Assert.Equal(new SimpleEnum?[] { SimpleEnum.First, SimpleEnum.Second }, values);
+            AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[System.Nullable`1[LogicBuilder.Expressions.Utils.Tests.Data.Position]].Contains($it.NullableSimpleEnumProp)");
+            Assert.Equal([Position.First, Position.Second], values);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
@@ -5723,7 +6265,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     new InOperator
                     (
                         new MemberSelectorOperator("NullableSimpleEnumProp", new ParameterOperator(parameters, parameterName)),
-                        new CollectionConstantOperator(new List<object> { SimpleEnum.First, SimpleEnum.Second }, typeof(SimpleEnum?))
+                        new CollectionConstantOperator(new List<object> { Position.First, Position.Second }, typeof(Position?))
                     ),
                     parameters
                 );
@@ -5735,11 +6277,11 @@ namespace LogicBuilder.Expressions.Utils.Tests
             //act
             var filter = CreateFilter<DataTypes>();
             var constant = (ConstantExpression)((MethodCallExpression)filter.Body).Arguments[0];
-            var values = (IList<SimpleEnum?>)constant.Value;
+            var values = (IList<Position?>)constant.Value;
 
             //assert
-            AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[System.Nullable`1[LogicBuilder.Expressions.Utils.Tests.Data.SimpleEnum]].Contains($it.NullableSimpleEnumProp)");
-            Assert.Equal(new SimpleEnum?[] { SimpleEnum.First, null }, values);
+            AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[System.Nullable`1[LogicBuilder.Expressions.Utils.Tests.Data.Position]].Contains($it.NullableSimpleEnumProp)");
+            Assert.Equal([Position.First, null], values);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
@@ -5747,7 +6289,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     new InOperator
                     (
                         new MemberSelectorOperator("NullableSimpleEnumProp", new ParameterOperator(parameters, parameterName)),
-                        new CollectionConstantOperator(new List<object> { SimpleEnum.First, null }, typeof(SimpleEnum?))
+                        new CollectionConstantOperator(new List<object> { Position.First, null }, typeof(Position?))
                     ),
                     parameters
                 );
@@ -6030,8 +6572,8 @@ namespace LogicBuilder.Expressions.Utils.Tests
         {
             //act
             var filter = CreateFilter<Product>();
-            bool result1 = RunFilter(filter, new Product { Category = new Category { Products = new Product[] { new DerivedProduct { DerivedProductName = "DerivedProductName" } } } });
-            bool result2 = RunFilter(filter, new Product { Category = new Category { Products = new Product[] { new DerivedProduct { DerivedProductName = "NotDerivedProductName" } } } });
+            bool result1 = RunFilter(filter, new Product { Category = new Category { Products = [new DerivedProduct { DerivedProductName = "DerivedProductName" }] } });
+            bool result2 = RunFilter(filter, new Product { Category = new Category { Products = [new DerivedProduct { DerivedProductName = "NotDerivedProductName" }] } });
 
             //assert
             Assert.True(result1);
@@ -6092,78 +6634,67 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public static List<object[]> Inheritance_WithDerivedInstance_Data
+        public class Inheritance_WithDerivedInstanceTheoryData(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<Inheritance_WithDerivedInstanceTheoryData> Inheritance_WithDerivedInstance_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new Inheritance_WithDerivedInstanceTheoryData
                         (
-                            new MemberSelectorOperator
+                            new EqualsBinaryOperator
                             (
-                                "ProductName",
-                                new CastOperator
-                                (
-                                    new ParameterOperator(parameters, parameterName),
-                                    typeof(Product)
-                                )
-                            ),
-                            new ConstantOperator("ProductName")
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator
-                            (
-                                "DerivedProductName",
-                                new CastOperator
-                                (
-                                    new ParameterOperator(parameters, parameterName),
-                                    typeof(DerivedProduct)
-                                )
-                            ),
-                            new ConstantOperator("DerivedProductName")
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator
-                            (
-                                "CategoryID",
                                 new MemberSelectorOperator
                                 (
-                                    "Category",
+                                    "ProductName",
+                                    new CastOperator
+                                    (
+                                        new ParameterOperator(parameters, parameterName),
+                                        typeof(Product)
+                                    )
+                                ),
+                                new ConstantOperator("ProductName")
+                            ),
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new Inheritance_WithDerivedInstanceTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator
+                                (
+                                    "DerivedProductName",
                                     new CastOperator
                                     (
                                         new ParameterOperator(parameters, parameterName),
                                         typeof(DerivedProduct)
                                     )
-                                )
+                                ),
+                                new ConstantOperator("DerivedProductName")
                             ),
-                            new ConstantOperator(123)
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new Inheritance_WithDerivedInstanceTheoryData
                         (
-                            new MemberSelectorOperator
+                            new EqualsBinaryOperator
                             (
-                                "CategoryID",
-                                new CastOperator
+                                new MemberSelectorOperator
                                 (
+                                    "CategoryID",
                                     new MemberSelectorOperator
                                     (
                                         "Category",
@@ -6172,21 +6703,48 @@ namespace LogicBuilder.Expressions.Utils.Tests
                                             new ParameterOperator(parameters, parameterName),
                                             typeof(DerivedProduct)
                                         )
-                                    ),
-                                    typeof(DerivedCategory)
-                                )
+                                    )
+                                ),
+                                new ConstantOperator(123)
                             ),
-                            new ConstantOperator(123)
-                        ),
-                        parameters
-                    },
-                };
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new Inheritance_WithDerivedInstanceTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator
+                                (
+                                    "CategoryID",
+                                    new CastOperator
+                                    (
+                                        new MemberSelectorOperator
+                                        (
+                                            "Category",
+                                            new CastOperator
+                                            (
+                                                new ParameterOperator(parameters, parameterName),
+                                                typeof(DerivedProduct)
+                                            )
+                                        ),
+                                        typeof(DerivedCategory)
+                                    )
+                                ),
+                                new ConstantOperator(123)
+                            ),
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(Inheritance_WithDerivedInstance_Data))]
-        public void Inheritance_WithDerivedInstance(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(Inheritance_WithDerivedInstance_Data), MemberType = typeof(FilterTests))]
+        public void Inheritance_WithDerivedInstance(Inheritance_WithDerivedInstanceTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<DerivedProduct>();
@@ -6198,66 +6756,52 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> Inheritance_WithBaseInstance_Data
+        public class Inheritance_WithBaseInstanceTheoryData(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<Inheritance_WithBaseInstanceTheoryData> Inheritance_WithBaseInstance_Data
         {
             get
             {
-                var parameters = GetParameters();
-
-                return new List<object[]>
-                {
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new Inheritance_WithBaseInstanceTheoryData
                         (
-                            new MemberSelectorOperator
+                            new EqualsBinaryOperator
                             (
-                                "DerivedProductName",
-                                new CastOperator
-                                (
-                                    new ParameterOperator(parameters, parameterName),
-                                    typeof(DerivedProduct)
-                                )
-                            ),
-                            new ConstantOperator("DerivedProductName")
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
-                        (
-                            new MemberSelectorOperator
-                            (
-                                "CategoryID",
                                 new MemberSelectorOperator
                                 (
-                                    "Category",
+                                    "DerivedProductName",
                                     new CastOperator
                                     (
                                         new ParameterOperator(parameters, parameterName),
                                         typeof(DerivedProduct)
                                     )
-                                )
+                                ),
+                                new ConstantOperator("DerivedProductName")
                             ),
-                            new ConstantOperator(123)
-                        ),
-                        parameters
-                    },
-                    new object[]
-                    {
-                        new EqualsBinaryOperator
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new Inheritance_WithBaseInstanceTheoryData
                         (
-                            new MemberSelectorOperator
+                            new EqualsBinaryOperator
                             (
-                                "CategoryID",
-                                new CastOperator
+                                new MemberSelectorOperator
                                 (
+                                    "CategoryID",
                                     new MemberSelectorOperator
                                     (
                                         "Category",
@@ -6266,21 +6810,48 @@ namespace LogicBuilder.Expressions.Utils.Tests
                                             new ParameterOperator(parameters, parameterName),
                                             typeof(DerivedProduct)
                                         )
-                                    ),
-                                    typeof(DerivedCategory)
-                                )
+                                    )
+                                ),
+                                new ConstantOperator(123)
                             ),
-                            new ConstantOperator(123)
-                        ),
-                        parameters
-                    },
-                };
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new Inheritance_WithBaseInstanceTheoryData
+                        (
+                            new EqualsBinaryOperator
+                            (
+                                new MemberSelectorOperator
+                                (
+                                    "CategoryID",
+                                    new CastOperator
+                                    (
+                                        new MemberSelectorOperator
+                                        (
+                                            "Category",
+                                            new CastOperator
+                                            (
+                                                new ParameterOperator(parameters, parameterName),
+                                                typeof(DerivedProduct)
+                                            )
+                                        ),
+                                        typeof(DerivedCategory)
+                                    )
+                                ),
+                                new ConstantOperator(123)
+                            ),
+                            parameters
+                        )
+                    ),
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(Inheritance_WithBaseInstance_Data))]
-        public void Inheritance_WithBaseInstance(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(Inheritance_WithBaseInstance_Data), MemberType = typeof(FilterTests))]
+        public void Inheritance_WithBaseInstance(Inheritance_WithBaseInstanceTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -6291,21 +6862,28 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> CastMethod_Succeeds_Data
+        public class CastMethod_SucceedsTheoryData(IExpressionPart filterBody, string expectedResult, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedResult { get; } = expectedResult;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<CastMethod_SucceedsTheoryData> CastMethod_Succeeds_Data
         {
             get
             {
-                return new List<object[]>
-                {
+                return
+                [
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
@@ -6313,12 +6891,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                            "$it => (null == null)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
@@ -6326,12 +6904,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (null == Convert(123))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
@@ -6339,12 +6917,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (null != Convert(123))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
@@ -6352,12 +6930,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (null != Convert(True))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
@@ -6365,25 +6943,25 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (null != Convert(1))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
-                                new ConstantOperator(new Guid())
+                                new ConstantOperator(Guid.Empty)
                             ),
                             "$it => (null == Convert(00000000-0000-0000-0000-000000000000))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
@@ -6391,25 +6969,25 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (null != \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
-                                new ConstantOperator(new DateTimeOffset(new DateTime(2001, 1, 1, 12, 0, 0), new TimeSpan(8, 0, 0)))
+                                new ConstantOperator(new DateTimeOffset(new DateTime(2001, 1, 1, 12, 0, 0, DateTimeKind.Unspecified), new TimeSpan(8, 0, 0)))
                             ),
                             "$it => (null == Convert(01/01/2001 12:00:00 +08:00))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
@@ -6417,12 +6995,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (null == Convert(8.23:59:59.9999000))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6433,12 +7011,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.IntProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6449,12 +7027,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.LongProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6465,12 +7043,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.SingleProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6481,12 +7059,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.DoubleProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6497,12 +7075,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.DecimalProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6513,12 +7091,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.BoolProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6529,12 +7107,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.ByteProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6545,12 +7123,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.GuidProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("StringProp", new ParameterOperator(parameters, parameterName)),
@@ -6558,12 +7136,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.StringProp == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6574,12 +7152,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.DateTimeOffsetProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6590,12 +7168,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.TimeSpanProp.ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6606,12 +7184,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert($it.SimpleEnumProp).ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6622,12 +7200,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert($it.FlagsEnumProp).ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6638,12 +7216,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert($it.LongEnumProp).ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6654,12 +7232,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableIntProp.HasValue, $it.NullableIntProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6670,12 +7248,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableLongProp.HasValue, $it.NullableLongProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6686,12 +7264,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableSingleProp.HasValue, $it.NullableSingleProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6702,12 +7280,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableDoubleProp.HasValue, $it.NullableDoubleProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6718,12 +7296,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableDecimalProp.HasValue, $it.NullableDecimalProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6734,12 +7312,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableBoolProp.HasValue, $it.NullableBoolProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6750,12 +7328,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableByteProp.HasValue, $it.NullableByteProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6766,12 +7344,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableGuidProp.HasValue, $it.NullableGuidProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6782,12 +7360,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableDateTimeOffsetProp.HasValue, $it.NullableDateTimeOffsetProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6798,12 +7376,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableTimeSpanProp.HasValue, $it.NullableTimeSpanProp.Value.ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6814,12 +7392,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (IIF($it.NullableSimpleEnumProp.HasValue, Convert($it.NullableSimpleEnumProp.Value).ToString(), null) == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertOperator
@@ -6831,12 +7409,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert($it.IntProp) == 123)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertOperator
@@ -6848,12 +7426,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert($it.NullableLongProp) == 1.23)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new ConvertOperator
@@ -6865,28 +7443,28 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert(Convert(2147483647)) != null)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
                                 (
-                                    new ConstantOperator(SimpleEnum.Second, typeof(SimpleEnum))
+                                    new ConstantOperator(Position.Second, typeof(Position))
                                 ),
                                 new ConstantOperator("1")
                             ),
                             "$it => (Convert(Second).ToString() == \"1\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -6905,59 +7483,67 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert(Convert($it.IntProp)).ToString() == \"123\")",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object[]
-                        {
+                        parameters => new CastMethod_SucceedsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new ConvertToEnumOperator
                                 (
                                     "123",
-                                    typeof(SimpleEnum)
+                                    typeof(Position)
                                 ),
                                 new ConstantOperator(null)
                             ),
                             "$it => (Convert(123) != null)",
                             parameters
-                        }
+                        )
                     ),
-                };
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(CastMethod_Succeeds_Data))]
-        public void CastMethod_Succeeds(IExpressionPart filterBody, string expectedResult, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(CastMethod_Succeeds_Data), MemberType = typeof(FilterTests))]
+        public void CastMethod_Succeeds(CastMethod_SucceedsTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<DataTypes>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expectedResult);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedResult);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
         #endregion Casts
 
         #region 'isof' in query option
-        public static List<object[]> IsofMethod_Succeeds_Data
+
+        public class IsofMethod_SucceedsTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<IsofMethod_SucceedsTheoryData> IsofMethod_Succeeds_Data
         {
             get
             {
-                return new List<object[]>
-                {
+                return
+                [
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsofMethod_SucceedsTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
@@ -6965,12 +7551,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => IIF(($it Is System.Int16), True, False)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsofMethod_SucceedsTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
@@ -6978,12 +7564,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => IIF(($it Is LogicBuilder.Expressions.Utils.Tests.Data.Product), True, False)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsofMethod_SucceedsTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, parameterName)),
@@ -6991,12 +7577,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => IIF(($it.ProductName Is System.String), True, False)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsofMethod_SucceedsTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName)),
@@ -7004,12 +7590,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => IIF(($it.Category Is LogicBuilder.Expressions.Utils.Tests.Data.Category), True, False)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsofMethod_SucceedsTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName)),
@@ -7017,752 +7603,759 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => IIF(($it.Category Is LogicBuilder.Expressions.Utils.Tests.Data.DerivedCategory), True, False)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsofMethod_SucceedsTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new MemberSelectorOperator("Ranking", new ParameterOperator(parameters, parameterName)),
-                                typeof(SimpleEnum)
+                                typeof(Position)
                             ),
-                            "$it => IIF(($it.Ranking Is LogicBuilder.Expressions.Utils.Tests.Data.SimpleEnum), True, False)",
+                            "$it => IIF(($it.Ranking Is LogicBuilder.Expressions.Utils.Tests.Data.Position), True, False)",
                             parameters
-                        }
+                        )
                     ),
-                };
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(IsofMethod_Succeeds_Data))]
-        public void IsofMethod_Succeeds(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(IsofMethod_Succeeds_Data), MemberType = typeof(FilterTests))]
+        public void IsofMethod_Succeeds(IsofMethod_SucceedsTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expectedExpression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> IsOfPrimitiveType_Succeeds_WithFalse_Data
+
+        public class IsOfPrimitiveType_Succeeds_WithFalseTheoryData(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<IsOfPrimitiveType_Succeeds_WithFalseTheoryData> IsOfPrimitiveType_Succeeds_WithFalse_Data
         {
             get
             {
-                return new List<object[]>
-                {
+                return
+                [
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(byte[])
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(bool)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(byte)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(DateTimeOffset)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(Decimal)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(double)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(TimeSpan)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(Guid)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(Int16)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(Int32)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(Int64)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(sbyte)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(Single)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(System.IO.Stream)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(string)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
-                                typeof(SimpleEnum)
+                                typeof(Position)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
-                                typeof(FlagsEnum)
+                                typeof(NumberBits)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new MemberSelectorOperator("ByteArrayProp", new ParameterOperator(parameters, parameterName)),
                                 typeof(byte[])
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new MemberSelectorOperator("IntProp", new ParameterOperator(parameters, parameterName)),
-                                typeof(SimpleEnum)
+                                typeof(Position)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new MemberSelectorOperator("NullableShortProp", new ParameterOperator(parameters, parameterName)),
                                 typeof(short)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(byte[])
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(bool)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(byte)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(DateTimeOffset)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(Decimal)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(double)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(TimeSpan)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(Guid)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(Int16)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(Int32)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(Int64)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(sbyte)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(Single)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(System.IO.Stream)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(string)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
-                                typeof(SimpleEnum)
+                                typeof(Position)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
-                                typeof(FlagsEnum)
+                                typeof(NumberBits)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(23),
                                 typeof(byte)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(23),
                                 typeof(decimal)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(23),
                                 typeof(double)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(23),
                                 typeof(short)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(23),
                                 typeof(long)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(23),
                                 typeof(sbyte)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(23),
                                 typeof(float)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("hello"),
                                 typeof(Stream)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(0),
-                                typeof(FlagsEnum)
+                                typeof(NumberBits)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(0),
-                                typeof(SimpleEnum)
+                                typeof(Position)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("2001-01-01T12:00:00.000+08:00"),
                                 typeof(DateTimeOffset)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("00000000-0000-0000-0000-000000000000"),
                                 typeof(Guid)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("23"),
                                 typeof(byte)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("23"),
                                 typeof(short)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("23"),
                                 typeof(int)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("false"),
                                 typeof(bool)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("OData"),
                                 typeof(byte[])
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("PT12H'"),
                                 typeof(TimeSpan)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(23),
                                 typeof(string)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("0"),
-                                typeof(FlagsEnum)
+                                typeof(NumberBits)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfPrimitiveType_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator("0"),
-                                typeof(SimpleEnum)
+                                typeof(Position)
                             ),
                             parameters
-                        }
+                        )
                     ),
-                };
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(IsOfPrimitiveType_Succeeds_WithFalse_Data))]
-        public void IsOfPrimitiveType_Succeeds_WithFalse(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(IsOfPrimitiveType_Succeeds_WithFalse_Data), MemberType = typeof(FilterTests))]
+        public void IsOfPrimitiveType_Succeeds_WithFalse(IsOfPrimitiveType_Succeeds_WithFalseTheoryData theoryData)
         {
             //arrange
             var model = new DataTypes();
@@ -7777,60 +8370,67 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> IsOfQuotedNonPrimitiveType
+        public class IsOfQuotedNonPrimitiveTypeTheoryData(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+
+        public static TheoryData<IsOfQuotedNonPrimitiveTypeTheoryData> IsOfQuotedNonPrimitiveType
         {
             get
             {
-                return new List<object[]>
-                {
+                return
+                [
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfQuotedNonPrimitiveTypeTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ParameterOperator(parameters, parameterName),
                                 typeof(DerivedProduct)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfQuotedNonPrimitiveTypeTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new MemberSelectorOperator("SupplierAddress", new ParameterOperator(parameters, parameterName)),
                                 typeof(Address)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfQuotedNonPrimitiveTypeTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName)),
                                 typeof(DerivedCategory)
                             ),
                             parameters
-                        }
+                        )
                     ),
-                };
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(IsOfQuotedNonPrimitiveType))]
-        public void IsOfQuotedNonPrimitiveType_Succeeds(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(IsOfQuotedNonPrimitiveType), MemberType = typeof(FilterTests))]
+        public void IsOfQuotedNonPrimitiveType_Succeeds(IsOfQuotedNonPrimitiveTypeTheoryData theoryData)
         {
             //arrange
             var model = new DerivedProduct
@@ -7849,48 +8449,54 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalse_Data
+        public class IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalseTheoryData(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalseTheoryData> IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalse_Data
         {
             get
             {
-                return new List<object[]>
-                {
+                return
+                [
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(Address)
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters =>  new IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalseTheoryData
+                        (
                             new IsOfOperator
                             (
                                 new ConstantOperator(null),
                                 typeof(DerivedCategory)
                             ),
                             parameters
-                        }
+                        )
                     ),
-                };
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalse_Data))]
-        public void IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalse(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalse_Data), MemberType = typeof(FilterTests))]
+        public void IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalse(IsOfQuotedNonPrimitiveTypeWithNull_Succeeds_WithFalseTheoryData theoryData)
         {
             //arrange
             var model = new DerivedProduct
@@ -7909,23 +8515,31 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
         #endregion 'isof' in query option
 
         #region
-        public static List<object[]> ByteArrayComparisons_Data
+        public class ByteArrayComparisonsTheoryData(IExpressionPart filterBody, string expectedExpression, bool expectedResult, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public bool ExpectedResult { get; } = expectedResult;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<ByteArrayComparisonsTheoryData> ByteArrayComparisons_Data
         {
             get
             {
-                return new List<object[]>
-                {
+                return
+                [
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("ByteArrayProp", new ParameterOperator(parameters, parameterName)),
@@ -7934,12 +8548,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => ($it.ByteArrayProp == System.Byte[])",
                             true,
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("ByteArrayProp", new ParameterOperator(parameters, parameterName)),
@@ -7948,12 +8562,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => ($it.ByteArrayProp != System.Byte[])",
                             false,
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConstantOperator(Convert.FromBase64String("I6v/")),
@@ -7962,12 +8576,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => (System.Byte[] == System.Byte[])",
                             true,
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new ConstantOperator(Convert.FromBase64String("I6v/")),
@@ -7976,12 +8590,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => (System.Byte[] != System.Byte[])",
                             false,
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("ByteArrayPropWithNullValue", new ParameterOperator(parameters, parameterName)),
@@ -7990,12 +8604,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => ($it.ByteArrayPropWithNullValue != System.Byte[])",
                             true,
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("ByteArrayPropWithNullValue", new ParameterOperator(parameters, parameterName)),
@@ -8004,12 +8618,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => ($it.ByteArrayPropWithNullValue != $it.ByteArrayPropWithNullValue)",
                             false,
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("ByteArrayPropWithNullValue", new ParameterOperator(parameters, parameterName)),
@@ -8018,12 +8632,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => ($it.ByteArrayPropWithNullValue != null)",
                             false,
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new MemberSelectorOperator("ByteArrayPropWithNullValue", new ParameterOperator(parameters, parameterName)),
@@ -8032,12 +8646,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => ($it.ByteArrayPropWithNullValue == null)",
                             true,
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new NotEqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
@@ -8046,12 +8660,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => (null != $it.ByteArrayPropWithNullValue)",
                             false,
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new ByteArrayComparisonsTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConstantOperator(null),
@@ -8060,15 +8674,15 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             "$it => (null == $it.ByteArrayPropWithNullValue)",
                             true,
                             parameters
-                        }
+                        )
                     ),
-                };
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(ByteArrayComparisons_Data))]
-        public void ByteArrayComparisons(IExpressionPart filterBody, string expectedExpression, bool expected, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(ByteArrayComparisons_Data), MemberType = typeof(FilterTests))]
+        public void ByteArrayComparisons(ByteArrayComparisonsTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<DataTypes>();
@@ -8077,104 +8691,117 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 filter,
                 new DataTypes
                 {
-                    ByteArrayProp = new byte[] { 35, 171, 255 }
+                    ByteArrayProp = [35, 171, 255]
                 }
             );
 
             //assert
-            Assert.Equal(expected, result);
-            AssertFilterStringIsCorrect(filter, expectedExpression);
+            Assert.Equal(theoryData.ExpectedResult, result);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> DisAllowed_ByteArrayComparisons_Data
+        public class DisAllowed_ByteArrayComparisonsTheoryData(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<DisAllowed_ByteArrayComparisonsTheoryData> DisAllowed_ByteArrayComparisons_Data
         {
             get
             {
-                return new List<object[]>
-                {
+                return
+                [
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new DisAllowed_ByteArrayComparisonsTheoryData
+                        (
                             new GreaterThanOrEqualsBinaryOperator
                             (
                                 new ConstantOperator(Convert.FromBase64String("AP8Q")),
                                 new ConstantOperator(Convert.FromBase64String("AP8Q"))
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new DisAllowed_ByteArrayComparisonsTheoryData
+                        (
                             new LessThanOrEqualsBinaryOperator
                             (
                                 new ConstantOperator(Convert.FromBase64String("AP8Q")),
                                 new ConstantOperator(Convert.FromBase64String("AP8Q"))
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new DisAllowed_ByteArrayComparisonsTheoryData
+                        (
                             new LessThanBinaryOperator
                             (
                                 new ConstantOperator(Convert.FromBase64String("AP8Q")),
                                 new ConstantOperator(Convert.FromBase64String("AP8Q"))
                             ),
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new DisAllowed_ByteArrayComparisonsTheoryData
+                        (
                             new GreaterThanBinaryOperator
                             (
                                 new ConstantOperator(Convert.FromBase64String("AP8Q")),
                                 new ConstantOperator(Convert.FromBase64String("AP8Q"))
                             ),
                             parameters
-                        }
+                        )
                     ),
-                };
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(DisAllowed_ByteArrayComparisons_Data))]
-        public void DisAllowed_ByteArrayComparisons(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(DisAllowed_ByteArrayComparisons_Data), MemberType = typeof(FilterTests))]
+        public void DisAllowed_ByteArrayComparisons(DisAllowed_ByteArrayComparisonsTheoryData theoryData)
         {
             //assert
             Assert.Throws<InvalidOperationException>(() => CreateFilter<DataTypes>());
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> Nullable_NonstandardEdmPrimitives_Data
+        public class Nullable_NonstandardEdmPrimitivesTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<Nullable_NonstandardEdmPrimitivesTheoryData> Nullable_NonstandardEdmPrimitives_Data
         {
             get
             {
-                return new List<object[]>
-                {
+                return
+                [
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new Nullable_NonstandardEdmPrimitivesTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertOperator
@@ -8189,12 +8816,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert($it.NullableUShortProp.Value) == Convert(12))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new Nullable_NonstandardEdmPrimitivesTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertOperator
@@ -8209,12 +8836,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert($it.NullableULongProp.Value) == Convert(12))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new Nullable_NonstandardEdmPrimitivesTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertOperator
@@ -8229,12 +8856,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => (Convert($it.NullableUIntProp.Value) == Convert(12))",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new Nullable_NonstandardEdmPrimitivesTheoryData
+                        (
                             new EqualsBinaryOperator
                             (
                                 new ConvertToStringOperator
@@ -8248,41 +8875,48 @@ namespace LogicBuilder.Expressions.Utils.Tests
                             ),
                             "$it => ($it.NullableCharProp.Value.ToString() == \"a\")",
                             parameters
-                        }
+                        )
                     ),
-                };
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(Nullable_NonstandardEdmPrimitives_Data))]
-        public void Nullable_NonstandardEdmPrimitives(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(Nullable_NonstandardEdmPrimitives_Data), MemberType = typeof(FilterTests))]
+        public void Nullable_NonstandardEdmPrimitives(Nullable_NonstandardEdmPrimitivesTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<DataTypes>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expectedExpression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
             Assert.Throws<InvalidOperationException>(() => RunFilter(filter, new DataTypes()));
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
-        public static List<object[]> InOnNavigation_Data
+        public class InOnNavigationTheoryData(IExpressionPart filterBody, string expression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<InOnNavigationTheoryData> InOnNavigation_Data
         {
             get
             {
-                return new List<object[]>
-                {
+                return
+                [
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new InOnNavigationTheoryData
+                        (
                             new InOperator
                             (
                                 new MemberSelectorOperator
@@ -8296,35 +8930,35 @@ namespace LogicBuilder.Expressions.Utils.Tests
                                 ),
                                 new CollectionConstantOperator
                                 (
-                                    new List<object>{ 1 },
+                                    [1],
                                     typeof(int)
                                 )
                             ),
                             "$it => System.Collections.Generic.List`1[System.Int32].Contains($it.Category.Product.ProductID)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new InOnNavigationTheoryData
+                        (
                             new InOperator
                             (
                                 new MemberSelectorOperator("Category.Product.ProductID", new ParameterOperator(parameters, parameterName)),
                                 new CollectionConstantOperator
                                 (
-                                    new List<object>{ 1 },
+                                    [1],
                                     typeof(int)
                                 )
                             ),
                             "$it => System.Collections.Generic.List`1[System.Int32].Contains($it.Category.Product.ProductID)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new InOnNavigationTheoryData
+                        (
                             new InOperator
                             (
                                 new MemberSelectorOperator
@@ -8338,18 +8972,18 @@ namespace LogicBuilder.Expressions.Utils.Tests
                                 ),
                                 new CollectionConstantOperator
                                 (
-                                    new List<object>{ new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7") },
+                                    [new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7")],
                                     typeof(Guid)
                                 )
                             ),
                             "$it => System.Collections.Generic.List`1[System.Guid].Contains($it.Category.Product.GuidProperty)",
                             parameters
-                        }
+                        )
                     ),
                     GetArguments
                     (
-                        parameters => new object []
-                        {
+                        parameters => new InOnNavigationTheoryData
+                        (
                             new InOperator
                             (
                                 new MemberSelectorOperator
@@ -8363,33 +8997,33 @@ namespace LogicBuilder.Expressions.Utils.Tests
                                 ),
                                 new CollectionConstantOperator
                                 (
-                                    new List<object>{ new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7") },
+                                    [new Guid("dc75698b-581d-488b-9638-3e28dd51d8f7")],
                                     typeof(Guid?)
                                 )
                             ),
                             "$it => System.Collections.Generic.List`1[System.Nullable`1[System.Guid]].Contains($it.Category.Product.NullableGuidProperty)",
                             parameters
-                        }
+                        )
                     ),
-                };
+                ];
             }
         }
 
         [Theory]
-        [MemberData(nameof(InOnNavigation_Data))]
-        public void InOnNavigation(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        [MemberData(nameof(InOnNavigation_Data), MemberType = typeof(FilterTests))]
+        public void InOnNavigation(InOnNavigationTheoryData theoryData)
         {
             //act
             var filter = CreateFilter<Product>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, expectedExpression);
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
                 (
-                    filterBody,
-                    parameters
+                    theoryData.FilterBody,
+                    theoryData.Parameters
                 );
         }
 
@@ -8491,7 +9125,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             var filter = CreateFilter<DataTypes>();
 
             //assert
-            AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[LogicBuilder.Expressions.Utils.Tests.Data.SimpleEnum].Contains($it.SimpleEnumProp)");
+            AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[LogicBuilder.Expressions.Utils.Tests.Data.Position].Contains($it.SimpleEnumProp)");
 
             Expression<Func<T, bool>> CreateFilter<T>()
                 => GetFilter<T>
@@ -8501,19 +9135,14 @@ namespace LogicBuilder.Expressions.Utils.Tests
                         new MemberSelectorOperator("SimpleEnumProp", new ParameterOperator(parameters, parameterName)),
                         new CollectionConstantOperator
                         (
-                            new List<object> { SimpleEnum.First, SimpleEnum.Second },
-                            typeof(SimpleEnum)
+                            new List<object> { Position.First, Position.Second },
+                            typeof(Position)
                         )
                     ),
                     parameters
                 );
         }
         #endregion
-
-        //private string PadRightInstance(string str, int number)
-        //{
-        //    return str.PadRight(number);
-        //}
 
         // Used by Custom Method binder tests - by reflection
         private static string PadRightStatic(string str, int number)
@@ -8524,17 +9153,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
         private static T? ToNullable<T>(object value) where T : struct => 
             value == null ? null : (T?)Convert.ChangeType(value, typeof(T));
 
-        private static IDictionary<string, ParameterExpression> GetParameters()
-            => new Dictionary<string, ParameterExpression>();
+        private static Dictionary<string, ParameterExpression> GetParameters()
+            => [];
 
-        static object[] GetArguments(IDictionary<string, ParameterExpression> parameters, Func<IDictionary<string, ParameterExpression>, object[]> getList) 
-            => getList(parameters);
 
-        static object[] GetArguments(Func<IDictionary<string, ParameterExpression>, object[]> getList) 
-            => GetArguments(GetParameters(), getList);
 
-        private static Expression<Func<T, bool>> GetFilter<T>(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parameters, string parameterName = "$it") 
-            => filterBody.GetFilter<T>(parameters, parameterName);
+        static T GetArguments<T>(Func<IDictionary<string, ParameterExpression>, T> getList)
+            => getList(GetParameters());
+
+        private static Expression<Func<T, bool>> GetFilter<T>(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parametersDictionary, string parameterName = "$it") 
+            => filterBody.GetFilter<T>(parametersDictionary, parameterName);
 
         private static void AssertFilterStringIsCorrect(Expression expression, string expected)
         {

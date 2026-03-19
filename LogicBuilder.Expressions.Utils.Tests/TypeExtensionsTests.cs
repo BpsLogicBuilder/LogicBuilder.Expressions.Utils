@@ -29,7 +29,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Type reflectedType)
         {
             //act
-            MemberInfo memberInfo = typeof(DerivedThing).GetSelectedMembers(new List<string>())
+            MemberInfo memberInfo = typeof(DerivedThing).GetSelectedMembers([])
                 .FirstOrDefault(m => m.Name == propertyName);
 
             //assert
@@ -66,12 +66,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
         private abstract class BaseThing
         {
-            public string Name { get; set; }
+            public string Name { get; set; }//NOSONAR - used for testing purposes
         }
 
         private class DerivedThing : BaseThing, IDerivedThing
         {
-            public Guid Id { get; set; }
+            public Guid Id { get; set; }//NOSONAR - used for testing purposes
             public string Description { get; set; }
         }
 
@@ -82,20 +82,20 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
         private class Thing
         {
-            public string Name { get; set; }
-            public Guid Id { get; set; }
-            public string Description { get; set; }
-            public byte[] DataInBytes { get; set; }
-            public string[] ParametersArray { get; set; }
-            public ICollection<string> Strings { get; set; }
-            public List<string> ParametersList { get; set; }
-            public List<bool> Booleans { get; set; }
-            public ISet<DateTime> DateTimes { get; set; }
-            public ISet<DateOnly> Dates { get; set; }
-            public HashSet<Guid> Guides { get; set; }
-            public uint[] UnsignedInts { get; set; }
-            public IEnumerable<int> Ints { get; set; }
-            public List<object> Objects { get; set; }
+            public string Name { get; set; }//NOSONAR - used for testing purposes
+            public Guid Id { get; set; }//NOSONAR - used for testing purposes
+            public string Description { get; set; }//NOSONAR - used for testing purposes
+            public byte[] DataInBytes { get; set; }//NOSONAR - used for testing purposes
+            public string[] ParametersArray { get; set; }//NOSONAR - used for testing purposes
+            public ICollection<string> Strings { get; set; }//NOSONAR - used for testing purposes
+            public List<string> ParametersList { get; set; }//NOSONAR - used for testing purposes
+            public List<bool> Booleans { get; set; }//NOSONAR - used for testing purposes
+            public ISet<DateTime> DateTimes { get; set; }//NOSONAR - used for testing purposes
+            public ISet<DateOnly> Dates { get; set; }//NOSONAR - used for testing purposes
+            public HashSet<Guid> Guides { get; set; }//NOSONAR - used for testing purposes
+            public uint[] UnsignedInts { get; set; }//NOSONAR - used for testing purposes
+            public IEnumerable<int> Ints { get; set; }//NOSONAR - used for testing purposes
+            public List<object> Objects { get; set; }//NOSONAR - used for testing purposes
         }
     }
 }
