@@ -4,6 +4,8 @@
     <TargetFramework>net10.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+		<AssemblyOriginatorKeyFile>..\LogicBuilder.Rules.snk</AssemblyOriginatorKeyFile>
+		<SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

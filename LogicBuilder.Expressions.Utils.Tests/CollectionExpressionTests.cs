@@ -115,6 +115,38 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
+        [Fact]
+        public void UnionOperatorWorks_WithoutSpecifyingSelectorResult()
+        {
+            //act
+            var expression = CreateExpression<Product>();
+
+            var result = RunExpression
+            (
+                expression,
+                new Product { AlternateAddresses = [new Address { City = "Redmond" }, new Address { City = "Seattle" }] }
+            );
+
+            AssertExpressionStringIsCorrect(expression, "$it => $it.AlternateAddresses.Union(LogicBuilder.Expressions.Utils.Tests.Data.Address[])");
+            Assert.Equal(3, result.Count());
+
+            Expression<Func<T, IEnumerable<Address>>> CreateExpression<T>() 
+                => (Expression<Func<T, IEnumerable<Address>>>)LinqHelpers.GetExpression
+                (
+                    new UnionOperator
+                    (
+                        new MemberSelectorOperator("AlternateAddresses", new ParameterOperator(parameters, parameterName)),
+                        new ConstantOperator
+                        (
+                            new Address[] { new() { City = "Seattle" }, new() { City = "Portland" } }
+                        )
+                    ),
+                    typeof(T),
+                    parameters,
+                    parameterName
+                );
+        }
+
         private static void AssertExpressionStringIsCorrect(Expression expression, string expected)
         {
             string resultExpression = ExpressionStringBuilder.ToString(expression);
