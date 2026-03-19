@@ -411,14 +411,18 @@ namespace LogicBuilder.Expressions.Utils
                     : GetThenByMethodCallExpression();
 
                 //OrderBy and OrderByDescending espressions take two arguments each.  The parameter (object being extended by the helper method) and the lambda expression for the property selector
-                MethodCallExpression GetOrderByMethodCallExpression() => description.SortDirection == ListSortDirection.Ascending
-                        ? Expression.Call(reflectedType, "OrderBy", genericArgumentsForMethod, expression, selectorExpression)
-                        : Expression.Call(reflectedType, "OrderByDescending", genericArgumentsForMethod, expression, selectorExpression);
+                MethodCallExpression GetOrderByMethodCallExpression() 
+                    => Expression.Call(reflectedType, GetOrderByMethodName(description.SortDirection), genericArgumentsForMethod, expression, selectorExpression);
 
                 //ThenBy and ThenByDescending espressions take two arguments each.  The resulting method call expression from OrderBy or OrderByDescending and the lambda expression for the property selector
-                MethodCallExpression GetThenByMethodCallExpression() => description.SortDirection == ListSortDirection.Ascending
-                        ? Expression.Call(reflectedType, "ThenBy", genericArgumentsForMethod, mce, selectorExpression)
-                        : Expression.Call(reflectedType, "ThenByDescending", genericArgumentsForMethod, mce, selectorExpression);
+                MethodCallExpression GetThenByMethodCallExpression()
+                        => Expression.Call(reflectedType, GetThenByMethodName(description.SortDirection), genericArgumentsForMethod, mce, selectorExpression);
+
+                static string GetOrderByMethodName(ListSortDirection sortDirection)
+                    => sortDirection == ListSortDirection.Ascending ? "OrderBy" : "OrderByDescending";
+
+                static string GetThenByMethodName(ListSortDirection sortDirection) 
+                    => sortDirection == ListSortDirection.Ascending ? "ThenBy" : "ThenByDescending";
             });
 
             resultExp = Expression.Call(reflectedType, "Skip", [sourceType], resultExp, Expression.Constant(sorts.Skip));
