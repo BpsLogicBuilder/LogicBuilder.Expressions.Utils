@@ -1462,8 +1462,8 @@ namespace LogicBuilder.Expressions.Utils.Tests
         private static Dictionary<string, ParameterExpression> GetParameters()
             => [];
 
-        private static Expression<Func<T, TResult>> GetExpression<T, TResult>(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parametersDictionary, string parameterName = "$it")
-            => filterBody.GetExpression<T, TResult>(parametersDictionary, parameterName);
+        private static Expression<Func<T, TResult>> GetExpression<T, TResult>(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parametersDictionary, string defaultParameterName = "$it")
+            => filterBody.GetExpression<T, TResult>(parametersDictionary, defaultParameterName);
 
         private static TResult RunExpression<T, TResult>(Expression<Func<T, TResult>> filter, T instance)
             => filter.Compile().Invoke(instance);
