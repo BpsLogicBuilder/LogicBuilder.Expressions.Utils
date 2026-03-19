@@ -50,7 +50,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
 
         public ushort? UnsignedReorderLevel { get; set; }
 
-        public SimpleEnum Ranking { get; set; }
+        public Position Ranking { get; set; }
 
         public Category Category { get; set; }
 
@@ -100,7 +100,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
 
         public override int GetHashCode()
         {
-            return AddressID.GetHashCode();
+            return AddressID;
         }
     }
 
@@ -148,15 +148,13 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
         public char[] CharArrayProp { get; set; }
         public XElement XElementProp { get; set; }
 
-        public SimpleEnum SimpleEnumProp { get; set; }
-        public FlagsEnum FlagsEnumProp { get; set; }
-        public LongEnum LongEnumProp { get; set; }
-        public SimpleEnum? NullableSimpleEnumProp { get; set; }
+        public Position SimpleEnumProp { get; set; }
+        public NumberBits FlagsEnumProp { get; set; }
+        public LongPosition LongEnumProp { get; set; }
+        public Position? NullableSimpleEnumProp { get; set; }
 
         public Product EntityProp { get; set; }
         public Address ComplexProp { get; set; }
-
-        public string Inaccessible() { return string.Empty; }
     }
 
     public class DerivedProduct : Product
@@ -175,14 +173,14 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
     }
 
     [Flags]
-    public enum FlagsEnum
+    public enum NumberBits
     {
         One = 0x1,
         Two = 0x2,
         Four = 0x4
     }
 
-    public enum SimpleEnum
+    public enum Position
     {
         First,
         Second,
@@ -190,7 +188,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
         Fourth
     }
 
-    public enum LongEnum : long
+    public enum LongPosition : long
     {
         FirstLong,
         SecondLong,

@@ -3,14 +3,9 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.StringOperators
 {
-    public class ToLowerOperator : IExpressionPart
+    public class ToLowerOperator(IExpressionPart operand) : IExpressionPart
     {
-        public ToLowerOperator(IExpressionPart operand)
-        {
-            Operand = operand;
-        }
-
-        public IExpressionPart Operand { get; private set; }
+        public IExpressionPart Operand { get; private set; } = operand;
 
         public Expression Build()
         {

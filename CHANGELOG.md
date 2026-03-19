@@ -1,3 +1,4 @@
+* 2026-03-19 - AB#87: Refactor tests, enums, and operators for clarity & safety.
 * 2026-03-17 - AB#85: Update .NET setup to use private NuGet feed in CI.
 * 2026-03-17 - AB#85: Make BodyType nullable in SelectorLambdaOperator.
 * 2026-03-17 - AB#85: Refactor: adopt C# 12 features, remove obsolete code

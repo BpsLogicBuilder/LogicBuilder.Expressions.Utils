@@ -6,10 +6,11 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace LogicBuilder.Expressions.Utils.Tests
 {
-    public class ExpressionStringBuilder : ExpressionVisitor
+    public partial class ExpressionStringBuilder : ExpressionVisitor
     {
         private readonly StringBuilder _builder = new();
 
@@ -139,27 +140,20 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
         protected override Expression VisitNew(NewExpression node)
         {
-            Out("new " + node.Type.Name + "(");
-            VisitArguments(node.Arguments.ToArray());
+            Out("new " + GetTypeName() + "(");
+            VisitArguments([.. node.Arguments]);
             Out(")");
             return node;
-        }
 
-        protected override MemberListBinding VisitMemberListBinding(MemberListBinding node)
-        {
-            return base.VisitMemberListBinding(node);
-        }
-
-        protected override MemberMemberBinding VisitMemberMemberBinding(MemberMemberBinding node)
-        {
-            return base.VisitMemberMemberBinding(node);
+            string GetTypeName()
+                => AnonymousTypeRegex().IsMatch(node.Type.Name) ? "AnonymousType" : node.Type.Name;
         }
 
         protected override Expression VisitMemberInit(MemberInitExpression node)
         {
             VisitNew(node.NewExpression);
             Out(" {");
-            foreach (MemberAssignment memberNode in node.Bindings)
+            foreach (MemberAssignment memberNode in node.Bindings.OfType<MemberAssignment>())
             {
                 Out(memberNode.Member.Name + " = ");
 
@@ -183,7 +177,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             }
 
             Out("." + node.Method.Name + "(");
-            VisitArguments(arguments.ToArray());
+            VisitArguments([.. arguments]);
             Out(")");
             return node;
         }
@@ -257,5 +251,8 @@ namespace LogicBuilder.Expressions.Utils.Tests
         {
             _builder.Append(s);
         }
+
+        [GeneratedRegex(@"^AnonymousType[\d]+$")]
+        private static partial Regex AnonymousTypeRegex();
     }
 }

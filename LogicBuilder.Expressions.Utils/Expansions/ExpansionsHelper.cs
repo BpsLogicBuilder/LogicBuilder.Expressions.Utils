@@ -7,16 +7,21 @@ namespace LogicBuilder.Expressions.Utils.Expansions
 {
     public static class ExpansionsHelper
     {
-        public static IEnumerable<Expression<Func<TSource, object>>> GetExpansionSelectors<TSource>(this SelectExpandDefinition selectExpandDefinition) where TSource : class 
-            => selectExpandDefinition.GetExpansions
+        public static IEnumerable<Expression<Func<TSource, object>>> GetExpansionSelectors<TSource>(this SelectExpandDefinition selectExpandDefinition) where TSource : class
+        {
+            if (selectExpandDefinition == null)
+                return [];
+
+            return selectExpandDefinition.GetExpansions
             (
                 typeof(TSource)
             )
             .Select(list => new List<Expansion>(list))
             .BuildIncludes<TSource>
             (
-                selectExpandDefinition?.Selects ?? []
+                selectExpandDefinition.Selects ?? []
             );
+        }
 
         public static List<List<ExpansionOptions>> GetExpansions(this SelectExpandDefinition selectExpandDefinition, Type sourceType)
         {

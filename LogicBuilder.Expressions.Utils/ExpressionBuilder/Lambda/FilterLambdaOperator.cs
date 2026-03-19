@@ -4,20 +4,12 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
-    public class FilterLambdaOperator : IExpressionPart
+    public class FilterLambdaOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart filterBody, Type sourceElementType, string parameterName) : IExpressionPart
     {
-        public FilterLambdaOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart filterBody, Type sourceElementType, string parameterName)
-        {
-            FilterBody = filterBody;
-            SourceElementType = sourceElementType;
-            ParameterName = parameterName;
-            Parameters = parameters;
-        }
-
-        public IExpressionPart FilterBody { get; }
-        public Type SourceElementType { get; }
-        public string ParameterName { get; }
-        public IDictionary<string, ParameterExpression> Parameters { get; }
+        public IExpressionPart FilterBody { get; } = filterBody;
+        public Type SourceElementType { get; } = sourceElementType;
+        public string ParameterName { get; } = parameterName;
+        public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
 
         public Expression Build()
         {
@@ -31,11 +23,8 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
             (
                 typeof(Func<,>).MakeGenericType
                 (
-                    new Type[]
-                    {
-                        this.Parameters[ParameterName].Type,
-                        typeof(bool)
-                    }
+                    this.Parameters[ParameterName].Type,
+                    typeof(bool)
                 ),
                 ConvertBody(FilterBody.Build()),
                 this.Parameters[ParameterName]
@@ -46,7 +35,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
             return expression;
         }
 
-        private Expression ConvertBody(Expression body)
+        private static Expression ConvertBody(Expression body)
             => body.Type != typeof(bool)
                 ? Expression.Convert(body, typeof(bool))
                 : body;

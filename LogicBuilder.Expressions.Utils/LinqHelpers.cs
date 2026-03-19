@@ -406,19 +406,19 @@ namespace LogicBuilder.Expressions.Utils
                 MemberInfo orderByPropertyInfo = sourceType.GetMemberInfoFromFullName(description.PropertyName);
                 Type[] genericArgumentsForMethod = [sourceType, orderByPropertyInfo.GetMemberType()];
 
-                if (mce == null)
-                {//OrderBy and OrderByDescending espressions take two arguments each.  The parameter (object being extended by the helper method) and the lambda expression for the property selector
-                    mce = description.SortDirection == ListSortDirection.Ascending
+                return mce == null
+                    ? GetOrderByMethodCallExpression()
+                    : GetThenByMethodCallExpression();
+
+                //OrderBy and OrderByDescending espressions take two arguments each.  The parameter (object being extended by the helper method) and the lambda expression for the property selector
+                MethodCallExpression GetOrderByMethodCallExpression() => description.SortDirection == ListSortDirection.Ascending
                         ? Expression.Call(reflectedType, "OrderBy", genericArgumentsForMethod, expression, selectorExpression)
                         : Expression.Call(reflectedType, "OrderByDescending", genericArgumentsForMethod, expression, selectorExpression);
-                }
-                else
-                {//ThenBy and ThenByDescending espressions take two arguments each.  The resulting method call expression from OrderBy or OrderByDescending and the lambda expression for the property selector
-                    mce = description.SortDirection == ListSortDirection.Ascending
+
+                //ThenBy and ThenByDescending espressions take two arguments each.  The resulting method call expression from OrderBy or OrderByDescending and the lambda expression for the property selector
+                MethodCallExpression GetThenByMethodCallExpression() => description.SortDirection == ListSortDirection.Ascending
                         ? Expression.Call(reflectedType, "ThenBy", genericArgumentsForMethod, mce, selectorExpression)
                         : Expression.Call(reflectedType, "ThenByDescending", genericArgumentsForMethod, mce, selectorExpression);
-                }
-                return mce;
             });
 
             resultExp = Expression.Call(reflectedType, "Skip", [sourceType], resultExp, Expression.Constant(sorts.Skip));

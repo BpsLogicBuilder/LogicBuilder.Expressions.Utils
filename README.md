@@ -1,5 +1,11 @@
 # LogicBuilder.Expressions.Utils
 
+[![CI](https://github.com/BpsLogicBuilder/LogicBuilder.Expressions.Utils/actions/workflows/ci.yml/badge.svg)](https://github.com/BpsLogicBuilder/LogicBuilder.Expressions.Utils/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/BpsLogicBuilder/LogicBuilder.Expressions.Utils/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/BpsLogicBuilder/LogicBuilder.Expressions.Utils/actions/workflows/github-code-scanning/codeql)
+[![codecov](https://codecov.io/gh/BpsLogicBuilder/LogicBuilder.Expressions.Utils/graph/badge.svg?token=FEZ6S92MQL)](https://codecov.io/gh/BpsLogicBuilder/LogicBuilder.Expressions.Utils)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=BpsLogicBuilder_LogicBuilder.Expressions.Utils&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=BpsLogicBuilder_LogicBuilder.Expressions.Utils)
+[![NuGet](https://img.shields.io/nuget/v/LogicBuilder.Expressions.Utils.svg)](https://www.nuget.org/packages/LogicBuilder.Expressions.Utils)
+
 A powerful runtime expression builder that transforms metadata descriptors from **LogicBuilder.Structures** into executable LINQ Expression Trees. This library bridges the gap between serializable query metadata and strongly-typed, compiled LINQ expressions.
 
 ## Purpose

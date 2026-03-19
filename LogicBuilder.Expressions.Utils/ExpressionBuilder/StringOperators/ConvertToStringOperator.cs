@@ -3,18 +3,13 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.StringOperators
 {
-    public class ConvertToStringOperator : IExpressionPart
+    public class ConvertToStringOperator(IExpressionPart sourceOperand) : IExpressionPart
     {
-        public ConvertToStringOperator(IExpressionPart sourceOperand)
-        {
-            SourceOperand = sourceOperand;
-        }
-
-        public IExpressionPart SourceOperand { get; }
+        public IExpressionPart SourceOperand { get; } = sourceOperand;
 
         public Expression Build() => Build(SourceOperand.Build());
 
-        private Expression Build(Expression operandExpression)
+        private static Expression Build(Expression operandExpression)
         {
             if (operandExpression.Type.IsNullableType())
                 return ConvertNullable(operandExpression, operandExpression.MakeValueSelectorAccessIfNullable());
@@ -22,7 +17,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.StringOperators
             return ConvertNonNullable(operandExpression);
         }
 
-        private Expression ConvertNullable(Expression operandExpression, Expression underlyingExpression)
+        private static Expression ConvertNullable(Expression operandExpression, Expression underlyingExpression)
         {
             if (underlyingExpression.Type.IsEnum)
                 underlyingExpression = ConvertEnumToUnderlyingType(underlyingExpression);
@@ -35,7 +30,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.StringOperators
             );
         }
 
-        private Expression ConvertNonNullable(Expression operandExpression)
+        private static Expression ConvertNonNullable(Expression operandExpression)
         {
             if (operandExpression.Type.IsEnum)
                 operandExpression = ConvertEnumToUnderlyingType(operandExpression);
@@ -43,7 +38,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.StringOperators
             return operandExpression.GetObjectToStringCall();
         }
 
-        private Expression ConvertEnumToUnderlyingType(Expression expression)
+        private static Expression ConvertEnumToUnderlyingType(Expression expression)
             => Expression.Convert(expression, Enum.GetUnderlyingType(expression.Type));
     }
 }

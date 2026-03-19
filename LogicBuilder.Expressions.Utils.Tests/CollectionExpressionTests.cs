@@ -30,7 +30,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             var result = RunExpression
             (
                 expression,
-                new Product { AlternateAddresses = new[] { new Address { City = "Redmond" }, new Address { City = "Seattle" } } }
+                new Product { AlternateAddresses = [new Address { City = "Redmond" }, new Address { City = "Seattle" }] }
             );
 
             AssertExpressionStringIsCorrect(expression, "$it => $it.AlternateAddresses.Concat(LogicBuilder.Expressions.Utils.Tests.Data.Address[])");
@@ -44,7 +44,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                         new MemberSelectorOperator("AlternateAddresses", new ParameterOperator(parameters, parameterName)),
                         new ConstantOperator
                         (
-                            new Address[] { new Address { City = "Seattle" }, new Address { City = "Portland" } }
+                            new Address[] { new() { City = "Seattle" }, new() { City = "Portland" } }
                         )
                     ),
                     parameters,
@@ -61,7 +61,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             var result = RunExpression
             (
                 expression,
-                new Product { AlternateAddresses = new[] { new Address { City = "Redmond" }, new Address { City = "Seattle" } } }
+                new Product { AlternateAddresses = [new Address { City = "Redmond" }, new Address { City = "Seattle" }] }
             );
 
             AssertExpressionStringIsCorrect(expression, "$it => $it.AlternateAddresses.Except(LogicBuilder.Expressions.Utils.Tests.Data.Address[])");
@@ -76,7 +76,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                         new MemberSelectorOperator("AlternateAddresses", new ParameterOperator(parameters, parameterName)),
                         new ConstantOperator
                         (
-                            new Address[] { new Address { City = "Seattle" }, new Address { City = "Portland" } }
+                            new Address[] { new() { City = "Seattle" }, new() { City = "Portland" } }
                         )
                     ),
                     parameters,
@@ -93,7 +93,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             var result = RunExpression
             (
                 expression,
-                new Product { AlternateAddresses = new[] { new Address { City = "Redmond" }, new Address { City = "Seattle" } } }
+                new Product { AlternateAddresses = [new Address { City = "Redmond" }, new Address { City = "Seattle" }] }
             );
 
             AssertExpressionStringIsCorrect(expression, "$it => $it.AlternateAddresses.Union(LogicBuilder.Expressions.Utils.Tests.Data.Address[])");
@@ -107,7 +107,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                         new MemberSelectorOperator("AlternateAddresses", new ParameterOperator(parameters, parameterName)),
                         new ConstantOperator
                         (
-                            new Address[] { new Address { City = "Seattle" }, new Address { City = "Portland" } }
+                            new Address[] { new() { City = "Seattle" }, new() { City = "Portland" } }
                         )
                     ),
                     parameters,
