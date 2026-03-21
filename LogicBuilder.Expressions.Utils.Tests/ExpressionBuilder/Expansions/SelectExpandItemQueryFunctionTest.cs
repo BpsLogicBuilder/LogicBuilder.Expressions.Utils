@@ -33,10 +33,10 @@ namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder.Expansions
             //assert
             Assert.NotNull(mce);
             MethodCallExpression mceTake = Assert.IsType<MethodCallExpression>(mce, exactMatch: false);
-            MethodCallExpression mceSkip = mceTake.Arguments[0] as MethodCallExpression;
-            MethodCallExpression mceThenBy = mceSkip.Arguments[0] as MethodCallExpression;
-            MethodCallExpression mceThenByDescending = mceThenBy.Arguments[0] as MethodCallExpression;
-            MethodCallExpression mceOrderBy = mceThenByDescending.Arguments[0] as MethodCallExpression;
+            MethodCallExpression mceSkip = Assert.IsType<MethodCallExpression>(mceTake.Arguments[0], exactMatch: false);
+            MethodCallExpression mceThenBy = Assert.IsType<MethodCallExpression>(mceSkip.Arguments[0], exactMatch: false);
+            MethodCallExpression mceThenByDescending = Assert.IsType<MethodCallExpression>(mceThenBy.Arguments[0], exactMatch: false);
+            MethodCallExpression mceOrderBy = Assert.IsType<MethodCallExpression>(mceThenByDescending.Arguments[0], exactMatch: false);
             Assert.Equal("ThenBy", mceThenBy.Method.Name);
             Assert.Equal("ThenByDescending", mceThenByDescending.Method.Name);
             Assert.Equal("OrderBy", mceOrderBy.Method.Name);

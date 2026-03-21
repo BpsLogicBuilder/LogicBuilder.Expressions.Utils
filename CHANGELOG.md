@@ -1,3 +1,4 @@
+* 2026-03-21 - AB#87: Refactor test assertions to use Assert.IsType finstead of "as" operator.
 * 2026-03-21 - AB#87: Clean up redundant null check in ConvertConstantValue.
 * 2026-03-21 - AB#87: Add comprehensive unit tests and improve operator logic.
 * 2026-03-19 - AB#87: Add extensive LinqHelpers tests and enable strong-name signing.
