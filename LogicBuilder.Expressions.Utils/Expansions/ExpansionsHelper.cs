@@ -130,9 +130,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
 
                 return
                 [
-                    .. includes
-                                        .Select(include => BuildSelectorExpression<TSource>(include, valueMemberSelectors, parameterName))
-,
+                    .. includes.Select(include => BuildSelectorExpression<TSource>(include, valueMemberSelectors, parameterName)),
                     .. valueMemberSelectors.Select(selector => (Expression<Func<TSource, object>>)selector),
                 ];
             }

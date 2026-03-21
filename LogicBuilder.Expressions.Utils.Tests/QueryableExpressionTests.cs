@@ -1312,6 +1312,58 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void SingleOrDefault_Filter_Returns_match()
+        {
+            //act
+            var expression = CreateExpression<IQueryable<Category>, Category>();
+            var result = RunExpression(expression, GetCategories());
+
+            //assert
+            AssertFilterStringIsCorrect(expression, "$it => $it.SingleOrDefault(a => (a.CategoryID == 1))");
+            Assert.Equal(1, result.CategoryID);
+
+            Expression<Func<T, TReturn>> CreateExpression<T, TReturn>()
+                => GetExpression<T, TReturn>
+                (
+                    new SingleOrDefaultOperator
+                    (
+                        parameters,
+                        new ParameterOperator(parameters, parameterName),
+                        new EqualsBinaryOperator
+                        (
+                            new MemberSelectorOperator("CategoryID", new ParameterOperator(parameters, "a")),
+                            new ConstantOperator(1)
+                        ),
+                        "a"
+                    ),
+                    parameters,
+                    parameterName
+                );
+        }
+
+        [Fact]
+        public void SingleOrDefault_with_multiple_matches_Throws_Exception()
+        {
+            //act
+            var expression = CreateExpression<IQueryable<Category>, Category>();
+
+            //assert
+            AssertFilterStringIsCorrect(expression, "$it => $it.SingleOrDefault()");
+            Assert.Throws<InvalidOperationException>(() => RunExpression(expression, GetCategories()));
+
+            Expression<Func<T, TReturn>> CreateExpression<T, TReturn>()
+                => GetExpression<T, TReturn>
+                (
+                    new SingleOrDefaultOperator
+                    (
+                        new ParameterOperator(parameters, parameterName)
+                    ),
+                    parameters,
+                    parameterName
+                );
+        }
+
+        [Fact]
         public void Sum_Selector()
         {
             //act

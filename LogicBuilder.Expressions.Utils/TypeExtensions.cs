@@ -147,6 +147,14 @@ namespace LogicBuilder.Expressions.Utils
             return typeof(Nullable<>).MakeGenericType(type);
         }
 
+        public static Expression ToNullable(this Expression expression)
+        {
+            if (expression.Type.IsValueType && !expression.Type.IsNullableType())
+                return Expression.Convert(expression, expression.Type.ToNullable());
+
+            return expression;
+        }
+
         public static Type GetUnderlyingElementType(this Type type)
         {
             TypeInfo tInfo = type.GetTypeInfo();
