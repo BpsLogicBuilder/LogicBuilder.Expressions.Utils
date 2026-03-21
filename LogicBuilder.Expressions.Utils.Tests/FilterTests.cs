@@ -2421,6 +2421,87 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     parameters
                 );
         }
+
+        public class AllOnNavigation_ContradictionTheoryData(IExpressionPart filterBody, string expectedExpression, IDictionary<string, ParameterExpression> parameters)
+        {
+            public IExpressionPart FilterBody { get; } = filterBody;
+            public string ExpectedExpression { get; } = expectedExpression;
+            public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
+        }
+
+        public static TheoryData<AllOnNavigation_ContradictionTheoryData> AllOnNavigation_Contradiction_Data
+        {
+            get
+            {
+                return
+                [
+                    GetArguments
+                    (
+                        parameters => new AllOnNavigation_ContradictionTheoryData
+                        (
+                            new AllOperator
+                            (
+                                parameters,
+                                new MemberSelectorOperator
+                                (
+                                    "QueryableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new ConstantOperator(false),
+                                "P"
+                            ),
+                           "$it => $it.Category.QueryableProducts.All(P => False)",
+                            parameters
+                        )
+                    ),
+                    GetArguments
+                    (
+                        parameters => new AllOnNavigation_ContradictionTheoryData
+                        (
+                            new AllOperator
+                            (
+                                parameters,
+                                new MemberSelectorOperator
+                                (
+                                    "QueryableProducts",
+                                    new MemberSelectorOperator("Category", new ParameterOperator(parameters, parameterName))
+                                ),
+                                new AndBinaryOperator
+                                (
+                                    new ConstantOperator(false),
+                                    new EqualsBinaryOperator
+                                    (
+                                        new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, "P")),
+                                        new ConstantOperator("Snacks")
+                                    )
+                                ),
+                                "P"
+                            ),
+                           "$it => $it.Category.QueryableProducts.All(P => (False AndAlso (P.ProductName == \"Snacks\")))",
+                            parameters
+                        )
+                    )
+                ];
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(AllOnNavigation_Contradiction_Data), MemberType = typeof(FilterTests))]
+        public void AllOnNavigation_Contradiction(AllOnNavigation_ContradictionTheoryData theoryData)
+        {
+            //act
+            var filter = CreateFilter<Product>();
+
+            //assert
+            AssertFilterStringIsCorrect(filter, theoryData.ExpectedExpression);
+
+            Expression<Func<T, bool>> CreateFilter<T>()
+                => GetFilter<T>
+                (
+                    theoryData.FilterBody,
+                    theoryData.Parameters
+                );
+        }
         #endregion Any/All
 
         #region String Functions

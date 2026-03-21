@@ -688,6 +688,31 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void MakeDateSelector_DateTimeOffset_ReturnsCorrectExpression()
+        {
+            //arrange
+            var param = Expression.Parameter(typeof(DateTimeOffset), "dt");
+
+            //act
+            var result = param.MakeDateSelector();
+
+            //assert
+            Assert.IsType<MemberExpression>(result, exactMatch: false);
+            var memberExpr = (MemberExpression)result;
+            Assert.Equal("Date", memberExpr.Member.Name);
+        }
+
+        [Fact]
+        public void MakeDateSelector_DateTimeOnly_ReturnsCorrectExpression()
+        {
+            //arrange
+            var param = Expression.Parameter(typeof(DateOnly), "dt");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(() => param.MakeDateSelector());
+        }
+
+        [Fact]
         public void MakeTimeOfDaySelector_DateTime_ReturnsCorrectExpression()
         {
             //arrange
@@ -1134,7 +1159,48 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
             //assert
             Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal(typeof(Product), result.GetUnderlyingElementType());
             Assert.Equal("AsEnumerable", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetAsEnumerableCall_WithGrouping_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var parameterExpression = Expression.Parameter(typeof(IGrouping<int, Product>), "q");
+
+            //act
+            var result = parameterExpression.GetAsEnumerableCall();
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal(typeof(Product), result.GetUnderlyingElementType());
+            Assert.Equal("AsEnumerable", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetAsEnumerableCall_WithDictionary_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var parameterExpression = Expression.Parameter(typeof(IDictionary<int, Product>), "q");
+
+            //act
+            var result = parameterExpression.GetAsEnumerableCall();
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal(typeof(KeyValuePair<int, Product>), result.GetUnderlyingElementType());
+            Assert.Equal("AsEnumerable", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetAsEnumerableCall_ThrowsForInvalidType()
+        {
+            //arrange
+            var parameterExpression = Expression.Parameter(typeof(int), "q");
+
+            //act
+            Assert.Throws<ArgumentException>(parameterExpression.GetAsEnumerableCall);
         }
 
         [Fact]

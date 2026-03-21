@@ -31,16 +31,8 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
             if (left.Type == right.Type)
                 return;
 
-            left = ToNullable(left);
-            right = ToNullable(right);
-        }
-
-        private static Expression ToNullable(Expression expression)
-        {
-            if (expression.Type.IsValueType && !expression.Type.IsNullableType())
-                return Expression.Convert(expression, expression.Type.ToNullable());
-
-            return expression;
+            left = left.ToNullable();
+            right = right.ToNullable();
         }
     }
 }

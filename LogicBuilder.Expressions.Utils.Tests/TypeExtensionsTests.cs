@@ -1,6 +1,8 @@
-﻿using System;
+﻿using LogicBuilder.Expressions.Utils.Tests.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using Xunit;
 
@@ -64,9 +66,84 @@ namespace LogicBuilder.Expressions.Utils.Tests
             });
         }
 
+        [Theory]
+        [InlineData(typeof(Product), "ProductName", typeof(string))]
+        [InlineData(typeof(BaseThing), "BaseId", typeof(int))]
+        [InlineData(typeof(BaseThing), "GetHashCode", typeof(int))]
+        public void GetMemberTypeFromMemberInfo_MustReturnTheTypeOfTheMember(Type declaringType, string memberName, Type expectedMemberType)
+        {
+            //arrange
+            MemberInfo memberInfo = declaringType.GetMemberInfo(memberName);
+
+            //act
+            Type memberType = memberInfo.GetMemberType();
+
+            //assert
+            Assert.Equal(expectedMemberType, memberType);
+        }
+
+        [Theory]
+        [InlineData(typeof(Product), "ProductName", typeof(string))]
+        [InlineData(typeof(BaseThing), "BaseId", typeof(int))]
+        public void GetMemberTypeFromMemberExpression_MustReturnTheTypeOfTheMember(Type declaringType, string memberName, Type expectedMemberType)
+        {
+            //arrange
+            ParameterExpression parameterExpression = Expression.Parameter(declaringType, "x");
+            MemberInfo memberInfo = declaringType.GetMemberInfo(memberName);
+            MemberExpression memberExpression = Expression.MakeMemberAccess(parameterExpression, memberInfo);
+
+            //act
+            Type memberType = memberExpression.GetMemberType();
+
+            //assert
+            Assert.Equal(expectedMemberType, memberType);
+        }
+
+        [Fact]
+        public void GetMemberTypeFromMemberInfo_ThrowsForInvalidMemberType()
+        {
+            //arrange
+            MemberInfo memberInfo = typeof(Product);
+
+            //act
+            Assert.Throws<ArgumentOutOfRangeException>(memberInfo.GetMemberType);
+        }
+
+        [Fact]
+        public void GetMemberTypeFromMemberInfo_ThrowsWhenmemberInfoIsNull()
+        {
+            //arrange
+            MemberInfo memberInfo = null;
+
+            //act
+            Assert.Throws<ArgumentNullException>(memberInfo.GetMemberType);
+        }
+
+        [Theory]
+        [InlineData("First", typeof(Position), true)]
+        [InlineData("Second", typeof(Position), true)]
+        [InlineData("Fifth", typeof(Position), false)]
+        public void TryParseEnum_MustReturnExpectedResult(string value, Type enumType, bool expectedResult)
+        {
+            //act
+            bool result = value.TryParseEnum(enumType, out _);
+            //assert
+            Assert.Equal(expectedResult, result);
+        }
+
+        [Theory]
+        [InlineData(typeof(string))]
+        [InlineData(typeof(Product))]
+        public void TryParseEnum_ThrowsForInvalidType(Type enumType)
+        {
+            //act
+            Assert.Throws<ArgumentException>(() => "".TryParseEnum(enumType, out _));
+        }
+
         private abstract class BaseThing
         {
             public string Name { get; set; }//NOSONAR - used for testing purposes
+            public int BaseId { get; set; }//NOSONAR - used for testing purposes
         }
 
         private class DerivedThing : BaseThing, IDerivedThing
