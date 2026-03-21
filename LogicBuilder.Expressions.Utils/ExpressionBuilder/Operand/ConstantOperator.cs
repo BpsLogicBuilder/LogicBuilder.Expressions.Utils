@@ -34,7 +34,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Operand
 
         private object? ConvertConstantValue()
         {
-            if (Type == null || ConstantValue == null || ConstantValue?.GetType() == Type)
+            if (Type == null || ConstantValue == null || ConstantValue.GetType() == Type)
                 return ConstantValue;
 
             return Convert.ChangeType(ConstantValue, Type);
