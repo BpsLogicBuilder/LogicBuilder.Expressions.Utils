@@ -11,12 +11,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
         {
             //Arrange Act
             var expression = new SelectExpandDefinition
-            {
-                ExpandedItems =
+            (
+                null,
                 [
                     new SelectExpandItem("Name")
                 ]
-            }.GetExpansionSelectors<Department>();
+            ).GetExpansionSelectors<Department>();
 
             //Assert
             Assert.NotNull(expression);

@@ -97,17 +97,12 @@ namespace LogicBuilder.Expressions.Utils
 
         public static bool TryParseEnum(this string toParse, Type enumType, out object? result)
         {
-            if (!typeof(Enum).IsAssignableFrom(enumType))
+            Type underlyingType = Nullable.GetUnderlyingType(enumType) ?? enumType;
+
+            if (!typeof(Enum).IsAssignableFrom(underlyingType))
                 throw new ArgumentException(nameof(enumType));
 
             MethodInfo method = GetMethod();
-            Type underlyingType = Nullable.GetUnderlyingType(enumType) ?? enumType;
-
-            if (method == null)
-            {
-                result = GetResult();
-                return false;
-            }
 
             object[] args = [toParse, null!];//out parameter must be null when passed to Invoke
             bool success = (bool)method.MakeGenericMethod(underlyingType).Invoke(null, args);

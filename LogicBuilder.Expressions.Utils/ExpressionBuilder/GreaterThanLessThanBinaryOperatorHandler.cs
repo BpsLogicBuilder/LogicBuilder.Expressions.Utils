@@ -20,7 +20,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
             {
                 return base.Build
                 (
-                    LinqHelpers.GetGuidCopareCall(left.SetNullType(typeof(Guid)), right.SetNullType(typeof(Guid))),
+                    LinqHelpers.GetGuidCopareCall(left.ToNullable().SetNullType(typeof(Guid)), right.ToNullable().SetNullType(typeof(Guid))),
                     Expression.Constant(0)
                 );
             }

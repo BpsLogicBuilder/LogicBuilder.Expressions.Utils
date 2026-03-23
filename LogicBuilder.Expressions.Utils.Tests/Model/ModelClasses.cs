@@ -1,17 +1,18 @@
-﻿//Adapted from Microsoft.AspNet.OData.Test.Query.Expressions
-using Microsoft.OData.Edm;
+﻿using Microsoft.OData.Edm;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace LogicBuilder.Expressions.Utils.Tests.Data
+namespace LogicBuilder.Expressions.Utils.Tests.Model
 {
-    public class Product
+    public class ProductModel
     {
+        [Key]
         public int ProductID { get; set; }
-
         public string ProductName { get; set; }
+        [Key]
         public int SupplierID { get; set; }
         public int CategoryID { get; set; }
         public string QuantityPerUnit { get; set; }
@@ -27,7 +28,6 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
         public System.DateTime Birthday { get; set; }
 
         public DateTimeOffset NonNullableDiscontinuedDate { get; set; }
-
         public DateTimeOffset NotFilterableDiscontinuedDate { get; set; }
 
         public DateTimeOffset DiscontinuedOffset { get; set; }
@@ -36,77 +36,46 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
         public Date DateProperty { get; set; }
         public Date? NullableDateProperty { get; set; }
 
-        public DateOnly DateOnlyProperty { get; set; }
-        public DateOnly? NullableDateOnlyProperty { get; set; }
-
         public Guid GuidProperty { get; set; }
         public Guid? NullableGuidProperty { get; set; }
 
         public TimeOfDay TimeOfDayProperty { get; set; }
         public TimeOfDay? NullableTimeOfDayProperty { get; set; }
 
-        public TimeOnly TimeOnlyProperty { get; set; }
-        public TimeOnly? NullableTimeOnlyProperty { get; set; }
-
         public ushort? UnsignedReorderLevel { get; set; }
 
-        public Position Ranking { get; set; }
+        public PositionModel Ranking { get; set; }
 
-        public Category Category { get; set; }
+        public CategoryModel Category { get; set; }
 
-        public Address SupplierAddress { get; set; }
+        public AddressModel SupplierAddress { get; set; }
 
         public int[] AlternateIDs { get; set; }
-        public Address[] AlternateAddresses { get; set; }
-
-        public Address[] NotFilterableAlternateAddresses { get; set; }
-
-        public IGrouping<int, Address> GroupedAddresses { get; set; }
+        public AddressModel[] AlternateAddresses { get; set; }
+        public AddressModel[] NotFilterableAlternateAddresses { get; set; }
     }
 
-    public class Category
+    public class CategoryModel
     {
+        [Key]
         public int CategoryID { get; set; }
         public string CategoryName { get; set; }
-
-        public Product Product { get; set; }
-
-        public ICollection<Product> Products { get; set; }
-
-        public IEnumerable<Product> EnumerableProducts { get; set; }
-        public IQueryable<Product> QueryableProducts { get; set; }
+        public ProductModel Product { get; set; }
+        public ICollection<ProductModel> Products { get; set; }
+        public IEnumerable<ProductModel> EnumerableProducts { get; set; }
+        public IQueryable<ProductModel> QueryableProducts { get; set; }
     }
 
-    public class Address
+    public class AddressModel
     {
+        [Key]
         public int AddressID { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string ZipCode { get; set; }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-                return false;
-
-            if (ReferenceEquals(this, obj)) return true;
-
-            if (obj.GetType() != GetType()) return false;
-
-            Address other = (Address)obj;
-            return other.AddressID == AddressID
-                && other.City == City
-                && other.State == State
-                && other.ZipCode == ZipCode;
-        }
-
-        public override int GetHashCode()
-        {
-            return AddressID;
-        }
     }
 
-    public class DataTypes
+    public class DataTypesModel
     {
         public int Id { get; set; }
         public Guid GuidProp { get; set; }
@@ -150,28 +119,13 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
         public char[] CharArrayProp { get; set; }
         public XElement XElementProp { get; set; }
 
-        public Position SimpleEnumProp { get; set; }
+        public PositionModel SimpleEnumProp { get; set; }
         public NumberBits FlagsEnumProp { get; set; }
-        public LongPosition LongEnumProp { get; set; }
-        public Position? NullableSimpleEnumProp { get; set; }
+        public LongPositionModel LongEnumProp { get; set; }
+        public PositionModel? NullableSimpleEnumProp { get; set; }
 
-        public Product EntityProp { get; set; }
-        public Address ComplexProp { get; set; }
-    }
-
-    public class DerivedProduct : Product
-    {
-        public string DerivedProductName { get; set; }
-    }
-
-    public class DerivedCategory : Category
-    {
-        public string DerivedCategoryName { get; set; }
-    }
-
-    public class DynamicProduct : Product
-    {
-        public Dictionary<string, object> ProductProperties { get; set; }
+        public ProductModel EntityProp { get; set; }
+        public AddressModel ComplexProp { get; set; }
     }
 
     [Flags]
@@ -182,7 +136,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
         Four = 0x4
     }
 
-    public enum Position
+    public enum PositionModel
     {
         First,
         Second,
@@ -190,7 +144,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
         Fourth
     }
 
-    public enum LongPosition : long
+    public enum LongPositionModel : long
     {
         FirstLong,
         SecondLong,

@@ -19,7 +19,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
             .Select(list => new List<Expansion>(list))
             .BuildIncludes<TSource>
             (
-                selectExpandDefinition.Selects ?? []
+                selectExpandDefinition.Selects
             );
         }
 
@@ -30,25 +30,14 @@ namespace LogicBuilder.Expressions.Utils.Expansions
 
             return selectExpandDefinition.ExpandedItems.GetExpansions
             (
-                new HashSet<string>
-                (
-                    selectExpandDefinition.Selects ?? [], 
-                    new SelectsEqualityComparer()
-                ), 
                 sourceType
             );
         }
 
-        private static List<List<ExpansionOptions>> GetExpansions(this IEnumerable<SelectExpandItem> selectExpandItems, HashSet<string> selects, Type sourceType)
+        private static List<List<ExpansionOptions>> GetExpansions(this IEnumerable<SelectExpandItem> selectExpandItems, Type sourceType)
         {
-            if (selectExpandItems == null)
-                return [];
-
             return selectExpandItems.Aggregate(new List<List<ExpansionOptions>>(), (listOfExpansionLists, next) =>
             {
-                if (!selects.ExpansionIsValid(next.MemberName))
-                    return listOfExpansionLists;
-
                 Type currentParentType = sourceType.GetCurrentType();
                 Type memberType = currentParentType.GetMemberInfo(next.MemberName).GetMemberType();
                 Type elementType = memberType.GetCurrentType();
@@ -63,15 +52,8 @@ namespace LogicBuilder.Expressions.Utils.Expansions
                     GetFilter(next, memberType)
                 );
 
-                List<List<ExpansionOptions>> navigationItems = next.ExpandedItems == null
-                    ? []
-                    : [.. next.ExpandedItems.GetExpansions
+                List<List<ExpansionOptions>> navigationItems = [.. next.ExpandedItems.GetExpansions
                     (
-                        new HashSet<string>
-                        (
-                            next.Selects ?? [], 
-                            new SelectsEqualityComparer()
-                        ), 
                         elementType
                     )
                     .Select
@@ -106,14 +88,6 @@ namespace LogicBuilder.Expressions.Utils.Expansions
                 static bool HasQuery(SelectExpandItem item, Type itemType)
                     => itemType.IsList() && item?.QueryFunction?.SortCollection != null;
             });
-        }
-
-        private static bool ExpansionIsValid(this HashSet<string> siblingSelects, string expansion)
-        {
-            if (siblingSelects == null || !siblingSelects.Any())
-                return true;
-
-            return siblingSelects.Contains(expansion);
         }
 
         public static ICollection<Expression<Func<TSource, object>>> BuildIncludes<TSource>(this IEnumerable<List<Expansion>> includes, List<string> selects)

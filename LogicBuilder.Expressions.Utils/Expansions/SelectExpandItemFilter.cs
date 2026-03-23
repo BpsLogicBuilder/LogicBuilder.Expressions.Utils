@@ -4,6 +4,6 @@ namespace LogicBuilder.Expressions.Utils.Expansions
 {
     public class SelectExpandItemFilter(FilterLambdaOperator filterLambdaOperator)
     {
-        public FilterLambdaOperator FilterLambdaOperator { get; set; } = filterLambdaOperator;
+        public FilterLambdaOperator FilterLambdaOperator { get; } = filterLambdaOperator;
     }
 }

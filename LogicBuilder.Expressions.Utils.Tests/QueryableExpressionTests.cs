@@ -501,6 +501,29 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void Count_UsingLengthOperator()
+        {
+            //act
+            var expression = CreateExpression<IQueryable<Category>, int>();
+            var result = RunExpression(expression, GetCategories());
+
+            //assert
+            AssertFilterStringIsCorrect(expression, "$it => $it.Count()");
+            Assert.Equal(2, result);
+
+            Expression<Func<T, TReturn>> CreateExpression<T, TReturn>()
+                => GetExpression<T, TReturn>
+                (
+                    new LengthOperator
+                    (
+                        new ParameterOperator(parameters, parameterName)
+                    ),
+                    parameters,
+                    parameterName
+                );
+        }
+
+        [Fact]
         public void Distinct()
         {
             //act

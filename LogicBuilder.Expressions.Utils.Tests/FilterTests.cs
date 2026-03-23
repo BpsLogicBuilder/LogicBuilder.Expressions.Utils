@@ -9200,6 +9200,31 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void CollectionConstants_Are_Parameterized_UsingContainsOperator()
+        {
+            //act
+            var filter = CreateFilter<Product>();
+
+            //assert
+            AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[System.String].Contains($it.ProductName)");
+
+            Expression<Func<T, bool>> CreateFilter<T>()
+                => GetFilter<T>
+                (
+                    new ContainsOperator
+                    (
+                        new CollectionConstantOperator
+                        (
+                            new List<object> { "Prod1", "Prod2" },
+                            typeof(string)
+                        ),
+                        new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, parameterName))
+                    ),
+                    parameters
+                );
+        }
+
+        [Fact]
         public void CollectionConstants_OfEnums_Are_Not_Parameterized_If_Disabled()
         {
             //act

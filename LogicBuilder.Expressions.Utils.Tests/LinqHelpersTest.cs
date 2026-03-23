@@ -377,6 +377,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void MakeDaySelector_ThrowsForInvalidType()
+        {
+            //arrange
+            var param = Expression.Parameter(typeof(string), "dt");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(param.MakeDaySelector);
+        }
+
+        [Fact]
         public void MakeMonthSelector_DateTime_ReturnsCorrectExpression()
         {
             //arrange
@@ -441,6 +451,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void MakeMonthSelector_ThrowsForInvalidType()
+        {
+            //arrange
+            var param = Expression.Parameter(typeof(string), "dt");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(param.MakeMonthSelector);
+        }
+
+        [Fact]
         public void MakeYearSelector_DateTime_ReturnsCorrectExpression()
         {
             //arrange
@@ -502,6 +522,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Assert.Equal(typeof(int), result.Type);
             var memberExpr = (MemberExpression)result;
             Assert.Equal("Year", memberExpr.Member.Name);
+        }
+
+        [Fact]
+        public void MakeYearSelector_ThrowsForInvalidType()
+        {
+            //arrange
+            var param = Expression.Parameter(typeof(string), "dt");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(param.MakeYearSelector);
         }
 
         [Fact]
@@ -583,6 +613,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void MakeHourSelector_ThrowsForInvalidType()
+        {
+            //arrange
+            var param = Expression.Parameter(typeof(string), "dt");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(param.MakeHourSelector);
+        }
+
+        [Fact]
         public void MakeMinuteSelector_DateTime_ReturnsCorrectExpression()
         {
             //arrange
@@ -610,6 +650,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Assert.IsType<MemberExpression>(result, exactMatch: false);
             var memberExpr = (MemberExpression)result;
             Assert.Equal("Minutes", memberExpr.Member.Name);
+        }
+
+        [Fact]
+        public void MakeMinuteSelector_ThrowsForInvalidType()
+        {
+            //arrange
+            var param = Expression.Parameter(typeof(string), "dt");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(param.MakeMinuteSelector);
         }
 
         [Fact]
@@ -643,6 +693,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void MakeSecondSelector_ThrowsForInvalidType()
+        {
+            //arrange
+            var param = Expression.Parameter(typeof(string), "dt");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(param.MakeSecondSelector);
+        }
+
+        [Fact]
         public void MakeMillisecondSelector_DateTime_ReturnsCorrectExpression()
         {
             //arrange
@@ -670,6 +730,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Assert.IsType<MemberExpression>(result, exactMatch: false);
             var memberExpr = (MemberExpression)result;
             Assert.Equal("Milliseconds", memberExpr.Member.Name);
+        }
+
+        [Fact]
+        public void MakeMillisecondSelector_ThrowsForInvalidType()
+        {
+            //arrange
+            var param = Expression.Parameter(typeof(string), "dt");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(param.MakeMillisecondSelector);
         }
 
         [Fact]
@@ -821,6 +891,19 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void GetSubStringCall_ThrowsForInvalidArgsLength()
+        {
+            //arrange
+            var instance = Expression.Constant("Hello World");
+            var startIndex = Expression.Constant(0);
+            var length = Expression.Constant(5);
+            var invalidArg = Expression.Constant(5);
+
+            //act & assert
+            Assert.Throws<ArgumentException>(() => instance.GetSubStringCall(startIndex, length, invalidArg));
+        }
+
+        [Fact]
         public void GetStringToLowerCall_ReturnsCorrectMethodCall()
         {
             //arrange
@@ -947,6 +1030,25 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void GetSelectCall_ReturnsCorrectMethodCall_ForEnumerable()
+        {
+            //arrange
+            var enumerable = Expression.Constant(Enumerable.Empty<Product>());
+            var param = Expression.Parameter(typeof(Product), "p");
+            var selector = Expression.Lambda<Func<Product, string>>(
+                Expression.Property(param, "ProductName"),
+                param
+            );
+
+            //act
+            var result = enumerable.GetSelectCall(selector);
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("Select", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
         public void GetAnyCall_WithoutPredicate_ReturnsCorrectMethodCall()
         {
             //arrange
@@ -1045,10 +1147,87 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void GetOrderBy_WorksForEnumerableCollection()
+        {
+            //arrange
+            var sortCollection = new SortCollection
+            (
+                [
+                    new SortDescription("ProductName", ListSortDirection.Ascending),
+                    new SortDescription("SupplierID", ListSortDirection.Descending),
+                    new SortDescription("DateProperty", ListSortDirection.Ascending)
+                ]
+            );
+            ParameterExpression param = Expression.Parameter(typeof(IEnumerable<Product>), "q");
+
+            //act
+            Expression mce = param.GetOrderBy<Product>(sortCollection);
+
+            //assert
+            Assert.NotNull(mce);
+            MethodCallExpression mceTake = Assert.IsType<MethodCallExpression>(mce, exactMatch: false);
+            MethodCallExpression mceSkip = Assert.IsType<MethodCallExpression>(mceTake.Arguments[0], exactMatch: false);
+            MethodCallExpression mceThenBy = Assert.IsType<MethodCallExpression>(mceSkip.Arguments[0], exactMatch: false);
+            MethodCallExpression mceThenByDescending = Assert.IsType<MethodCallExpression>(mceThenBy.Arguments[0], exactMatch: false);
+            MethodCallExpression mceOrderBy = Assert.IsType<MethodCallExpression>(mceThenByDescending.Arguments[0], exactMatch: false);
+            Assert.Equal("ThenBy", mceThenBy.Method.Name);
+            Assert.Equal("ThenByDescending", mceThenByDescending.Method.Name);
+            Assert.Equal("OrderBy", mceOrderBy.Method.Name);
+        }
+
+        [Fact]
+        public void GetOrderBy_WorksForQueryableCollection()
+        {
+            //arrange
+            var sortCollection = new SortCollection
+            (
+                [
+                    new SortDescription("ProductName", ListSortDirection.Ascending),
+                    new SortDescription("SupplierID", ListSortDirection.Descending),
+                    new SortDescription("DateProperty", ListSortDirection.Ascending)
+                ]
+            );
+            ParameterExpression param = Expression.Parameter(typeof(IQueryable<Product>), "q");
+
+            //act
+            Expression mce = param.GetOrderBy<Product>(sortCollection);
+
+            //assert
+            Assert.NotNull(mce);
+            MethodCallExpression mceTake = Assert.IsType<MethodCallExpression>(mce, exactMatch: false);
+            MethodCallExpression mceSkip = Assert.IsType<MethodCallExpression>(mceTake.Arguments[0], exactMatch: false);
+            MethodCallExpression mceThenBy = Assert.IsType<MethodCallExpression>(mceSkip.Arguments[0], exactMatch: false);
+            MethodCallExpression mceThenByDescending = Assert.IsType<MethodCallExpression>(mceThenBy.Arguments[0], exactMatch: false);
+            MethodCallExpression mceOrderBy = Assert.IsType<MethodCallExpression>(mceThenByDescending.Arguments[0], exactMatch: false);
+            Assert.Equal("ThenBy", mceThenBy.Method.Name);
+            Assert.Equal("ThenByDescending", mceThenByDescending.Method.Name);
+            Assert.Equal("OrderBy", mceOrderBy.Method.Name);
+        }
+
+        [Fact]
         public void GetOrderByCall_WithAscendingSort_ReturnsCorrectMethodCall()
         {
             //arrange
             var queryable = Expression.Constant(Enumerable.Empty<Product>().AsQueryable());
+            var param = Expression.Parameter(typeof(Product), "p");
+            var selector = Expression.Lambda<Func<Product, string>>(
+                Expression.Property(param, "ProductName"),
+                param
+            );
+
+            //act
+            var result = queryable.GetOrderByCall(selector, ListSortDirection.Ascending);
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("OrderBy", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetOrderByCall_AsEnumerable_WithAscendingSort_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var queryable = Expression.Constant(Enumerable.Empty<Product>());
             var param = Expression.Parameter(typeof(Product), "p");
             var selector = Expression.Lambda<Func<Product, string>>(
                 Expression.Property(param, "ProductName"),
@@ -1121,6 +1300,25 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void GetGroupByCall_ReturnsCorrectMethodCall_ForEnumerable()
+        {
+            //arrange
+            var enumerable = Expression.Constant(Enumerable.Empty<Product>());
+            var param = Expression.Parameter(typeof(Product), "p");
+            var selector = Expression.Lambda<Func<Product, int>>(
+                Expression.Property(param, "ProductID"),
+                param
+            );
+
+            //act
+            var result = enumerable.GetGroupByCall(selector);
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("GroupBy", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
         public void GetToListCall_ReturnsCorrectMethodCall()
         {
             //arrange
@@ -1146,6 +1344,41 @@ namespace LogicBuilder.Expressions.Utils.Tests
             //assert
             Assert.IsType<MethodCallExpression>(result, exactMatch: false);
             Assert.Equal("AsQueryable", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetAsQueryableCall_WithGrouping_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var parameterExpression = Expression.Parameter(typeof(IGrouping<int, Product>), "q");
+
+            //act
+            var result = parameterExpression.GetAsQueryableCall();
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal(typeof(Product), result.GetUnderlyingElementType());
+            Assert.Equal("AsQueryable", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetAsQueryableCall_ThrowsForInvalidType()
+        {
+            //arrange
+            var parameterExpression = Expression.Parameter(typeof(int), "q");
+
+            //act
+            Assert.Throws<ArgumentException>(parameterExpression.GetAsQueryableCall);
+        }
+
+        [Fact]
+        public void GetAsQueryableCall_ThrowsForInvalidGenericType()
+        {
+            //arrange
+            var parameterExpression = Expression.Parameter(typeof(KeyValuePair<string, string>), "q");
+
+            //act
+            Assert.Throws<ArgumentException>(parameterExpression.GetAsQueryableCall);
         }
 
         [Fact]
@@ -1198,6 +1431,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
         {
             //arrange
             var parameterExpression = Expression.Parameter(typeof(int), "q");
+
+            //act
+            Assert.Throws<ArgumentException>(parameterExpression.GetAsEnumerableCall);
+        }
+
+        [Fact]
+        public void GetAsEnumerableCall_ThrowsForInvalidGenericType()
+        {
+            //arrange
+            var parameterExpression = Expression.Parameter(typeof(KeyValuePair<string,string>), "q");
 
             //act
             Assert.Throws<ArgumentException>(parameterExpression.GetAsEnumerableCall);
@@ -1262,6 +1505,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void GetCeilingCall_ThrowsForInvalidType()
+        {
+            //arrange
+            var operand = Expression.Constant("invalid");
+
+            //act
+            Assert.Throws<ArgumentException>(operand.GetCeilingCall);
+        }
+
+        [Fact]
         public void GetRoundCall_Decimal_ReturnsCorrectMethodCall()
         {
             //arrange
@@ -1287,6 +1540,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
             //assert
             Assert.IsType<MethodCallExpression>(result, exactMatch: false);
             Assert.Equal("Round", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetRoundCall_ThrowsForInvalidType()
+        {
+            //arrange
+            var operand = Expression.Constant("invalid");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(operand.GetRoundCall);
         }
 
         [Fact]
@@ -1317,6 +1580,16 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Assert.Equal("Floor", ((MethodCallExpression)result).Method.Name);
         }
 
+        [Fact]
+        public void GetFloorCall_ThrowsForInvalidType()
+        {
+            //arrange
+            var operand = Expression.Constant("invalid");
+
+            //act & assert
+            Assert.Throws<ArgumentException>(operand.GetFloorCall);
+        }
+
         private static readonly int[] sourceArray123 = [1, 2, 3];
         private static readonly int[] sourceArray23 = [2, 3];
         private static readonly int[] sourceArray12 = [1, 2];
@@ -1339,10 +1612,56 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void GetAverageCall_AsEnumerable_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var queryable = Expression.Constant(sourceArray123);
+
+            //act
+            var result = queryable.GetAverageCall();
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("Average", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetAverageCall_WithSelector_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var queryable = Expression.Constant(new[] { new Product() }.AsQueryable());
+            var param = Expression.Parameter(typeof(Product), "p");
+            var selector = Expression.Lambda<Func<Product, int>>(
+                Expression.Property(param, "ProductID"),
+                param
+            );
+
+            //act
+            var result = queryable.GetAverageCall(selector);
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("Average", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
         public void GetMaxCall_WithoutSelector_ReturnsCorrectMethodCall()
         {
             //arrange
             var queryable = Expression.Constant(sourceArray123.AsQueryable());
+
+            //act
+            var result = queryable.GetMaxCall();
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("Max", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetMaxCall_AsEnumerable_WithoutSelector_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var queryable = Expression.Constant(sourceArray123);
 
             //act
             var result = queryable.GetMaxCall();
@@ -1372,10 +1691,43 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void GetMaxCall_AsEnumerable_WithSelector_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var queryable = Expression.Constant(new[] { new Product() });
+            var param = Expression.Parameter(typeof(Product), "p");
+            var selector = Expression.Lambda<Func<Product, int>>(
+                Expression.Property(param, "ProductID"),
+                param
+            );
+
+            //act
+            var result = queryable.GetMaxCall(selector);
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("Max", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
         public void GetMinCall_WithoutSelector_ReturnsCorrectMethodCall()
         {
             //arrange
             var queryable = Expression.Constant(sourceArray123.AsQueryable());
+
+            //act
+            var result = queryable.GetMinCall();
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("Min", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetMinCall_AsEnumerable_WithoutSelector_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var queryable = Expression.Constant(sourceArray123);
 
             //act
             var result = queryable.GetMinCall();
@@ -1405,6 +1757,39 @@ namespace LogicBuilder.Expressions.Utils.Tests
         }
 
         [Fact]
+        public void GetMinCall_AsEnumerable_WithSelector_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var queryable = Expression.Constant(new[] { new Product() });
+            var param = Expression.Parameter(typeof(Product), "p");
+            var selector = Expression.Lambda<Func<Product, int>>(
+                Expression.Property(param, "ProductID"),
+                param
+            );
+
+            //act
+            var result = queryable.GetMinCall(selector);
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("Min", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetSumCall_AsEnumerable_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var queryable = Expression.Constant(sourceArray123);
+
+            //act
+            var result = queryable.GetSumCall();
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("Sum", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
         public void GetSumCall_ReturnsCorrectMethodCall()
         {
             //arrange
@@ -1412,6 +1797,25 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
             //act
             var result = queryable.GetSumCall();
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("Sum", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetSumCall_WithSelector_ReturnsCorrectMethodCall()
+        {
+            //arrange
+            var queryable = Expression.Constant(new[] { new Product() }.AsQueryable());
+            var param = Expression.Parameter(typeof(Product), "p");
+            var selector = Expression.Lambda<Func<Product, int>>(
+                Expression.Property(param, "ProductID"),
+                param
+            );
+
+            //act
+            var result = queryable.GetSumCall(selector);
 
             //assert
             Assert.IsType<MethodCallExpression>(result, exactMatch: false);
@@ -1816,6 +2220,25 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
             //act
             var result = queryable.GetSelectManyCall(selector);
+
+            //assert
+            Assert.IsType<MethodCallExpression>(result, exactMatch: false);
+            Assert.Equal("SelectMany", ((MethodCallExpression)result).Method.Name);
+        }
+
+        [Fact]
+        public void GetSelectManyCall_ReturnsCorrectMethodCall_ForEnumerable()
+        {
+            //arrange
+            var enumerable = Expression.Constant(new[] { new Category() });
+            var param = Expression.Parameter(typeof(Category), "c");
+            var selector = Expression.Lambda<Func<Category, IEnumerable<Product>>>(
+                Expression.Property(param, "Products"),
+                param
+            );
+
+            //act
+            var result = enumerable.GetSelectManyCall(selector);
 
             //assert
             Assert.IsType<MethodCallExpression>(result, exactMatch: false);
