@@ -5,15 +5,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using Xunit;
 
-namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder.Expansions
+namespace LogicBuilder.Expressions.Utils.Tests.Expansions
 {
-    public class SelectExpandItemQueryFunctionTest
+    public class ExpansionQueryOptionTest
     {
         [Fact]
         public void ExpansionQueryOption_CreatesExpectedExpression()
         {
             //arrange
-            SelectExpandItemQueryFunction queryFunction = new
+            ExpansionQueryOption option = new
             (
                 new SortCollection
                 (
@@ -28,7 +28,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder.Expansions
             ParameterExpression param = Expression.Parameter(typeof(IQueryable<Product>), "q");
 
             //act
-            Expression mce = param.GetOrderBy<Product>(queryFunction.SortCollection);
+            Expression mce = param.GetOrderBy<Product>(option.SortCollection);
 
             //assert
             Assert.NotNull(mce);

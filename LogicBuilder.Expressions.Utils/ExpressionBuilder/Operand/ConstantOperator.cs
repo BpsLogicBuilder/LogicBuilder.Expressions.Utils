@@ -37,7 +37,9 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Operand
             if (Type == null || ConstantValue == null || ConstantValue.GetType() == Type)
                 return ConstantValue;
 
-            return Convert.ChangeType(ConstantValue, Type);
+            Type conversionType = Type.IsNullableType() ? Nullable.GetUnderlyingType(Type) : Type;
+
+            return Convert.ChangeType(ConstantValue, conversionType);
         }
     }
 }

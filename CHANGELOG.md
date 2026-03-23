@@ -1,3 +1,4 @@
+* 2026-03-23 - AB#87: Add extensive unit tests and refactor expansions for safety.
 * 2026-03-21 - AB#87: Refactor test assertions to use Assert.IsType finstead of "as" operator.
 * 2026-03-21 - AB#87: Clean up redundant null check in ConvertConstantValue.
 * 2026-03-21 - AB#87: Add comprehensive unit tests and improve operator logic.

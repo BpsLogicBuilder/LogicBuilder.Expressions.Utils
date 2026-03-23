@@ -68,7 +68,32 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
         [Theory]
         [InlineData(typeof(Product), "ProductName", typeof(string))]
+        [InlineData(typeof(Product), "Category.CategoryName", typeof(string))]
         [InlineData(typeof(BaseThing), "BaseId", typeof(int))]
+        [InlineData(typeof(BaseThing), "GetHashCode", typeof(int))]
+        public void GetMemberInfoFromFullName_MustReturnTheTypeOfTheMember(Type declaringType, string memberName, Type expectedMemberType)
+        {
+            //arrange
+            MemberInfo memberInfo = declaringType.GetMemberInfoFromFullName(memberName);
+
+            //act
+            Type memberType = memberInfo.GetMemberType();
+
+            //assert
+            Assert.Equal(expectedMemberType, memberType);
+        }
+
+        [Fact]
+        public void GetMemberInfo_ThrowsForInvalidName()
+        {
+            //act & assert
+            Assert.Throws<ArgumentException>(() => typeof(Product).GetMemberInfo("InvalidName"));
+        }
+
+        [Theory]
+        [InlineData(typeof(Product), "ProductName", typeof(string))]
+        [InlineData(typeof(BaseThing), "BaseId", typeof(int))]
+        [InlineData(typeof(BaseThing), "BaseTypeId", typeof(int))]
         [InlineData(typeof(BaseThing), "GetHashCode", typeof(int))]
         public void GetMemberTypeFromMemberInfo_MustReturnTheTypeOfTheMember(Type declaringType, string memberName, Type expectedMemberType)
         {
@@ -122,11 +147,14 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [Theory]
         [InlineData("First", typeof(Position), true)]
         [InlineData("Second", typeof(Position), true)]
+        [InlineData("Second", typeof(Position?), true)]
         [InlineData("Fifth", typeof(Position), false)]
+        [InlineData("Fifth", typeof(Position?), false)]
         public void TryParseEnum_MustReturnExpectedResult(string value, Type enumType, bool expectedResult)
         {
             //act
             bool result = value.TryParseEnum(enumType, out _);
+
             //assert
             Assert.Equal(expectedResult, result);
         }
@@ -140,10 +168,61 @@ namespace LogicBuilder.Expressions.Utils.Tests
             Assert.Throws<ArgumentException>(() => "".TryParseEnum(enumType, out _));
         }
 
+        [Theory]
+        [InlineData(typeof(Product), typeof(Product))]
+        [InlineData(typeof(int), typeof(int?))]
+        [InlineData(typeof(int?), typeof(int?))]
+        public void ToNullable_ReturnsTheExprectedType(Type type, Type expectedResultType)
+        {
+            //act
+            Type resultType = type.ToNullable();
+
+            //assert
+            Assert.Equal(expectedResultType, resultType);
+        }
+
+        [Theory]
+        [InlineData(typeof(List<Product>), typeof(Product))]
+        [InlineData(typeof(int[]), typeof(int))]
+        public void GetUnderlyingElementType_ReturnsTheExprectedType(Type type, Type expectedResultType)
+        {
+            //act
+            Type resultType = type.GetUnderlyingElementType();
+
+            //assert
+            Assert.Equal(expectedResultType, resultType);
+        }
+
+        [Theory]
+        [InlineData(typeof(IDictionary<int, Product>))]
+        [InlineData(typeof(Product))]
+        public void GetUnderlyingElementType_ThrowsForInvalidType(Type type)
+        {
+            //act & assert
+            Assert.Throws<ArgumentException>(type.GetUnderlyingElementType);
+        }
+
+        [Theory]
+        [InlineData(typeof(Product), new string[] { "ProductID", "ProductName" }, 2)]
+        [InlineData(typeof(Product), null, 31)]
+        [InlineData(typeof(List<Product>), null, 0)]
+        public void GetValueTypeMembers_WithSelects_ReturnsExprectedMembers(Type type, string[] selects, int expectedCount)
+        {
+            //act
+            MemberInfo[] memberInfos = type.GetSelectedMembers(selects == null ? [] : [.. selects]);
+
+            //assert
+            Assert.Equal(expectedCount, memberInfos.Length);
+        }
+
+#pragma warning disable S1144 // Remove unused property (used for testing purposes)
         private abstract class BaseThing
         {
             public string Name { get; set; }//NOSONAR - used for testing purposes
             public int BaseId { get; set; }//NOSONAR - used for testing purposes
+#pragma warning disable CS0649 // Remove unused property (used for testing purposes)
+            public int BaseTypeId;//is never assigned to, and will always have its default value 0 NOSONAR - used for testing purposes
+#pragma warning restore CS0649
         }
 
         private class DerivedThing : BaseThing, IDerivedThing
@@ -174,5 +253,6 @@ namespace LogicBuilder.Expressions.Utils.Tests
             public IEnumerable<int> Ints { get; set; }//NOSONAR - used for testing purposes
             public List<object> Objects { get; set; }//NOSONAR - used for testing purposes
         }
+#pragma warning restore S1144 // Remove unused property
     }
 }

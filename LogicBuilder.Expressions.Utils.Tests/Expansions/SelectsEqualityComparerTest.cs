@@ -1,7 +1,7 @@
 ﻿using LogicBuilder.Expressions.Utils.Expansions;
 using Xunit;
 
-namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder.Expansions
+namespace LogicBuilder.Expressions.Utils.Tests.Expansions
 {
     public class SelectsEqualityComparerTest
     {

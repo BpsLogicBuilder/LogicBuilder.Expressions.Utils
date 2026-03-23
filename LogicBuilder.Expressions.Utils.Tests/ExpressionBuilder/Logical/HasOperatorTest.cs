@@ -31,6 +31,24 @@ namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder.Logical
         }
 
         [Fact]
+        public void HasOperator_ShouldReturnExpectedExpression_WhenRightSideDoesNotUseConstantContainer()
+        {
+            // Arrange
+            System.IO.FileAttributes leftValue = System.IO.FileAttributes.ReadOnly | System.IO.FileAttributes.Hidden;
+            bool expected = true;
+            ConstantOperator leftOperator = new(leftValue, typeof(System.IO.FileAttributes));
+            ConvertToEnumOperator rightOperator = new(1, typeof(System.IO.FileAttributes));
+            HasOperator hasOperator = new(leftOperator, rightOperator);
+
+            // Act
+            var resultExpression = hasOperator.Build();
+            var resultFunc = Expression.Lambda<Func<bool>>(resultExpression).Compile();
+
+            // Assert
+            Assert.Equal(expected, resultFunc());
+        }
+
+        [Fact]
         public void HasOperator_ShouldReturnExpectedExpressionWhenRightSideIsInteger()
         {
             // Arrange

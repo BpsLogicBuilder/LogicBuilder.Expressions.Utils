@@ -4,6 +4,6 @@ namespace LogicBuilder.Expressions.Utils.Expansions
 {
     public class SelectExpandItemQueryFunction(SortCollection sortCollection)
     {
-        public SortCollection SortCollection { get; set; } = sortCollection;
+        public SortCollection SortCollection { get; } = sortCollection;
     }
 }

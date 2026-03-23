@@ -6,7 +6,7 @@ using LogicBuilder.Expressions.Utils.Tests.Data;
 using System.Collections.Generic;
 using Xunit;
 
-namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder.Expansions
+namespace LogicBuilder.Expressions.Utils.Tests.Expansions
 {
     public class ExpansionFilterOptionTest
     {
