@@ -9267,8 +9267,8 @@ namespace LogicBuilder.Expressions.Utils.Tests
         static T GetArguments<T>(Func<IDictionary<string, ParameterExpression>, T> getList)
             => getList(GetParameters());
 
-        private static Expression<Func<T, bool>> GetFilter<T>(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parametersDictionary, string parameterName = "$it") 
-            => filterBody.GetFilter<T>(parametersDictionary, parameterName);
+        private static Expression<Func<T, bool>> GetFilter<T>(IExpressionPart filterBody, IDictionary<string, ParameterExpression> parametersDictionary, string defaultParameterName = "$it") 
+            => filterBody.GetFilter<T>(parametersDictionary, defaultParameterName);
 
         private static void AssertFilterStringIsCorrect(Expression expression, string expected)
         {
