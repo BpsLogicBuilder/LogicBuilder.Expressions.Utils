@@ -9,9 +9,6 @@ namespace LogicBuilder.Expressions.Utils.Expansions
     {
         public static IEnumerable<Expression<Func<TSource, object>>> GetExpansionSelectors<TSource>(this SelectExpandDefinition selectExpandDefinition) where TSource : class
         {
-            if (selectExpandDefinition == null)
-                return [];
-
             return selectExpandDefinition.GetExpansions
             (
                 typeof(TSource)
@@ -19,7 +16,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
             .Select(list => new List<Expansion>(list))
             .BuildIncludes<TSource>
             (
-                selectExpandDefinition.Selects
+                selectExpandDefinition?.Selects ?? []
             );
         }
 

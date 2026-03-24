@@ -1,3 +1,4 @@
+* 2026-03-24 - AB#97: Update expansion selector logic and test for null input.
 * 2026-03-23 - AB#87: Rename parameter in FilterTests to prevent shadowing.
 * 2026-03-23 - AB#87: Add extensive unit tests and refactor expansions for safety.
 * 2026-03-21 - AB#87: Refactor test assertions to use Assert.IsType finstead of "as" operator.

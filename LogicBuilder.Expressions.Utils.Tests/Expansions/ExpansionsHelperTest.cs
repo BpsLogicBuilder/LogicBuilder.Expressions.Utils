@@ -35,13 +35,13 @@ namespace LogicBuilder.Expressions.Utils.Tests.Expansions
         }
 
         [Fact]
-        public void GetExpansionSelectors_ReturnsEmptyListIfSelectExpandDefinitionIsNull()
+        public void GetExpansionSelectors_ReturnsEmptyListOfValueTypeSelectorsIfSelectExpandDefinitionIsNull()
         {
             //Act
             var expressions = ExpansionsHelper.GetExpansionSelectors<CategoryModel>(null);
 
             //Assert
-            Assert.Empty(expressions);
+            Assert.NotEmpty(expressions);
         }
 
         [Fact]
