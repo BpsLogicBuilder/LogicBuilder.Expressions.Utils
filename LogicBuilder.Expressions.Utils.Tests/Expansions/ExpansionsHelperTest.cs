@@ -35,13 +35,16 @@ namespace LogicBuilder.Expressions.Utils.Tests.Expansions
         }
 
         [Fact]
-        public void GetExpansionSelectors_ReturnsEmptyListOfValueTypeSelectorsIfSelectExpandDefinitionIsNull()
+        public void GetExpansionSelectors_ReturnsListOfValueTypeSelectorsIfSelectExpandDefinitionIsNull()
         {
             //Act
             var expressions = ExpansionsHelper.GetExpansionSelectors<CategoryModel>(null);
+            var expressionsToString = expressions.Select(ExpressionStringBuilder.ToString).ToHashSet();
 
             //Assert
             Assert.NotEmpty(expressions);
+            Assert.Contains("i => Convert(i.CategoryID)", expressionsToString);
+            Assert.Contains("i => i.CategoryName", expressionsToString);
         }
 
         [Fact]
