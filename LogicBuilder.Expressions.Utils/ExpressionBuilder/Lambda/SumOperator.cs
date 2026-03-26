@@ -5,7 +5,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
     public class SumOperator : SelectorMethodOperatorBase, IExpressionPart
     {
-        public SumOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, string selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
+        public SumOperator(IDictionary<string, ParameterExpression>? parameters, IExpressionPart sourceOperand, IExpressionPart? selectorBody, string? selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
         {
         }
 

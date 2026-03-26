@@ -5,7 +5,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
     public class LastOperator : FilterMethodOperatorBase, IExpressionPart
     {
-        public LastOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart filterBody, string filterParameterName) : base(parameters, sourceOperand, filterBody, filterParameterName)
+        public LastOperator(IDictionary<string, ParameterExpression>? parameters, IExpressionPart sourceOperand, IExpressionPart? filterBody, string? filterParameterName) : base(parameters, sourceOperand, filterBody, filterParameterName)
         {
         }
 

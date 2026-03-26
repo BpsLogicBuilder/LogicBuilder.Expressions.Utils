@@ -6,7 +6,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
     public abstract class FilterMethodOperatorBase
     {
-        protected FilterMethodOperatorBase(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart filterBody, string filterParameterName)
+        protected FilterMethodOperatorBase(IDictionary<string, ParameterExpression>? parameters, IExpressionPart sourceOperand, IExpressionPart? filterBody, string? filterParameterName)
         {
             SourceOperand = sourceOperand;
             FilterBody = filterBody;
@@ -20,9 +20,9 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
         }
 
         public IExpressionPart SourceOperand { get; }
-        public IExpressionPart? FilterBody { get; }
-        public IDictionary<string, ParameterExpression>? Parameters { get; }
-        public string? FilterParameterName { get; }
+        public virtual IExpressionPart? FilterBody { get; }
+        public virtual IDictionary<string, ParameterExpression>? Parameters { get; }
+        public virtual string? FilterParameterName { get; }
 
         public Expression Build() => Build(SourceOperand.Build());
 

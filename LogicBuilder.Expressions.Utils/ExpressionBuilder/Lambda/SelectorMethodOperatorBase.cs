@@ -6,7 +6,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
     public abstract class SelectorMethodOperatorBase
     {
-        protected SelectorMethodOperatorBase(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, string selectorParameterName)
+        protected SelectorMethodOperatorBase(IDictionary<string, ParameterExpression>? parameters, IExpressionPart sourceOperand, IExpressionPart? selectorBody, string? selectorParameterName)
         {
             SourceOperand = sourceOperand;
             SelectorBody = selectorBody;
@@ -20,9 +20,9 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
         }
 
         public IExpressionPart SourceOperand { get; }
-        public IExpressionPart? SelectorBody { get; }
-        public string? SelectorParameterName { get; }
-        public IDictionary<string, ParameterExpression>? Parameters { get; }
+        public virtual IExpressionPart? SelectorBody { get; }
+        public virtual string? SelectorParameterName { get; }
+        public virtual IDictionary<string, ParameterExpression>? Parameters { get; }
 
         public Expression Build() => Build(SourceOperand.Build());
 
