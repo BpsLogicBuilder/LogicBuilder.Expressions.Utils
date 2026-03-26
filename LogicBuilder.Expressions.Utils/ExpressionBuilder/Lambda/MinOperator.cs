@@ -5,7 +5,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
     public class MinOperator : SelectorMethodOperatorBase, IExpressionPart
     {
-        public MinOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, string selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
+        public MinOperator(IDictionary<string, ParameterExpression>? parameters, IExpressionPart sourceOperand, IExpressionPart? selectorBody, string? selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
         {
         }
 

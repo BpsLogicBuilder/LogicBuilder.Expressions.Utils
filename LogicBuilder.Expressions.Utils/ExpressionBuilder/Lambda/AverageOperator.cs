@@ -5,7 +5,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
     public class AverageOperator : SelectorMethodOperatorBase, IExpressionPart
     {
-        public AverageOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, string selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
+        public AverageOperator(IDictionary<string, ParameterExpression>? parameters, IExpressionPart sourceOperand, IExpressionPart? selectorBody, string? selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
         {
         }
 

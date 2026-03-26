@@ -5,7 +5,7 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
 {
     public class MaxOperator : SelectorMethodOperatorBase, IExpressionPart
     {
-        public MaxOperator(IDictionary<string, ParameterExpression> parameters, IExpressionPart sourceOperand, IExpressionPart selectorBody, string selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
+        public MaxOperator(IDictionary<string, ParameterExpression>? parameters, IExpressionPart sourceOperand, IExpressionPart? selectorBody, string? selectorParameterName) : base(parameters, sourceOperand, selectorBody, selectorParameterName)
         {
         }
 

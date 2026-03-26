@@ -1,4 +1,5 @@
-* 2026-03-24 - AB#97: Rename and update test for expansion selectors logic.
+* 2026-03-26 - AB#95: Allow non-nullable properties in operator subclasses.
+* 2026-03-24 - AB#97: Refactor expansion selector logic and add unit tests for null input.
 * 2026-03-24 - AB#97: Update expansion selector logic and test for null input.
 * 2026-03-23 - AB#87: Rename parameter in FilterTests to prevent shadowing.
 * 2026-03-23 - AB#87: Add extensive unit tests and refactor expansions for safety.
