@@ -39,20 +39,20 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cache SonarQube Cloud packages
-        uses: actions/cache@v4
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+      # - name: Cache SonarQube Cloud packages
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ~\sonar\cache
+      #     key: ${{ runner.os }}-sonar
+      #     restore-keys: ${{ runner.os }}-sonar
 
-      - name: Cache SonarQube Cloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
+      # - name: Cache SonarQube Cloud scanner
+      #   id: cache-sonar-scanner
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ${{ runner.temp }}\scanner
+      #     key: ${{ runner.os }}-sonar-scanner
+      #     restore-keys: ${{ runner.os }}-sonar-scanner
 
       - name: Cache dependencies
         uses: actions/cache@v4
@@ -60,12 +60,15 @@ jobs:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
 
-      - name: Install SonarQube Cloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: pwsh
-        run: |
-          New-Item -Path ${{ runner.temp }}/scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+      # - name: Install SonarQube Cloud scanner
+      #   if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+      #   shell: pwsh
+      #   run: |
+      #     New-Item -Path ${{ runner.temp }}/scanner -ItemType Directory
+      #     dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
+
+      - name: Install Scanner
+        run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Restore dependencies
         run: dotnet restore
@@ -76,7 +79,7 @@ jobs:
           SONAR_PROJECT_KEY: "${{ format('BpsLogicBuilder_{0}', env.PROJECT_NAME) }}"
           SONAR_ORGANIZATION_KEY: "bpslogicbuilder"
         run: |
-          ${{ runner.temp }}/scanner/dotnet-sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /o:"${{ env.SONAR_ORGANIZATION_KEY }}" /d:sonar.qualitygate.wait=true /d:sonar.token="${{ env.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/TestResults/coverage.opencover.xml"
+          dotnet-sonarscanner begin /k:"${{ env.SONAR_PROJECT_KEY }}" /o:"${{ env.SONAR_ORGANIZATION_KEY }}" /d:sonar.qualitygate.wait=true /d:sonar.token="${{ env.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**/TestResults/coverage.opencover.xml"
 
       - name: Build project
         run: dotnet build --no-restore --configuration Release
@@ -87,7 +90,7 @@ jobs:
       - name: End SonarQube Cloud analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ${{ runner.temp }}/scanner/dotnet-sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
+        run: dotnet-sonarscanner end /d:sonar.token="${{ env.SONAR_TOKEN }}"
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de
