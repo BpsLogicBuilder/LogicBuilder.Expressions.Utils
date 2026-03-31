@@ -1,3 +1,4 @@
+* 2026-03-31 - AB#103: Remove old SonarQube cache steps, update scanner install.
 * 2026-03-31 - AB#103: Refactor SonarQube scanner install and caching steps.
 * 2026-03-31 - AB#103: Update SonarQube scanner paths to use Unix-style separators.
 * 2026-03-31 - AB#103: Update SonarQube scanner step to use pwsh shell.

@@ -39,35 +39,13 @@ jobs:
         env:
           NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Cache SonarQube Cloud packages
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~\sonar\cache
-      #     key: ${{ runner.os }}-sonar
-      #     restore-keys: ${{ runner.os }}-sonar
-
-      # - name: Cache SonarQube Cloud scanner
-      #   id: cache-sonar-scanner
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ${{ runner.temp }}\scanner
-      #     key: ${{ runner.os }}-sonar-scanner
-      #     restore-keys: ${{ runner.os }}-sonar-scanner
-
       - name: Cache dependencies
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
 
-      # - name: Install SonarQube Cloud scanner
-      #   if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-      #   shell: pwsh
-      #   run: |
-      #     New-Item -Path ${{ runner.temp }}/scanner -ItemType Directory
-      #     dotnet tool update dotnet-sonarscanner --tool-path ${{ runner.temp }}\scanner
-
-      - name: Install Scanner
+      - name: Install SonarQube Cloud scanner
         run: dotnet tool install --global dotnet-sonarscanner
 
       - name: Restore dependencies
