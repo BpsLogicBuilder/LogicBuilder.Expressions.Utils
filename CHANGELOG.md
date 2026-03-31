@@ -1,3 +1,4 @@
+* 2026-03-31 - AB#103: Replace automatic Sonar analysis with CI integration.
 * 2026-03-26 - AB#95: Allow non-nullable properties in operator subclasses.
 * 2026-03-24 - AB#97: Refactor expansion selector logic and add unit tests for null input.
 * 2026-03-24 - AB#97: Update expansion selector logic and test for null input.
