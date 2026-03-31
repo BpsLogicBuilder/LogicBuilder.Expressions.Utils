@@ -1,3 +1,8 @@
+* 2026-03-31 - AB#103: Remove old SonarQube cache steps, update scanner install.
+* 2026-03-31 - AB#103: Refactor SonarQube scanner install and caching steps.
+* 2026-03-31 - AB#103: Update SonarQube scanner paths to use Unix-style separators.
+* 2026-03-31 - AB#103: Update SonarQube scanner step to use pwsh shell.
+* 2026-03-31 - AB#103: Replace automatic Sonar analysis with CI integration.
 * 2026-03-26 - AB#95: Allow non-nullable properties in operator subclasses.
 * 2026-03-24 - AB#97: Refactor expansion selector logic and add unit tests for null input.
 * 2026-03-24 - AB#97: Update expansion selector logic and test for null input.
