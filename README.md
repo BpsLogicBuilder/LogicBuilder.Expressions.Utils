@@ -116,6 +116,7 @@ e.g.:
                 ).Build();
         }
 ```
+`ExpressionOperatorsMappingProfile` is a mapping profile from `LogicBuilder.EntityFrameworkCore.SqlServer`. The descriptor classes are fully serializable in version 8.0.0.
 
 ## Requirements
 
