@@ -1,3 +1,4 @@
+* 2026-05-01 - AB#132: Referencing the latest LogicBuilder.Structures.
 * 2026-04-01 - AB#107: Update NuGet packages for release.
 * 2026-03-31 - AB#103: Remove old SonarQube cache steps, update scanner install.
 * 2026-03-31 - AB#103: Refactor SonarQube scanner install and caching steps.
