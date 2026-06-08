@@ -1,4 +1,5 @@
 ﻿//Adapted from Microsoft.AspNet.OData.Test.Query.Expressions
+using LogicBuilder.Expressions.Utils.Expansions;
 using Microsoft.OData.Edm;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
 
         public Position Ranking { get; set; }
 
+        [OwnedEntity]
         public Category Category { get; set; }
 
         public Address SupplierAddress { get; set; }
@@ -172,6 +174,15 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
     public class DynamicProduct : Product
     {
         public Dictionary<string, object> ProductProperties { get; set; }
+    }
+
+    public class TypeWithOwnedField
+    {
+        public bool BoolProp { get; set; }
+        public ushort UShortProp { get; set; }
+        [OwnedEntity]
+        public Category Category;
+        public Address SupplierAddress { get; set; }
     }
 
     [Flags]

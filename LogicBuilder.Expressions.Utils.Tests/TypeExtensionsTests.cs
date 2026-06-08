@@ -204,7 +204,8 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
         [Theory]
         [InlineData(typeof(Product), new string[] { "ProductID", "ProductName" }, 2)]
-        [InlineData(typeof(Product), null, 31)]
+        [InlineData(typeof(Product), null, 32)]
+        [InlineData(typeof(TypeWithOwnedField), null, 3)]
         [InlineData(typeof(List<Product>), null, 0)]
         public void GetValueTypeMembers_WithSelects_ReturnsExprectedMembers(Type type, string[] selects, int expectedCount)
         {

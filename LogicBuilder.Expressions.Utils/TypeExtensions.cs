@@ -1,4 +1,5 @@
-﻿using LogicBuilder.Expressions.Utils.Properties;
+﻿using LogicBuilder.Expressions.Utils.Expansions;
+using LogicBuilder.Expressions.Utils.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -199,7 +200,7 @@ namespace LogicBuilder.Expressions.Utils
             return [.. parentType.GetMemberInfos().Where
             (
                 info => (info.MemberType == MemberTypes.Field || info.MemberType == MemberTypes.Property)
-                && (info.GetMemberType().IsLiteralType() || info.GetMemberType().IsLiteralList())
+                && (info.GetMemberType().IsLiteralType() || info.GetMemberType().IsLiteralList() || info.HasOwnedPropertyAttribute())
             )];
         }
 
@@ -217,5 +218,10 @@ namespace LogicBuilder.Expressions.Utils
                     return member;
                 }
             )];
+
+        private static bool HasOwnedPropertyAttribute(this MemberInfo memberInfo)
+        {
+            return memberInfo.GetCustomAttributes(typeof(OwnedEntityAttribute), true).Length > 0;
+        }
     }
 }

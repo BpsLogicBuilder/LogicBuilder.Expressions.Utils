@@ -1,4 +1,5 @@
-﻿using Microsoft.OData.Edm;
+﻿using LogicBuilder.Expressions.Utils.Expansions;
+using Microsoft.OData.Edm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -126,6 +127,15 @@ namespace LogicBuilder.Expressions.Utils.Tests.Model
 
         public ProductModel EntityProp { get; set; }
         public AddressModel ComplexProp { get; set; }
+    }
+
+    public class TypeWithOwnedFieldModel
+    {
+        public bool BoolProp { get; set; }
+        public ushort UShortProp { get; set; }
+        [OwnedEntity]
+        public CategoryModel Category;
+        public AddressModel SupplierAddress { get; set; }
     }
 
     [Flags]
