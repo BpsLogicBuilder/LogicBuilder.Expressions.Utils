@@ -3,10 +3,10 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Operand
 {
-    public class ConstantOperator(object constantValue, Type? type = null) : IExpressionPart
+    public class ConstantOperator(object? constantValue, Type? type = null) : IExpressionPart
     {
         public Type? Type { get; } = type;
-        public object ConstantValue { get; } = constantValue;
+        public object? ConstantValue { get; } = constantValue;
 
         public Expression Build() => GetConstantExpression(Type ?? ConstantValue?.GetType());
 
