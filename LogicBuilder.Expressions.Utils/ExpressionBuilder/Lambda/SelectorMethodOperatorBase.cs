@@ -47,10 +47,10 @@ namespace LogicBuilder.Expressions.Utils.ExpressionBuilder.Lambda
         protected virtual IExpressionPart GetLambdaOperator(Type elementType)
             => new SelectorLambdaOperator
             (
-                Parameters!, // Parameters in not null if GetLambdaOperator is caled
-                SelectorBody!,// SelectorBody is not null if GetLambdaOperator is caled
+                Parameters!, // Parameters in not null if GetLambdaOperator is called
+                SelectorBody!,// SelectorBody is not null if GetLambdaOperator is called
                 elementType,
-                SelectorParameterName!// SelectorParameterName is not null if GetLambdaOperator is caled
+                SelectorParameterName!// SelectorParameterName is not null if GetLambdaOperator is called
             );
     }
 }

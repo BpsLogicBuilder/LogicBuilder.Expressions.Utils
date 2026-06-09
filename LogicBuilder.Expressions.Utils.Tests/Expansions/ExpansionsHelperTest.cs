@@ -174,7 +174,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.Expansions
         }
 
         [Fact]
-        public void GetExpansionS_FilteringaNDsORTINGOnChildCollection_AndChildCollectionOfChildCollection_WithMatches()
+        public void GetExpansionSelectors_FilteringAndSortingOnChildCollection_AndChildCollectionOfChildCollection_WithMatches()
         {
             //Arrange
             var parameters = new Dictionary<string, ParameterExpression>();
