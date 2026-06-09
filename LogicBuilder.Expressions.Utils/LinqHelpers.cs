@@ -754,7 +754,7 @@ namespace LogicBuilder.Expressions.Utils
         public static Expression GetDoubleFloorCall(this Expression operand)
            => Expression.Call(DoubleFloorMethodInfo, operand);
 
-        public static bool ByteArraysEqual(byte[] left, byte[] right)
+        public static bool ByteArraysEqual(byte[]? left, byte[]? right)
         {
             if (object.ReferenceEquals(left, right))
                 return true;

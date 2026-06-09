@@ -35,7 +35,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, true)]
         [InlineData("", false)]
         [InlineData("Doritos", false)]
-        public void EqualityOperatorWithNull(string productName, bool expected)
+        public void EqualityOperatorWithNull(string? productName, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -61,7 +61,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, false)]
         [InlineData("", false)]
         [InlineData("Doritos", true)]
-        public void EqualityOperator(string productName, bool expected)
+        public void EqualityOperator(string? productName, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -113,7 +113,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, true)]
         [InlineData("", true)]
         [InlineData("Doritos", false)]
-        public void NotEqualOperator(string productName, bool expected)
+        public void NotEqualOperator(string? productName, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -139,7 +139,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, false)]
         [InlineData(5.01, true)]
         [InlineData(4.99, false)]
-        public void GreaterThanOperator(object unitPrice, bool expected)
+        public void GreaterThanOperator(object? unitPrice, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -165,7 +165,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, false)]
         [InlineData(5.0, true)]
         [InlineData(4.99, false)]
-        public void GreaterThanEqualOperator(object unitPrice, bool expected)
+        public void GreaterThanEqualOperator(object? unitPrice, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -191,7 +191,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, false)]
         [InlineData(4.99, true)]
         [InlineData(5.01, false)]
-        public void LessThanOperator(object unitPrice, bool expected)
+        public void LessThanOperator(object? unitPrice, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -217,7 +217,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, false)]
         [InlineData(5.0, true)]
         [InlineData(5.01, false)]
-        public void LessThanOrEqualOperator(object unitPrice, bool expected)
+        public void LessThanOrEqualOperator(object? unitPrice, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -517,7 +517,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, null, false)]
         [InlineData(5.0, 0, true)]
         [InlineData(null, 1, false)]
-        public void OrOperator(object unitPrice, object unitsInStock, bool expected)
+        public void OrOperator(object? unitPrice, object? unitsInStock, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -551,7 +551,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, null, false)]
         [InlineData(5.0, 10, true)]
         [InlineData(null, 1, false)]
-        public void AndOperator(object unitPrice, object unitsInStock, bool expected)
+        public void AndOperator(object? unitPrice, object? unitsInStock, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -585,7 +585,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, true)]
         [InlineData(5.0, false)]
         [InlineData(5.5, true)]
-        public void Negation(object unitPrice, bool expected)
+        public void Negation(object? unitPrice, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -666,7 +666,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, false)]
         [InlineData(5.0, true)]
         [InlineData(15.01, false)]
-        public void Subtraction(object unitPrice, bool expected)
+        public void Subtraction(object? unitPrice, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -794,11 +794,11 @@ namespace LogicBuilder.Expressions.Utils.Tests
         #endregion Arithmetic Operators
 
         #region NULL  handling
-        public class NullHandlingTheoryData(IExpressionPart filterBody, object unitsInStock, object unitsOnOrder, bool expectedResult, IDictionary<string, ParameterExpression> parameters)
+        public class NullHandlingTheoryData(IExpressionPart filterBody, object? unitsInStock, object? unitsOnOrder, bool expectedResult, IDictionary<string, ParameterExpression> parameters)
         {
             public IExpressionPart FilterBody { get; } = filterBody;
-            public object UnitsInStock { get; } = unitsInStock;
-            public object UnitsOnOrder { get; } = unitsOnOrder;
+            public object? UnitsInStock { get; } = unitsInStock;
+            public object? UnitsOnOrder { get; } = unitsOnOrder;
             public bool ExpectedResult { get; } = expectedResult;
             public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
         }
@@ -1046,10 +1046,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
                 );
         }
 
-        public class NullHandling_LiteralNullTheoryData(IExpressionPart filterBody, object unitsInStock, bool expectedResult, IDictionary<string, ParameterExpression> parameters)
+        public class NullHandling_LiteralNullTheoryData(IExpressionPart filterBody, object? unitsInStock, bool expectedResult, IDictionary<string, ParameterExpression> parameters)
         {
             public IExpressionPart FilterBody { get; } = filterBody;
-            public object UnitsInStock { get; } = unitsInStock;
+            public object? UnitsInStock { get; } = unitsInStock;
             public bool ExpectedResult { get; } = expectedResult;
             public IDictionary<string, ParameterExpression> Parameters { get; } = parameters;
         }
@@ -1270,7 +1270,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(null, null, true)]
         [InlineData("not doritos", 0, true)]
         [InlineData("Doritos", 1, false)]
-        public void Grouping(string productName, object unitsInStock, bool expected)
+        public void Grouping(string? productName, object? unitsInStock, bool expected)
         {
             //act
             var filter = CreateFilter<Product>();
@@ -6071,7 +6071,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     (
                         new CustomMethodOperator
                         (
-                            typeof(string).GetMethod("PadRight", new Type[] { typeof(int) }),
+                            typeof(string).GetMethod("PadRight", new Type[] { typeof(int) })!,
                             new IExpressionPart[]
                             {
                                 new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, parameterName)),
@@ -6106,7 +6106,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     (
                         new CustomMethodOperator
                         (
-                            typeof(StringExtender).GetMethod("PadRightExStatic", BindingFlags.Public | BindingFlags.Static),
+                            typeof(StringExtender).GetMethod("PadRightExStatic", BindingFlags.Public | BindingFlags.Static)!,
                             new IExpressionPart[]
                             {
                                 new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, parameterName)),
@@ -6141,7 +6141,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     (
                         new CustomMethodOperator
                         (
-                            typeof(FilterTests).GetMethod(nameof(PadRightStatic), BindingFlags.NonPublic | BindingFlags.Static),
+                            typeof(FilterTests).GetMethod(nameof(PadRightStatic), BindingFlags.NonPublic | BindingFlags.Static)!,
                             new IExpressionPart[]
                             {
                                 new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, parameterName)),
@@ -6310,7 +6310,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             //act
             var filter = CreateFilter<DataTypes>();
             var constant = (ConstantExpression)((MethodCallExpression)filter.Body).Arguments[0];
-            var values = (IList<Position>)constant.Value;
+            var values = (IList<Position>)constant.Value!;
 
             //assert
             AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[LogicBuilder.Expressions.Utils.Tests.Data.Position].Contains($it.SimpleEnumProp)");
@@ -6322,7 +6322,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     new InOperator
                     (
                         new MemberSelectorOperator("SimpleEnumProp", new ParameterOperator(parameters, parameterName)),
-                        new CollectionConstantOperator(new List<object> { Position.First, Position.Second }, typeof(Position))
+                        new CollectionConstantOperator(new List<object?> { Position.First, Position.Second }, typeof(Position))
                     ),
                     parameters
                 );
@@ -6334,7 +6334,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             //act
             var filter = CreateFilter<DataTypes>();
             var constant = (ConstantExpression)((MethodCallExpression)filter.Body).Arguments[0];
-            var values = (IList<Position?>)constant.Value;
+            var values = (IList<Position?>)constant.Value!;
 
             //assert
             AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[System.Nullable`1[LogicBuilder.Expressions.Utils.Tests.Data.Position]].Contains($it.NullableSimpleEnumProp)");
@@ -6346,7 +6346,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     new InOperator
                     (
                         new MemberSelectorOperator("NullableSimpleEnumProp", new ParameterOperator(parameters, parameterName)),
-                        new CollectionConstantOperator(new List<object> { Position.First, Position.Second }, typeof(Position?))
+                        new CollectionConstantOperator(new List<object?> { Position.First, Position.Second }, typeof(Position?))
                     ),
                     parameters
                 );
@@ -6358,7 +6358,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             //act
             var filter = CreateFilter<DataTypes>();
             var constant = (ConstantExpression)((MethodCallExpression)filter.Body).Arguments[0];
-            var values = (IList<Position?>)constant.Value;
+            var values = (IList<Position?>)constant.Value!;
 
             //assert
             AssertFilterStringIsCorrect(filter, "$it => System.Collections.Generic.List`1[System.Nullable`1[LogicBuilder.Expressions.Utils.Tests.Data.Position]].Contains($it.NullableSimpleEnumProp)");
@@ -6370,7 +6370,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     new InOperator
                     (
                         new MemberSelectorOperator("NullableSimpleEnumProp", new ParameterOperator(parameters, parameterName)),
-                        new CollectionConstantOperator(new List<object> { Position.First, null }, typeof(Position?))
+                        new CollectionConstantOperator(new List<object?> { Position.First, null }, typeof(Position?))
                     ),
                     parameters
                 );
@@ -9191,7 +9191,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                         new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, parameterName)),
                         new CollectionConstantOperator
                         (
-                            new List<object> { "Prod1", "Prod2" },
+                            new List<object?> { "Prod1", "Prod2" },
                             typeof(string)
                         )
                     ),
@@ -9215,7 +9215,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                     (
                         new CollectionConstantOperator
                         (
-                            new List<object> { "Prod1", "Prod2" },
+                            new List<object?> { "Prod1", "Prod2" },
                             typeof(string)
                         ),
                         new MemberSelectorOperator("ProductName", new ParameterOperator(parameters, parameterName))
@@ -9241,7 +9241,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
                         new MemberSelectorOperator("SimpleEnumProp", new ParameterOperator(parameters, parameterName)),
                         new CollectionConstantOperator
                         (
-                            new List<object> { Position.First, Position.Second },
+                            new List<object?> { Position.First, Position.Second },
                             typeof(Position)
                         )
                     ),
@@ -9256,7 +9256,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             return str.PadRight(number);
         }
 
-        private static T? ToNullable<T>(object value) where T : struct => 
+        private static T? ToNullable<T>(object? value) where T : struct => 
             value == null ? null : (T?)Convert.ChangeType(value, typeof(T));
 
         private static Dictionary<string, ParameterExpression> GetParameters()

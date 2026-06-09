@@ -46,7 +46,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder.DateTimeOperato
 
             // Assert
             var memberExpression = Assert.IsType<MemberExpression>(result, exactMatch: false);
-            var constantExpression = (ConstantExpression)memberExpression.Expression;
+            var constantExpression = (ConstantExpression)memberExpression.Expression!;
             Assert.IsType<ConstantContainer>(constantExpression.Value, exactMatch: false);
         }
     }

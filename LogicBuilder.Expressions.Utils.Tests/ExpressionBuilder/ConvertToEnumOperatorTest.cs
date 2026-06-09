@@ -12,7 +12,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder
         [InlineData(2, Position.Third)]
         [InlineData("eightty", null)]
         [InlineData(null, null)]
-        public void ConvertToEnumOperator_ShouldReturnExpectedExpression(object toParse, object expectedResult)
+        public void ConvertToEnumOperator_ShouldReturnExpectedExpression(object? toParse, object? expectedResult)
         {
             // Arrange
             ConvertToEnumOperator convertToEnumOperator = new(toParse, typeof(Position));

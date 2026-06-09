@@ -20,7 +20,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             MemberInfo memberInfo = typeof(DerivedThing).GetMemberInfo(propertyName);
 
             //assert
-            Assert.Equal(reflectedType.FullName, memberInfo.ReflectedType.FullName);
+            Assert.Equal(reflectedType.FullName, memberInfo.ReflectedType!.FullName);
         }
 
         [Theory]
@@ -32,10 +32,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
         {
             //act
             MemberInfo memberInfo = typeof(DerivedThing).GetSelectedMembers([])
-                .FirstOrDefault(m => m.Name == propertyName);
+                .FirstOrDefault(m => m.Name == propertyName)!;
 
             //assert
-            Assert.Equal(reflectedType.FullName, memberInfo.ReflectedType.FullName);
+            Assert.Equal(reflectedType.FullName, memberInfo.ReflectedType!.FullName);
         }
 
         [Fact]
@@ -138,7 +138,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         public void GetMemberTypeFromMemberInfo_ThrowsWhenmemberInfoIsNull()
         {
             //arrange
-            MemberInfo memberInfo = null;
+            MemberInfo? memberInfo = null;
 
             //act
             Assert.Throws<ArgumentNullException>(memberInfo.GetMemberType);
@@ -207,7 +207,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(typeof(Product), null, 32)]
         [InlineData(typeof(TypeWithOwnedField), null, 3)]
         [InlineData(typeof(List<Product>), null, 0)]
-        public void GetValueTypeMembers_WithSelects_ReturnsExprectedMembers(Type type, string[] selects, int expectedCount)
+        public void GetValueTypeMembers_WithSelects_ReturnsExprectedMembers(Type type, string[]? selects, int expectedCount)
         {
             //act
             MemberInfo[] memberInfos = type.GetSelectedMembers(selects == null ? [] : [.. selects]);
@@ -219,7 +219,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
 #pragma warning disable S1144 // Remove unused property (used for testing purposes)
         private abstract class BaseThing
         {
-            public string Name { get; set; }//NOSONAR - used for testing purposes
+            public string? Name { get; set; }//NOSONAR - used for testing purposes
             public int BaseId { get; set; }//NOSONAR - used for testing purposes
 #pragma warning disable CS0649 // Remove unused property (used for testing purposes)
             public int BaseTypeId;//is never assigned to, and will always have its default value 0 NOSONAR - used for testing purposes
@@ -229,30 +229,30 @@ namespace LogicBuilder.Expressions.Utils.Tests
         private class DerivedThing : BaseThing, IDerivedThing
         {
             public Guid Id { get; set; }//NOSONAR - used for testing purposes
-            public string Description { get; set; }
+            public string? Description { get; set; }
         }
 
         private interface IDerivedThing
         {
-            public string Description { get; set; }
+            public string? Description { get; set; }
         }
 
         private class Thing
         {
-            public string Name { get; set; }//NOSONAR - used for testing purposes
+            public string? Name { get; set; }//NOSONAR - used for testing purposes
             public Guid Id { get; set; }//NOSONAR - used for testing purposes
-            public string Description { get; set; }//NOSONAR - used for testing purposes
-            public byte[] DataInBytes { get; set; }//NOSONAR - used for testing purposes
-            public string[] ParametersArray { get; set; }//NOSONAR - used for testing purposes
-            public ICollection<string> Strings { get; set; }//NOSONAR - used for testing purposes
-            public List<string> ParametersList { get; set; }//NOSONAR - used for testing purposes
-            public List<bool> Booleans { get; set; }//NOSONAR - used for testing purposes
-            public ISet<DateTime> DateTimes { get; set; }//NOSONAR - used for testing purposes
-            public ISet<DateOnly> Dates { get; set; }//NOSONAR - used for testing purposes
-            public HashSet<Guid> Guides { get; set; }//NOSONAR - used for testing purposes
-            public uint[] UnsignedInts { get; set; }//NOSONAR - used for testing purposes
-            public IEnumerable<int> Ints { get; set; }//NOSONAR - used for testing purposes
-            public List<object> Objects { get; set; }//NOSONAR - used for testing purposes
+            public string? Description { get; set; }//NOSONAR - used for testing purposes
+            public byte[]? DataInBytes { get; set; }//NOSONAR - used for testing purposes
+            public string[]? ParametersArray { get; set; }//NOSONAR - used for testing purposes
+            public ICollection<string>? Strings { get; set; }//NOSONAR - used for testing purposes
+            public List<string>? ParametersList { get; set; }//NOSONAR - used for testing purposes
+            public List<bool>? Booleans { get; set; }//NOSONAR - used for testing purposes
+            public ISet<DateTime>? DateTimes { get; set; }//NOSONAR - used for testing purposes
+            public ISet<DateOnly>? Dates { get; set; }//NOSONAR - used for testing purposes
+            public HashSet<Guid>? Guides { get; set; }//NOSONAR - used for testing purposes
+            public uint[]? UnsignedInts { get; set; }//NOSONAR - used for testing purposes
+            public IEnumerable<int>? Ints { get; set; }//NOSONAR - used for testing purposes
+            public List<object>? Objects { get; set; }//NOSONAR - used for testing purposes
         }
 #pragma warning restore S1144 // Remove unused property
     }
