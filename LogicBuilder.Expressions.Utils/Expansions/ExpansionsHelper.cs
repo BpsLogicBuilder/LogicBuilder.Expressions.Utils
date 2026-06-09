@@ -7,7 +7,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
 {
     public static class ExpansionsHelper
     {
-        public static IEnumerable<Expression<Func<TSource, object>>> GetExpansionSelectors<TSource>(this SelectExpandDefinition selectExpandDefinition) where TSource : class
+        public static IEnumerable<Expression<Func<TSource, object>>> GetExpansionSelectors<TSource>(this SelectExpandDefinition? selectExpandDefinition) where TSource : class
         {
             return selectExpandDefinition.GetExpansions
             (
@@ -20,7 +20,7 @@ namespace LogicBuilder.Expressions.Utils.Expansions
             );
         }
 
-        public static List<List<ExpansionOptions>> GetExpansions(this SelectExpandDefinition selectExpandDefinition, Type sourceType)
+        public static List<List<ExpansionOptions>> GetExpansions(this SelectExpandDefinition? selectExpandDefinition, Type sourceType)
         {
             if (selectExpandDefinition == null)
                 return [];

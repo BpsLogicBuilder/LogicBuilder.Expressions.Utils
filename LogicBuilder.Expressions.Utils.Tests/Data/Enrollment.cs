@@ -14,9 +14,9 @@ namespace LogicBuilder.Expressions.Utils.Tests.Data
         public Grade? Grade { get; set; }
 
         [ForeignKey("CourseID")]
-        public Course Course { get; set; }
+        public Course? Course { get; set; }
         [ForeignKey("StudentID")]
-        public Student Student { get; set; }
+        public Student? Student { get; set; }
     }
 
     public enum Grade

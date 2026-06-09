@@ -12,11 +12,11 @@ namespace LogicBuilder.Expressions.Utils.Tests.Model
     {
         [Key]
         public int ProductID { get; set; }
-        public string ProductName { get; set; }
+        public string? ProductName { get; set; }
         [Key]
         public int SupplierID { get; set; }
         public int CategoryID { get; set; }
-        public string QuantityPerUnit { get; set; }
+        public string? QuantityPerUnit { get; set; }
         public decimal? UnitPrice { get; set; }
         public double? Weight { get; set; }
         public float? Width { get; set; }
@@ -47,33 +47,33 @@ namespace LogicBuilder.Expressions.Utils.Tests.Model
 
         public PositionModel Ranking { get; set; }
 
-        public CategoryModel Category { get; set; }
+        public CategoryModel? Category { get; set; }
 
-        public AddressModel SupplierAddress { get; set; }
+        public AddressModel? SupplierAddress { get; set; }
 
-        public int[] AlternateIDs { get; set; }
-        public AddressModel[] AlternateAddresses { get; set; }
-        public AddressModel[] NotFilterableAlternateAddresses { get; set; }
+        public int[]? AlternateIDs { get; set; }
+        public AddressModel[]? AlternateAddresses { get; set; }
+        public AddressModel[]? NotFilterableAlternateAddresses { get; set; }
     }
 
     public class CategoryModel
     {
         [Key]
         public int CategoryID { get; set; }
-        public string CategoryName { get; set; }
-        public ProductModel Product { get; set; }
-        public ICollection<ProductModel> Products { get; set; }
-        public IEnumerable<ProductModel> EnumerableProducts { get; set; }
-        public IQueryable<ProductModel> QueryableProducts { get; set; }
+        public string? CategoryName { get; set; }
+        public ProductModel? Product { get; set; }
+        public ICollection<ProductModel>? Products { get; set; }
+        public IEnumerable<ProductModel>? EnumerableProducts { get; set; }
+        public IQueryable<ProductModel>? QueryableProducts { get; set; }
     }
 
     public class AddressModel
     {
         [Key]
         public int AddressID { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string ZipCode { get; set; }
+        public string? City { get; set; }
+        public string? State { get; set; }
+        public string? ZipCode { get; set; }
     }
 
     public class DataTypesModel
@@ -82,8 +82,8 @@ namespace LogicBuilder.Expressions.Utils.Tests.Model
         public Guid GuidProp { get; set; }
         public DateTimeOffset DateTimeProp { get; set; }
         public DateTimeOffset DateTimeOffsetProp { get; set; }
-        public byte[] ByteArrayProp { get; set; }
-        public byte[] ByteArrayPropWithNullValue { get; set; }
+        public byte[]? ByteArrayProp { get; set; }
+        public byte[]? ByteArrayPropWithNullValue { get; set; }
         public TimeSpan TimeSpanProp { get; set; }
         public decimal DecimalProp { get; set; }
         public double DoubleProp { get; set; }
@@ -91,7 +91,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.Model
         public Single SingleProp { get; set; }
         public long LongProp { get; set; }
         public int IntProp { get; set; }
-        public string StringProp { get; set; }
+        public string? StringProp { get; set; }
         public bool BoolProp { get; set; }
 
         public ushort UShortProp { get; set; }
@@ -117,16 +117,16 @@ namespace LogicBuilder.Expressions.Utils.Tests.Model
         public ulong? NullableULongProp { get; set; }
         public char? NullableCharProp { get; set; }
 
-        public char[] CharArrayProp { get; set; }
-        public XElement XElementProp { get; set; }
+        public char[]? CharArrayProp { get; set; }
+        public XElement? XElementProp { get; set; }
 
         public PositionModel SimpleEnumProp { get; set; }
         public NumberBits FlagsEnumProp { get; set; }
         public LongPositionModel LongEnumProp { get; set; }
         public PositionModel? NullableSimpleEnumProp { get; set; }
 
-        public ProductModel EntityProp { get; set; }
-        public AddressModel ComplexProp { get; set; }
+        public ProductModel? EntityProp { get; set; }
+        public AddressModel? ComplexProp { get; set; }
     }
 
     public class TypeWithOwnedFieldModel
@@ -134,8 +134,8 @@ namespace LogicBuilder.Expressions.Utils.Tests.Model
         public bool BoolProp { get; set; }
         public ushort UShortProp { get; set; }
         [OwnedEntity]
-        public CategoryModel Category;
-        public AddressModel SupplierAddress { get; set; }
+        public CategoryModel? Category;
+        public AddressModel? SupplierAddress { get; set; }
     }
 
     [Flags]

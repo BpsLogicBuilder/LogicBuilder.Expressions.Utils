@@ -39,7 +39,7 @@ namespace LogicBuilder.Expressions.Utils
             return mInfo;
         }
 
-        public static Type GetMemberType(this MemberInfo memberInfo)
+        public static Type GetMemberType(this MemberInfo? memberInfo)
         {
             return memberInfo switch
             {

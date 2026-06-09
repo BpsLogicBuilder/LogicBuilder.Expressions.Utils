@@ -12,7 +12,7 @@ namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder.StringOperators
         public void ConvertCharArrayToStringOperator_ShouldReturnExpectedExpression()
         {
             // Arrange
-            char[] charArray = { 'H', 'e', 'l', 'l', 'o' };
+            char[] charArray = ['H', 'e', 'l', 'l', 'o'];
             string expected = "Hello";
             ConstantOperator charArrayOperator = new(charArray, typeof(char[]));
             ConvertCharArrayToStringOperator convertCharArrayToStringOperator = new(charArrayOperator);

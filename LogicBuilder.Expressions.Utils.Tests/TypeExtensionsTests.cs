@@ -20,7 +20,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             MemberInfo memberInfo = typeof(DerivedThing).GetMemberInfo(propertyName);
 
             //assert
-            Assert.Equal(reflectedType.FullName, memberInfo.ReflectedType.FullName);
+            Assert.Equal(reflectedType.FullName, memberInfo.ReflectedType!.FullName);
         }
 
         [Theory]
@@ -32,10 +32,10 @@ namespace LogicBuilder.Expressions.Utils.Tests
         {
             //act
             MemberInfo memberInfo = typeof(DerivedThing).GetSelectedMembers([])
-                .FirstOrDefault(m => m.Name == propertyName);
+                .FirstOrDefault(m => m.Name == propertyName)!;
 
             //assert
-            Assert.Equal(reflectedType.FullName, memberInfo.ReflectedType.FullName);
+            Assert.Equal(reflectedType.FullName, memberInfo.ReflectedType!.FullName);
         }
 
         [Fact]
@@ -138,7 +138,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         public void GetMemberTypeFromMemberInfo_ThrowsWhenmemberInfoIsNull()
         {
             //arrange
-            MemberInfo memberInfo = null;
+            MemberInfo? memberInfo = null;
 
             //act
             Assert.Throws<ArgumentNullException>(memberInfo.GetMemberType);
@@ -207,7 +207,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
         [InlineData(typeof(Product), null, 32)]
         [InlineData(typeof(TypeWithOwnedField), null, 3)]
         [InlineData(typeof(List<Product>), null, 0)]
-        public void GetValueTypeMembers_WithSelects_ReturnsExprectedMembers(Type type, string[] selects, int expectedCount)
+        public void GetValueTypeMembers_WithSelects_ReturnsExprectedMembers(Type type, string[]? selects, int expectedCount)
         {
             //act
             MemberInfo[] memberInfos = type.GetSelectedMembers(selects == null ? [] : [.. selects]);
@@ -229,12 +229,12 @@ namespace LogicBuilder.Expressions.Utils.Tests
         private class DerivedThing : BaseThing, IDerivedThing
         {
             public Guid Id { get; set; }//NOSONAR - used for testing purposes
-            public string Description { get; set; }
+            public string? Description { get; set; }
         }
 
         private interface IDerivedThing
         {
-            public string Description { get; set; }
+            public string? Description { get; set; }
         }
 
         private class Thing

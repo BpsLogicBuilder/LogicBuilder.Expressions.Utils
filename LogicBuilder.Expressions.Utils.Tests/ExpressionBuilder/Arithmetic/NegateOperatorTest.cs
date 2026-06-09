@@ -22,9 +22,9 @@ namespace LogicBuilder.Expressions.Utils.Tests.ExpressionBuilder.Arithmetic
             Assert.Equal(ExpressionType.Negate, unaryExpr.NodeType);
             Assert.IsType<MemberExpression>(unaryExpr.Operand, exactMatch: false);
             var memberExpression = (MemberExpression)unaryExpr.Operand;
-            var constantExpression = (ConstantExpression)memberExpression.Expression;
-            var constantContainer = (ConstantContainer)constantExpression.Value;
-            Assert.Equal(3, (int)constantContainer.Property);
+            var constantExpression = (ConstantExpression)memberExpression.Expression!;
+            var constantContainer = (ConstantContainer)constantExpression.Value!;
+            Assert.Equal(3, (int)constantContainer.Property!);
         }
     }
 }

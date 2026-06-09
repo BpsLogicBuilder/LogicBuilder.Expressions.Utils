@@ -57,9 +57,9 @@ namespace LogicBuilder.Expressions.Utils.Tests
             if (node.Expression == null && node.NodeType == ExpressionType.MemberAccess)
             {
                 Visit(node.Expression);
-                Out(node.Member.DeclaringType.Name + "." + node.Member.Name);
+                Out(node.Member.DeclaringType?.Name + "." + node.Member.Name);
             }
-            else if (node.Expression.NodeType == ExpressionType.Constant)
+            else if (node.Expression?.NodeType == ExpressionType.Constant)
             {
                 Visit(node.Expression);
                 if (!typeof(ConstantContainer).IsAssignableFrom(node.Expression?.Type))
@@ -84,13 +84,13 @@ namespace LogicBuilder.Expressions.Utils.Tests
             {
                 Out
                 (
-                    GetOutString(GetConstantValue())
+                    GetOutString(GetConstantValue() ?? "")
                 );
             }
 
             return node;
 
-            object GetConstantValue()
+            object? GetConstantValue()
                 => node.Value is ConstantContainer constantContainer
                     ? constantContainer.Property
                     : node.Value;
@@ -247,7 +247,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
             };
         }
 
-        private void Out(string s)
+        private void Out(string? s)
         {
             _builder.Append(s);
         }

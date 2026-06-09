@@ -3,10 +3,10 @@ using System.Linq.Expressions;
 
 namespace LogicBuilder.Expressions.Utils.ExpressionBuilder
 {
-    public class ConvertToEnumOperator(object constantValue, Type type) : IExpressionPart
+    public class ConvertToEnumOperator(object? constantValue, Type type) : IExpressionPart
     {
         public Type Type { get; } = type;
-        public object ConstantValue { get; } = constantValue;
+        public object? ConstantValue { get; } = constantValue;
 
         public Expression Build() => DoBuild();
 
