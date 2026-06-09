@@ -1,3 +1,4 @@
+* 2026-06-09 - AB#166: Addressing CodeQL issues.
 * 2026-06-09 - AB#166: Addressing Sonar issues.
 * 2026-06-09 - AB#166: Enable nullable reference types support on the test project.
 * 2026-06-08 - AB#166: Adding OwnedEntityAttribute.

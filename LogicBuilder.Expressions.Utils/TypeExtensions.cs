@@ -60,7 +60,7 @@ namespace LogicBuilder.Expressions.Utils
                 type = Nullable.GetUnderlyingType(type);
 
             return LiteralTypes.Contains(type) 
-                || UneferencedLiteralTypes.Contains(type.FullName) 
+                || UnreferencedLiteralTypes.Contains(type.FullName) 
                 || typeof(Enum).IsAssignableFrom(type);
         }
 
@@ -85,7 +85,7 @@ namespace LogicBuilder.Expressions.Utils
                 typeof(string)
             ];
 
-        private static readonly HashSet<string> UneferencedLiteralTypes =
+        private static readonly HashSet<string> UnreferencedLiteralTypes =
         [
             UnreferencedLiteralTypeNames.DATEONLY,
             UnreferencedLiteralTypeNames.TIMEONLY,
@@ -179,7 +179,7 @@ namespace LogicBuilder.Expressions.Utils
             => type.IsGenericType && typeof(IQueryable).IsAssignableFrom(type);
 
         public static Type GetCurrentType(this Type memberType)
-            //when the member is an IEnumberable<T> we really need T.
+            //when the member is an IEnumerable<T> we really need T.
             => memberType.IsList()
                 ? memberType.GetUnderlyingElementType()
                 : memberType;
