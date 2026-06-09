@@ -219,7 +219,7 @@ namespace LogicBuilder.Expressions.Utils.Tests
 #pragma warning disable S1144 // Remove unused property (used for testing purposes)
         private abstract class BaseThing
         {
-            public string Name { get; set; }//NOSONAR - used for testing purposes
+            public string? Name { get; set; }//NOSONAR - used for testing purposes
             public int BaseId { get; set; }//NOSONAR - used for testing purposes
 #pragma warning disable CS0649 // Remove unused property (used for testing purposes)
             public int BaseTypeId;//is never assigned to, and will always have its default value 0 NOSONAR - used for testing purposes
@@ -239,20 +239,20 @@ namespace LogicBuilder.Expressions.Utils.Tests
 
         private class Thing
         {
-            public string Name { get; set; }//NOSONAR - used for testing purposes
+            public string? Name { get; set; }//NOSONAR - used for testing purposes
             public Guid Id { get; set; }//NOSONAR - used for testing purposes
-            public string Description { get; set; }//NOSONAR - used for testing purposes
-            public byte[] DataInBytes { get; set; }//NOSONAR - used for testing purposes
-            public string[] ParametersArray { get; set; }//NOSONAR - used for testing purposes
-            public ICollection<string> Strings { get; set; }//NOSONAR - used for testing purposes
-            public List<string> ParametersList { get; set; }//NOSONAR - used for testing purposes
-            public List<bool> Booleans { get; set; }//NOSONAR - used for testing purposes
-            public ISet<DateTime> DateTimes { get; set; }//NOSONAR - used for testing purposes
-            public ISet<DateOnly> Dates { get; set; }//NOSONAR - used for testing purposes
-            public HashSet<Guid> Guides { get; set; }//NOSONAR - used for testing purposes
-            public uint[] UnsignedInts { get; set; }//NOSONAR - used for testing purposes
-            public IEnumerable<int> Ints { get; set; }//NOSONAR - used for testing purposes
-            public List<object> Objects { get; set; }//NOSONAR - used for testing purposes
+            public string? Description { get; set; }//NOSONAR - used for testing purposes
+            public byte[]? DataInBytes { get; set; }//NOSONAR - used for testing purposes
+            public string[]? ParametersArray { get; set; }//NOSONAR - used for testing purposes
+            public ICollection<string>? Strings { get; set; }//NOSONAR - used for testing purposes
+            public List<string>? ParametersList { get; set; }//NOSONAR - used for testing purposes
+            public List<bool>? Booleans { get; set; }//NOSONAR - used for testing purposes
+            public ISet<DateTime>? DateTimes { get; set; }//NOSONAR - used for testing purposes
+            public ISet<DateOnly>? Dates { get; set; }//NOSONAR - used for testing purposes
+            public HashSet<Guid>? Guides { get; set; }//NOSONAR - used for testing purposes
+            public uint[]? UnsignedInts { get; set; }//NOSONAR - used for testing purposes
+            public IEnumerable<int>? Ints { get; set; }//NOSONAR - used for testing purposes
+            public List<object>? Objects { get; set; }//NOSONAR - used for testing purposes
         }
 #pragma warning restore S1144 // Remove unused property
     }
