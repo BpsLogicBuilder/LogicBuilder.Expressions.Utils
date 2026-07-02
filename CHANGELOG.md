@@ -1,3 +1,5 @@
+* 2026-07-02 - AB#173: Reset coverlet.msbuild version.
+* 2026-07-02 - AB#173: Referencing LogicBuilder.Structures.latest.
 * 2026-06-09 - AB#166: Updating the release notes.
 * 2026-06-09 - AB#166: Addressing CodeQL issues.
 * 2026-06-09 - AB#166: Addressing Sonar issues.
