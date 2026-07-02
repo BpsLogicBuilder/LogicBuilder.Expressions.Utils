@@ -14,7 +14,7 @@
 		<EmbedUntrackedSources>true</EmbedUntrackedSources>
     <Description>Creates CRUD related LINQ queries from data.</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageReleaseNotes>Adding the OwnedEntityAttribute for expansion support. Making constant operator arguments nullable.</PackageReleaseNotes>
+    <PackageReleaseNotes>Referencing LogicBuilder.Structures.latest.</PackageReleaseNotes>
     <PackageTags>linq expressions</PackageTags>
     <Copyright>Copyright © BPS 2018</Copyright>
     <RepositoryUrl>https://github.com/BpsLogicBuilder/LogicBuilder.Expressions.Utils</RepositoryUrl>
@@ -35,7 +35,7 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LogicBuilder.Structures" Version="8.0.2" />
+    <PackageReference Include="LogicBuilder.Structures" Version="8.0.3" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="MinVer" Version="7.0.0">
       <PrivateAssets>all</PrivateAssets>
